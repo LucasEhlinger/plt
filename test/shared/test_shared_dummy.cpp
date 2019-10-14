@@ -1,30 +1,31 @@
 
 #include <boost/test/unit_test.hpp>
-
-#include "../../src/shared/state/Exemple.h"
+#include "../../src/shared/state/Coordinate.h"
 
 using namespace ::state;
 
 BOOST_AUTO_TEST_CASE(TestStaticAssert)
 {
-  BOOST_CHECK(1);
+    BOOST_CHECK(1);
 }
 
-BOOST_AUTO_TEST_CASE(TestExemple)
+BOOST_AUTO_TEST_CASE(TestCoordinate)
 {
-  {
-    Exemple ex {};
-    BOOST_CHECK_EQUAL(ex.x, 0);
-    ex.setX(21);
-    BOOST_CHECK_EQUAL(ex.x, 21);
-  }
+    {
+        Coordinate coo {123,321};
+        BOOST_CHECK_EQUAL(coo.getRow(), 123);
+        BOOST_CHECK_EQUAL(coo.getColumn(), 321);
+        coo.setRow(456);
+        coo.setColumn(987);
+        BOOST_CHECK_EQUAL(coo.getRow(), 456);
+        BOOST_CHECK_EQUAL(coo.getColumn(), 987);
 
-  {
-    Exemple ex {};
-    ex.setX(21);
-    BOOST_CHECK_LE(ex.x, 32); // Less than equal
-    BOOST_CHECK_GT(ex.x, 11); // Greater than equl
-  }
+    }
+    {
+        Coordinate coo {123,321};
+        coo.setCoord(456,987);
+        BOOST_CHECK_EQUAL(coo.getRow(), 456);
+        BOOST_CHECK_EQUAL(coo.getColumn(), 987);
+
+    }
 }
-
-/* vim: set sw=2 sts=2 et : */
