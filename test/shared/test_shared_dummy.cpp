@@ -4,7 +4,7 @@
 #include "../../src/shared/state/Coordinate.h"
 #include "../../src/shared/state/Tile.h"
 #include "../../src/shared/state/Resources.h"
-
+#include "../../src/shared/state/Start.h"
 
 using namespace ::state;
 
@@ -71,5 +71,17 @@ BOOST_AUTO_TEST_CASE(TestResources) {
         res.rot = 0;
         res.modifyRot(+2);
         BOOST_CHECK_EQUAL(res.rot, 2);
+    }
+}
+
+BOOST_AUTO_TEST_CASE(TestMoveCosts) {
+    {
+        Pawn pawn{Coordinate{2, 1}};
+        Start start{Coordinate{1, 2}};
+
+        pawn.setAP(10);
+        start.Effect(*pawn);
+
+        BOOST_CHECK_EQUAL(pawn.getAP(), -90);
     }
 }
