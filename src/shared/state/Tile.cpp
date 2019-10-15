@@ -16,5 +16,5 @@ Coordinate Tile::getCoordinate() {
  * @param pawn Pawn affected pawn
  */
 void Tile::Effect(state::Pawn& pawn){
-    pawn.modifyAP(moveCost);
+    pawn.modifyAP(this->moveCost);
 }

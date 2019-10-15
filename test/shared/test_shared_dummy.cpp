@@ -1,11 +1,6 @@
 
 #include <boost/test/unit_test.hpp>
-#include "../../src/shared/state/Board.h"
-#include "../../src/shared/state/Coordinate.h"
-#include "../../src/shared/state/Tile.h"
-#include "../../src/shared/state/Resources.h"
-#include "../../src/shared/state/Start.h"
-
+#include "state.h"
 using namespace ::state;
 
 BOOST_AUTO_TEST_CASE(TestCoordinate) {
@@ -28,14 +23,14 @@ BOOST_AUTO_TEST_CASE(TestCoordinate) {
     }
 }
 
-/*BOOST_AUTO_TEST_CASE(TestBoard) {
+BOOST_AUTO_TEST_CASE(TestBoard) {
     {
         Board bo{};
         BOOST_CHECK(bo.day);
         bo.changeTime();
         BOOST_CHECK_EQUAL(bo.day, false);
     }
-}*/
+}
 
 
 BOOST_AUTO_TEST_CASE(TestTile) {
@@ -78,10 +73,29 @@ BOOST_AUTO_TEST_CASE(TestMoveCosts) {
     {
         Pawn pawn{Coordinate{2, 1}};
         Start start{Coordinate{1, 2}};
-
         pawn.setAP(10);
         start.Effect(pawn);
-
         BOOST_CHECK_EQUAL(pawn.getAP(), -90);
+    }
+    {
+        Pawn pawn{Coordinate{2, 1}};
+        Ruin *ruin = new Ruin(Coordinate{1, 2});
+        pawn.setAP(10);
+        ruin->Effect(pawn);
+        BOOST_CHECK_EQUAL(pawn.getAP(), 9);
+    }
+    {
+        Pawn pawn{Coordinate{2, 1}};
+        Mountain *mount = new Mountain(Coordinate{1,2});
+        pawn.setAP(10);
+        mount->Effect(pawn);
+        BOOST_CHECK_EQUAL(pawn.getAP(), 8);
+    }
+    {
+        Pawn pawn{Coordinate{2, 1}};
+        Field *field = new Field(Coordinate{1,2});
+        pawn.setAP(10);
+        field->Effect(pawn);
+        BOOST_CHECK_EQUAL(pawn.getAP(), 9);
     }
 }

@@ -3,10 +3,16 @@
 using namespace ::state;
 
 Board::Board() {
-    //tiles = {};
+    //c'est totalement temporaire ... vous imaginez bien qu'on va pas laisser ça comme ça !
+    for (int i; i < 13; i++) {
+        for (int y; y < 13; y++) {
+            tiles[i][y] = NULL;
+        }
+    }
     day = true;
     //TODO : projet
 }
+
 /**
  * Pass from day to night and vice versa
  */
