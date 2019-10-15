@@ -2,7 +2,8 @@
 #include <boost/test/unit_test.hpp>
 #include "../../src/shared/state/Board.h"
 #include "../../src/shared/state/Coordinate.h"
-#include "state/Tile.h"
+#include "../../src/shared/state/Tile.h"
+#include "../../src/shared/state/Resources.h"
 
 
 using namespace ::state;
@@ -33,5 +34,42 @@ BOOST_AUTO_TEST_CASE(TestBoard) {
         BOOST_CHECK(bo.day);
         bo.changeTime();
         BOOST_CHECK_EQUAL(bo.day, false);
+    }
+}
+
+
+BOOST_AUTO_TEST_CASE(TestTile) {
+    {
+        Coordinate coo{1, 2};
+        Tile ti{coo};
+        BOOST_CHECK_EQUAL(ti.getCoordinate().getRow(), coo.getRow());
+        BOOST_CHECK_EQUAL(ti.getCoordinate().getColumn(), coo.getColumn());
+    }
+}
+
+BOOST_AUTO_TEST_CASE(TestResources) {
+    {
+        Resources res{};
+        res.gold = 0;
+        res.modifyGold(+2);
+        BOOST_CHECK_EQUAL(res.gold, 2);
+    }
+    {
+        Resources res{};
+        res.mana = 0;
+        res.modifyMana(+2);
+        BOOST_CHECK_EQUAL(res.mana, 2);
+    }
+    {
+        Resources res{};
+        res.prestige = 0;
+        res.modifyPrestige(+2);
+        BOOST_CHECK_EQUAL(res.prestige, 2);
+    }
+    {
+        Resources res{};
+        res.rot = 0;
+        res.modifyRot(+2);
+        BOOST_CHECK_EQUAL(res.rot, 2);
     }
 }

@@ -1,3 +1,2 @@
-#include "Bane.cpp"
-
+#include "Bane.h"
 using namespace ::state;
