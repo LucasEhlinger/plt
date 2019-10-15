@@ -2,11 +2,13 @@
 
 using namespace ::state;
 
-bool Board::isDay() {
-    if ((this->time > this->sunrise) || (this->time < this->sunset)) {
-        return true;
-    }
-    return false;
+Board::Board() {
+    day = true;
+    //TODO : projet
+}
+
+void Board::changeTime() {
+    day = !day;
 }
 
 void Board::addT(state::Tile tile) {
