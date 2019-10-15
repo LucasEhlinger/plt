@@ -3,6 +3,7 @@
 using namespace ::state;
 
 Board::Board() {
+    //tiles = {};
     day = true;
     //TODO : projet
 }
@@ -18,7 +19,7 @@ void Board::changeTime() {
  * @param tile Tile added tile
  */
 void Board::addTile(state::Tile tile) {
-    tiles.push_back(tile);
+//    tiles.push_back(tile);
 }
 
 /**
