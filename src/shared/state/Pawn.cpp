@@ -43,3 +43,7 @@ void Pawn::setAP(int value) {
 std::vector<Coordinate> Pawn::checkNeighbors(state::Board board) {
 
 }
+
+Coordinate Pawn::getCoordinate() {
+    return this->coordinate;
+}

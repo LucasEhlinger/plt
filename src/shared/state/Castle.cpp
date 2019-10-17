@@ -2,6 +2,8 @@
 
 using namespace ::state;
 
+Castle::Castle(state::Coordinate coordinate) : Tile(coordinate) {}
+
 /**
  * Apply effects of the Castle on the pawn
  * @param pawn Pawn affected pawn
