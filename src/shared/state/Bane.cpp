@@ -2,4 +2,4 @@
 
 using namespace ::state;
 
-Bane::Bane(state::Coordinate position) : Pawn(coordinate) {}
+Bane::Bane(state::Coordinate position) : Pawn(position) {}

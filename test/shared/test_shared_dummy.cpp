@@ -35,7 +35,7 @@ BOOST_AUTO_TEST_CASE(TestCastle) {
         Pawn pa = Pawn(Coordinate{12, 21});
         pa.setAP(11);
         ca.Effect(pa);
-        BOOST_CHECK_EQUAL(pa.getAP(), 11);
+        BOOST_CHECK_EQUAL(pa.getAP(), 0);
     }
 }
 
