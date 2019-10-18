@@ -1,6 +1,9 @@
 #include "Forest.h"
-
 using namespace ::state;
+
+Forest::Forest(state::Coordinate coordinate) : Tile(coordinate){
+    this->path = "./../../../res/hexagon-pack/PNG/forest.png"
+}
 
 void Forest::Effect(Pawn &pawn) {
     pawn.modifyAP(moveCost);

@@ -3,6 +3,7 @@ using namespace ::state;
 
 Colony::Colony(state::Coordinate coordinate) :Tile(coordinate){
     this->property = nullptr;
+    this->path = "./../../../res/hexagon-pack/PNG/colony.png"
 }
 
 /**

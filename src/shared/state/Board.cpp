@@ -4,13 +4,20 @@ using namespace ::state;
 
 Board::Board() {
     //c'est totalement temporaire ... vous imaginez bien qu'on va pas laisser ça comme ça !
-    for (int i; i < 13; i++) {
-        for (int y; y < 13; y++) {
-            tiles[i][y] = NULL;
-        }
-    }
-    day = true;
-    //TODO : projet
+//    for (int i; i < 13; i++) {
+//        for (int y; y < 13; y++) {
+//            tiles[i][y] = NULL;
+//        }
+//    }
+//    day = true;
+//
+//    int i, j;
+//    int t_edge1 = 0;
+//    int t_edge2 = 6;
+//    int t_edge3 = 12;
+//    for(i=t_edge1; i<t_edge2; i++){
+//
+//    }
 }
 
 /**
