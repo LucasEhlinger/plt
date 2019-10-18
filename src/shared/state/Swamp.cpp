@@ -2,7 +2,7 @@
 using namespace ::state;
 
 Swamp::Swamp(state::Coordinate coordinate) : Tile(coordinate){
-    this->path = "./../../../res/hexagon-pack/PNG/swamp.png"
+    this->path = "./../../../res/hexagon-pack/PNG/swamp.png";
 }
 
 void Swamp::Effect(state::Pawn& pawn) {

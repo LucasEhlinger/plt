@@ -2,5 +2,5 @@
 using namespace ::state;
 
 Ruin::Ruin(Coordinate position):Tile(position) {
-    this->path = "./../../../res/hexagon-pack/PNG/ruin.png"
+    this->path = "./../../../res/hexagon-pack/PNG/ruin.png";
 }
