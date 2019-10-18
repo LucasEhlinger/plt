@@ -1,7 +1,13 @@
 #include "Pawn.h"
+
 using namespace ::state;
 
-Pawn::Pawn(state::Coordinate position):coordinate(position) {}
+Pawn::Pawn(state::Coordinate position) : coordinate(position) {
+    lifePoints = 0;
+    actionPoints = 0;
+    resources = new Resources(0, 0, 0, 0);
+    stats = new Stats(0,0,0,0);
+}
 
 /**
  * Remove or add action points depending of argument passed
@@ -23,7 +29,7 @@ void Pawn::modifyLP(int offset) {
  *
  * @return
  */
-int Pawn::getAP(){
+int Pawn::getAP() {
     return this->actionPoints;
 }
 

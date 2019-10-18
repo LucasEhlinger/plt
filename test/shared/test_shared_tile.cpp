@@ -1,33 +1,9 @@
 
 #include <boost/test/unit_test.hpp>
+#include <boost/filesystem.hpp>
 #include "state.h"
 
 using namespace ::state;
-
-BOOST_AUTO_TEST_CASE(TestBane) {
-    {
-        Bane ba{Coordinate{12, 21}};
-        BOOST_CHECK_EQUAL(ba.getCoordinate().getRow(), 12);
-        BOOST_CHECK_EQUAL(ba.getCoordinate().getColumn(), 21);
-
-    }
-}
-
-BOOST_AUTO_TEST_CASE(TestBoard) {
-    {
-        Board bo{};
-        BOOST_CHECK(bo.day);
-        bo.changeTime();
-        BOOST_CHECK_EQUAL(bo.day, false);
-    }
-    {
-        Board bo{};
-        Pawn pa = Pawn(Coordinate{12, 21});
-        bo.addPawn(pa);
-        BOOST_CHECK_EQUAL(bo.pawns.front().getCoordinate().getRow(),pa.getCoordinate().getRow());
-        BOOST_CHECK_EQUAL(bo.pawns.front().getCoordinate().getColumn(),pa.getCoordinate().getColumn());
-    }
-}
 
 BOOST_AUTO_TEST_CASE(TestCastle) {
     {
@@ -46,26 +22,6 @@ BOOST_AUTO_TEST_CASE(TestColony) {
         co.Effect(pa);
         BOOST_CHECK_EQUAL(co.property->getCoordinate().getRow(), pa.getCoordinate().getRow());
         BOOST_CHECK_EQUAL(co.property->getCoordinate().getColumn(), pa.getCoordinate().getColumn());
-
-    }
-}
-
-BOOST_AUTO_TEST_CASE(TestCoordinate) {
-    {
-        Coordinate coo{123, 321};
-        BOOST_CHECK_EQUAL(coo.getRow(), 123);
-        BOOST_CHECK_EQUAL(coo.getColumn(), 321);
-        coo.setRow(456);
-        coo.setColumn(987);
-        BOOST_CHECK_EQUAL(coo.getRow(), 456);
-        BOOST_CHECK_EQUAL(coo.getColumn(), 987);
-
-    }
-    {
-        Coordinate coo{123, 321};
-        coo.setCoord(456, 987);
-        BOOST_CHECK_EQUAL(coo.getRow(), 456);
-        BOOST_CHECK_EQUAL(coo.getColumn(), 987);
 
     }
 }
@@ -121,29 +77,24 @@ BOOST_AUTO_TEST_CASE(TestField) {
     }
 }
 
-BOOST_AUTO_TEST_CASE(TestResources) {
+BOOST_AUTO_TEST_CASE(TestForest) {
     {
-        Resources res{};
-        res.gold = 0;
-        res.modifyGold(+2);
-        BOOST_CHECK_EQUAL(res.gold, 2);
+        Pawn pawn{Coordinate{2, 1}};
+        Forest forest{Coordinate{1, 2}};
+        pawn.setAP(10);
+        forest.Effect(pawn);
+        BOOST_CHECK_EQUAL(pawn.getAP(), 9);
+        //TODO : Check if the path file exist
+        //boost::filesystem::path pathObj(forest.path);
+        //BOOST_CHECK(boost::filesystem::exists(pathObj));
     }
+}
+BOOST_AUTO_TEST_CASE(TestStoneAge) {
     {
-        Resources res{};
-        res.mana = 0;
-        res.modifyMana(+2);
-        BOOST_CHECK_EQUAL(res.mana, 2);
-    }
-    {
-        Resources res{};
-        res.prestige = 0;
-        res.modifyPrestige(+2);
-        BOOST_CHECK_EQUAL(res.prestige, 2);
-    }
-    {
-        Resources res{};
-        res.rot = 0;
-        res.modifyRot(+2);
-        BOOST_CHECK_EQUAL(res.rot, 2);
+        Pawn pawn{Coordinate{2, 1}};
+        StoneAge sta{Coordinate{1, 2}};
+        pawn.setAP(10);
+        sta.Effect(pawn);
+        BOOST_CHECK_EQUAL(pawn.getAP(), 9);
     }
 }
