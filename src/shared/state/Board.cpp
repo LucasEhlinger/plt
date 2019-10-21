@@ -3,32 +3,32 @@
 using namespace ::state;
 
 Board::Board() {
-    //c'est totalement temporaire ... vous imaginez bien qu'on va pas laisser ça comme ça !
+    //will be used when Board is initialized, to be kept in the back of our heads
     /*this->day = true;
 
-    int i, j;
-    int t_edge1 = 0;
-    int t_edge2 = 6;
-    int t_edge3 = 12;
+    int row_length = 13;
+    int nb_rows = 13;
+    int len_null = 6;
+    int position;
 
-    // set NULL spots in the tile table.
-    i = t_edge1;
-    j = t_edge2;
-    while(i != t_edge2+1) {
-        for(int k = t_edge1; k<j; k++) {
-            tiles[i][k] = nullptr;
+    for(int i; i<row_length; ++i){
+        for(int j; j<nb_rows; ++j){
+            position = i+row_length*j;
+            if(len_null-i>0){
+                if(j<len_null-i+1)
+                    tiles[position] = nullptr;
+                else
+                    tiles[position] = std::unique_ptr<Tile>(new Tile(Coordinate{i,j}));
+            }
+            else if(i-len_null>0){
+                if(j>i-len_null+1)
+                    tiles[position] = nullptr;
+                else
+                    tiles[position] = std::unique_ptr<Tile>(new Tile(Coordinate{i,j}));
+            }
+            else
+                tiles[position] = std::unique_ptr<Tile>(new Tile(Coordinate{i,j}));
         }
-        j-=1;
-        i+=1;
-    }
-    i = t_edge3;
-    j = t_edge2;
-    while(i != t_edge2) {
-        for(int k = t_edge3; k>j; k--) {
-            tiles[i][k] = nullptr;
-        }
-        j+=1;
-        i-=1;
     }*/
 }
 
