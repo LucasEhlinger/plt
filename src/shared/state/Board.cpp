@@ -4,7 +4,7 @@ using namespace ::state;
 
 Board::Board() {
     //c'est totalement temporaire ... vous imaginez bien qu'on va pas laisser ça comme ça !
-    this->day = true;
+    /*this->day = true;
 
     int i, j;
     int t_edge1 = 0;
@@ -29,7 +29,7 @@ Board::Board() {
         }
         j+=1;
         i-=1;
-    }
+    }*/
 }
 
 /**
@@ -37,12 +37,4 @@ Board::Board() {
  */
 void Board::changeTime() {
     this->day = !this->day;
-}
-
-/**
- * Add a pawn to the Game
- * @param pawn Pawn added pawn
- */
-void Board::addPawn(state::Pawn &pawn) {
-    pawns.push_back(pawn);
 }
