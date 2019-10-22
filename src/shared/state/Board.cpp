@@ -12,24 +12,24 @@ Board::Board() {
     int t_edge2 = 6;
     int t_edge3 = 12;
 
-    // set NULL spots in the tile table.
-    i = t_edge1;
-    j = t_edge2;
-    while(i != t_edge2+1) {
-        for(int k = t_edge1; k<j; k++) {
-            tiles[i][k] = nullptr;
+    for(int i; i<row_length; ++i){
+        for(int j; j<nb_rows; ++j){
+            position = i+row_length*j;
+            if(len_null-i>0){
+                if(j<len_null-i+1)
+                    tiles[position] = nullptr;
+                else
+                    tiles[position] = std::unique_ptr<Tile>(new Tile(Coordinate{i,j}));
+            }
+            else if(i-len_null>0){
+                if(j>i-len_null+1)
+                    tiles[position] = nullptr;
+                else
+                    tiles[position] = std::unique_ptr<Tile>(new Tile(Coordinate{i,j}));
+            }
+            else
+                tiles[position] = std::unique_ptr<Tile>(new Tile(Coordinate{i,j}));
         }
-        j-=1;
-        i+=1;
-    }
-    i = t_edge3;
-    j = t_edge2;
-    while(i != t_edge2) {
-        for(int k = t_edge3; k>j; k--) {
-            tiles[i][k] = nullptr;
-        }
-        j+=1;
-        i-=1;
     }*/
 }
 
