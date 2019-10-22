@@ -4,22 +4,6 @@
 
 using namespace ::state;
 
-BOOST_AUTO_TEST_CASE(TestBoard) {
-    {
-        Board bo{};
-        BOOST_CHECK(bo.day);
-        bo.changeTime();
-        BOOST_CHECK_EQUAL(bo.day, false);
-    }
-    {
-        Board bo{};
-        Pawn pa = Pawn(Coordinate{12, 21});
-        bo.addPawn(pa);
-        BOOST_CHECK_EQUAL(bo.pawns.front().getCoordinate().getRow(),pa.getCoordinate().getRow());
-        BOOST_CHECK_EQUAL(bo.pawns.front().getCoordinate().getColumn(),pa.getCoordinate().getColumn());
-    }
-}
-
 BOOST_AUTO_TEST_CASE(TestCoordinate) {
     {
         Coordinate coo{123, 321};
@@ -68,5 +52,29 @@ BOOST_AUTO_TEST_CASE(TestStats) {
         Stats sta{0,0,0,0};
         sta.setCombativeness(2);
         BOOST_CHECK_EQUAL(sta.getCombativeness(), 2);
+    }
+    {
+        Stats sta{0,0,0,0};
+        sta.setPresenceOfMind(4);
+        BOOST_CHECK_EQUAL(sta.getPresenceOfMind(), 4);
+    }
+    {
+        Stats sta{0,0,0,0};
+        sta.setSpirituality(8);
+        BOOST_CHECK_EQUAL(sta.getSpirituality(), 8);
+    }
+    {
+        Stats sta{0,0,0,0};
+        sta.setVitality(16);
+        BOOST_CHECK_EQUAL(sta.getVitality(), 16);
+    }
+}
+
+BOOST_AUTO_TEST_CASE(TestBoard) {
+    {
+        Board bo{};
+        BOOST_CHECK(bo.day);
+        bo.changeTime();
+        BOOST_CHECK(!bo.day);
     }
 }

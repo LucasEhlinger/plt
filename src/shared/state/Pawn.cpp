@@ -6,7 +6,7 @@ Pawn::Pawn(state::Coordinate position) : coordinate(position) {
     lifePoints = 0;
     actionPoints = 0;
     resources = new Resources(0, 0, 0, 0);
-    stats = new Stats(0,0,0,0);
+    stats = new Stats(0, 0, 0, 0);
 }
 
 /**
@@ -41,15 +41,32 @@ void Pawn::setAP(int value) {
     this->actionPoints = value;
 }
 
-/**
- *
- * @param board
- * @return std::vector<Coordinate>
- */
-std::vector<Coordinate> Pawn::checkNeighbors(state::Board board) {
-
-}
-
 Coordinate Pawn::getCoordinate() {
     return this->coordinate;
+}
+
+int Pawn::getLP() {
+    return this->lifePoints;
+}
+void Pawn::setLP(int LifePoints) {
+    this->lifePoints = LifePoints;
+}
+
+int Pawn::getRot() {
+    return this->resources->rot;
+}
+
+// Observers
+void Pawn::notify() {
+    std::for_each(observers.begin(), observers.end(), [](IObserver &obs) {
+        //obs.update();
+    });
+}
+
+void Pawn::add(state::IObserver observer) {
+    this->observers.push_back(observer);
+}
+
+void Pawn::remove(state::IObserver observer) {
+
 }

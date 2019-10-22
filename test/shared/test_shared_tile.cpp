@@ -98,3 +98,15 @@ BOOST_AUTO_TEST_CASE(TestStoneAge) {
         BOOST_CHECK_EQUAL(pawn.getAP(), 9);
     }
 }
+
+BOOST_AUTO_TEST_CASE(TestSwamp) {
+    {
+        Pawn pawn{Coordinate{2, 1}};
+        Swamp swp{Coordinate{1, 2}};
+        pawn.setAP(10);
+        pawn.setLP(4);
+        swp.Effect(pawn);
+        BOOST_CHECK_EQUAL(pawn.getAP(), 9);
+        BOOST_CHECK_EQUAL(pawn.getLP(), 3);
+    }
+}

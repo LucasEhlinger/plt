@@ -3,9 +3,10 @@
 using namespace ::state;
 
 Board::Board() {
-    //c'est totalement temporaire ... vous imaginez bien qu'on va pas laisser ça comme ça !
-    /*this->day = true;
+    this->day = true;
 
+    //c'est totalement temporaire ... vous imaginez bien qu'on va pas laisser ça comme ça !
+    /*
     int i, j;
     int t_edge1 = 0;
     int t_edge2 = 6;
@@ -37,4 +38,18 @@ Board::Board() {
  */
 void Board::changeTime() {
     this->day = !this->day;
+}
+
+void Board::notify() {
+    std::for_each(observers.begin(), observers.end(), [](IObserver &observer) {
+        //observer.update();
+    });
+}
+
+void Board::add(state::IObserver observer) {
+    this->observers.push_back(observer);
+}
+
+void Board::remove(state::IObserver observer) {
+
 }

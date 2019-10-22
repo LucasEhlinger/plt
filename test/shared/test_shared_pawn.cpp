@@ -12,3 +12,12 @@ BOOST_AUTO_TEST_CASE(TestBane) {
 
     }
 }
+
+BOOST_AUTO_TEST_CASE(TestKing) {
+    {
+        King king{Coordinate{12, 12}};
+        BOOST_CHECK_EQUAL(king.getRot(), 0);
+        king.modifyRot();
+        BOOST_CHECK_EQUAL(king.getRot(), -1);
+    }
+}

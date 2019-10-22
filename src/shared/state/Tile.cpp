@@ -18,3 +18,17 @@ Coordinate Tile::getCoordinate() {
 void Tile::Effect(state::Pawn& pawn){
     pawn.modifyAP(this->moveCost);
 }
+
+void Tile::notify() {
+    std::for_each(observers.begin(), observers.end(), [] (IObserver &obs){
+        //obs.update();
+    });
+}
+
+void Tile::add(state::IObserver observer) {
+    observers.push_back(observer);
+}
+
+void Tile::remove(state::IObserver observer) {
+    //remove observer from list.
+}
