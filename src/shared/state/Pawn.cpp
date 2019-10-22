@@ -59,7 +59,7 @@ int Pawn::getRot() {
 // Observers
 void Pawn::notify() {
     std::for_each(observers.begin(), observers.end(), [](IObserver &obs) {
-        //obs.update();
+        obs.update();
     });
 }
 

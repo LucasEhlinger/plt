@@ -2,7 +2,7 @@
 
 using namespace render;
 
-TileVue::TileVue(state::tile &tile) : tile(tile) {}
+TileVue::TileVue(state::Tile &tile) : tile(tile) {}
 
 void TileVue::update() {
 }
