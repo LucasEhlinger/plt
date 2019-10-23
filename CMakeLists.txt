@@ -50,11 +50,13 @@ if(BUILD_CODE_COVERAGE)
   set(COVERAGE_LCOV_EXCLUDES
     '/usr/*'
     '${PROJECT_SOURCE_DIR}/test/*'
-    '${PROJECT_SOURCE_DIR}/extern/*')
+    '${PROJECT_SOURCE_DIR}/extern/*'
+    '/Applications/Xcode.app/Contents/*')
   set(COVERAGE_GCOVR_EXCLUDES
     /usr/
     "${PROJECT_SOURCE_DIR}/test/"
-    "${PROJECT_SOURCE_DIR}/extern/")
+    "${PROJECT_SOURCE_DIR}/extern/"
+    "/Applications/Xcode.app/Contents//")
   # Create script to run tests for code coverage
   set(test_runner "${CMAKE_CURRENT_BINARY_DIR}/run_test.sh")
   file(WRITE ${test_runner}
