@@ -11,8 +11,8 @@ BOOST_AUTO_TEST_CASE(TestPawnObservable) {
         PawnVue pawnVue{pawn};
         pawn.add(pawnVue);
         pawn.add(pawnVue);
-        //pawn.setAP(12);
-        //pawn.notify();
+        pawn.setAP(12);
+        pawn.notify();
 
         Tile ti1{Coordinate{12, 24}};
         TileVue tileVue{ti1};

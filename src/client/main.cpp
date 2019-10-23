@@ -15,7 +15,7 @@ using namespace std;
 
 int main(int argc,char* argv[])
 {
-    const char* forest_path = "/root/Documents/plt_true/res/hexagon-pack/PNG/forest.png";
+    const char* forest_path = "./../res/hexagon-pack/PNG/forest.png";
 //    char castle_path = "/root/Documents/plt_true/res/hexagon-pack/PNG/castle.png";
 //    char swamp_path = "/root/Documents/plt_true/res/hexagon-pack/PNG/swamp.png";
 //    char ruin_path = "/root/Documents/plt_true/res/hexagon-pack/PNG/ruin.png";
