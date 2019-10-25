@@ -1,6 +1,4 @@
-
 #include <boost/test/unit_test.hpp>
-#include <boost/filesystem.hpp>
 #include "state.h"
 
 using namespace ::state;
@@ -20,9 +18,7 @@ BOOST_AUTO_TEST_CASE(TestColony) {
         Colony co = Colony{Coordinate(12, 21)};
         Pawn pa = Pawn(Coordinate{12, 21});
         co.Effect(pa);
-        BOOST_CHECK_EQUAL(co.property->getCoordinate().getRow(), pa.getCoordinate().getRow());
-        BOOST_CHECK_EQUAL(co.property->getCoordinate().getColumn(), pa.getCoordinate().getColumn());
-
+        BOOST_CHECK (co.property->getCoordinate() == pa.getCoordinate());
     }
 }
 
@@ -52,8 +48,7 @@ BOOST_AUTO_TEST_CASE(TestTile) {
     {
         Coordinate coo{1, 2};
         Tile ti{coo};
-        BOOST_CHECK_EQUAL(ti.getCoordinate().getRow(), coo.getRow());
-        BOOST_CHECK_EQUAL(ti.getCoordinate().getColumn(), coo.getColumn());
+        BOOST_CHECK(ti.getCoordinate() == coo);
     }
 }
 

@@ -17,6 +17,8 @@ BOOST_AUTO_TEST_CASE(TestPawnObservable) {
 
         BOOST_CHECK_EQUAL(pawnVue.pawn->getAP(),12);
     }
+}
+BOOST_AUTO_TEST_CASE(TestBoardObservable){
     {
         Board bo{};
         BoardVue boardVue{bo};
@@ -26,10 +28,11 @@ BOOST_AUTO_TEST_CASE(TestPawnObservable) {
         bo.notify();
         BOOST_CHECK(!boardVue.board->day);
     }
+}
+BOOST_AUTO_TEST_CASE(TestTileObservable){
     {
         Tile tile{Coordinate{16,64}};
         TileVue tileVue{tile};
         tile.add(tileVue);
     }
-
 }
