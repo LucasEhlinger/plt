@@ -20,10 +20,9 @@ void Tile::Effect(state::Pawn& pawn){
 }
 
 void Tile::notify() {
-    std::for_each(observers.begin(), observers.end(), [] (IObserver &obs){
-        obs.update();
-        //obs.update();
-    });
+    for(auto obs = observers.begin(); obs != observers.end(); ++obs){
+        obs.base()->update(this);
+    }
 }
 
 void Tile::add(state::IObserver observer) {
