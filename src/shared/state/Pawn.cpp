@@ -1,5 +1,9 @@
 #include "Pawn.h"
 
+#include <list>
+#include <algorithm>
+#include <iterator>
+
 using namespace ::state;
 
 Pawn::Pawn(state::Coordinate position) : coordinate(position) {
@@ -58,9 +62,9 @@ int Pawn::getRot() {
 
 // Observers
 void Pawn::notify() {
-    std::for_each(observers.begin(), observers.end(), [](IObserver &obs) {
-        obs.update();
-    });
+    for(auto obs = observers.begin(); obs != observers.end(); ++obs){
+        obs.base()->update(this);
+    }
 }
 
 void Pawn::add(state::IObserver observer) {

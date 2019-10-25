@@ -24,3 +24,7 @@ void Coordinate::setCoord(int row, int column) {
     setRow(row);
     setColumn(column);
 }
+
+bool Coordinate::operator==(const Coordinate &rhs) {
+    return (this->row == rhs.row) && (this->column == rhs.column);
+}

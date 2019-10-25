@@ -41,9 +41,9 @@ void Board::changeTime() {
 }
 
 void Board::notify() {
-    std::for_each(observers.begin(), observers.end(), [](IObserver &observer) {
-        //observer.update();
-    });
+    for (auto obs = observers.begin(); obs != observers.end(); ++obs) {
+        obs.base()->update(this);
+    }
 }
 
 void Board::add(state::IObserver observer) {

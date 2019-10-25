@@ -22,26 +22,34 @@ BOOST_AUTO_TEST_CASE(TestCoordinate) {
         BOOST_CHECK_EQUAL(coo.getColumn(), 987);
 
     }
+    {
+        Coordinate coo1{123, 987};
+        Coordinate coo2{123, 987};
+        Coordinate coo3{1098, 1};
+        BOOST_CHECK(coo1 == coo2);
+        BOOST_CHECK(!(coo1 == coo3));
+
+    }
 }
 
 BOOST_AUTO_TEST_CASE(TestResources) {
     {
-        Resources res{0,0,0,0};
+        Resources res{0, 0, 0, 0};
         res.modifyGold(+2);
         BOOST_CHECK_EQUAL(res.gold, 2);
     }
     {
-        Resources res{0,0,0,0};
+        Resources res{0, 0, 0, 0};
         res.modifyMana(+2);
         BOOST_CHECK_EQUAL(res.mana, 2);
     }
     {
-        Resources res{0,0,0,0};
+        Resources res{0, 0, 0, 0};
         res.modifyPrestige(+2);
         BOOST_CHECK_EQUAL(res.prestige, 2);
     }
     {
-        Resources res{0,0,0,0};
+        Resources res{0, 0, 0, 0};
         res.modifyRot(+2);
         BOOST_CHECK_EQUAL(res.rot, 2);
     }
@@ -49,22 +57,22 @@ BOOST_AUTO_TEST_CASE(TestResources) {
 
 BOOST_AUTO_TEST_CASE(TestStats) {
     {
-        Stats sta{0,0,0,0};
+        Stats sta{0, 0, 0, 0};
         sta.setCombativeness(2);
         BOOST_CHECK_EQUAL(sta.getCombativeness(), 2);
     }
     {
-        Stats sta{0,0,0,0};
+        Stats sta{0, 0, 0, 0};
         sta.setPresenceOfMind(4);
         BOOST_CHECK_EQUAL(sta.getPresenceOfMind(), 4);
     }
     {
-        Stats sta{0,0,0,0};
+        Stats sta{0, 0, 0, 0};
         sta.setSpirituality(8);
         BOOST_CHECK_EQUAL(sta.getSpirituality(), 8);
     }
     {
-        Stats sta{0,0,0,0};
+        Stats sta{0, 0, 0, 0};
         sta.setVitality(16);
         BOOST_CHECK_EQUAL(sta.getVitality(), 16);
     }

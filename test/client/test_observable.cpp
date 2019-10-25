@@ -10,17 +10,26 @@ BOOST_AUTO_TEST_CASE(TestPawnObservable) {
         Pawn pawn{Coordinate{12, 24}};
         PawnVue pawnVue{pawn};
         pawn.add(pawnVue);
-        pawn.add(pawnVue);
-        //pawn.setAP(12);
-        //pawn.notify();
+        BOOST_CHECK_EQUAL(pawnVue.pawn->getAP(),0);
 
-        Tile ti1{Coordinate{12, 24}};
-        TileVue tileVue{ti1};
-        ti1.add(tileVue);
+        pawn.setAP(12);
+        pawn.notify();
 
-        BOOST_CHECK_EQUAL(pawn.observers.size(), 2);
-        BOOST_CHECK_EQUAL(ti1.observers.size(), 1);
-
+        BOOST_CHECK_EQUAL(pawnVue.pawn->getAP(),12);
+    }
+    {
+        Board bo{};
+        BoardVue boardVue{bo};
+        bo.add(boardVue);
+        BOOST_CHECK(boardVue.board->day);
+        bo.changeTime();
+        bo.notify();
+        BOOST_CHECK(!boardVue.board->day);
+    }
+    {
+        Tile tile{Coordinate{16,64}};
+        TileVue tileVue{tile};
+        tile.add(tileVue);
     }
 
 }
