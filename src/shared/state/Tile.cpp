@@ -21,7 +21,7 @@ void Tile::Effect(state::Pawn& pawn){
 
 void Tile::notify() {
     for(auto obs = observers.begin(); obs != observers.end(); ++obs){
-        obs.base()->update(this);
+        obs.base()->update(*this);
     }
 }
 

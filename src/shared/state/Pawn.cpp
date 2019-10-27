@@ -63,7 +63,7 @@ int Pawn::getRot() {
 // Observers
 void Pawn::notify() {
     for(auto obs = observers.begin(); obs != observers.end(); ++obs){
-        obs->update(this);
+        obs->update(*this);
     }
 }
 

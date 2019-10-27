@@ -42,7 +42,7 @@ void Board::changeTime() {
 
 void Board::notify() {
     for (auto obs = observers.begin(); obs != observers.end(); ++obs) {
-        obs.base()->update(this);
+        obs.base()->update(*this);
     }
 }
 

@@ -10,12 +10,13 @@ BOOST_AUTO_TEST_CASE(TestPawnObservable) {
         Pawn pawn{Coordinate{12, 24}};
         PawnVue pawnVue{pawn};
         pawn.add(pawnVue);
-        BOOST_CHECK_EQUAL(pawnVue.pawn->getAP(),0);
+        BOOST_CHECK_EQUAL(pawnVue.pawn.getAP(),0);
 
         pawn.setAP(12);
+        BOOST_CHECK_EQUAL(pawnVue.pawn.getAP(),0);
         pawn.notify();
 
-        BOOST_CHECK_EQUAL(pawnVue.pawn->getAP(),12);
+        BOOST_CHECK_EQUAL(pawnVue.pawn.getAP(),12);
     }
 }
 BOOST_AUTO_TEST_CASE(TestBoardObservable){
@@ -23,10 +24,10 @@ BOOST_AUTO_TEST_CASE(TestBoardObservable){
         Board bo{};
         BoardVue boardVue{bo};
         bo.add(boardVue);
-        BOOST_CHECK(boardVue.board->day);
+        BOOST_CHECK(boardVue.board.day);
         bo.changeTime();
         bo.notify();
-        BOOST_CHECK(!boardVue.board->day);
+        BOOST_CHECK(!boardVue.board.day);
     }
 }
 BOOST_AUTO_TEST_CASE(TestTileObservable){
