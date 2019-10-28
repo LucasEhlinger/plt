@@ -18,17 +18,3 @@ Coordinate Tile::getCoordinate() {
 void Tile::Effect(state::Pawn& pawn){
     pawn.modifyAP(this->moveCost);
 }
-
-void Tile::notify() {
-    for(auto obs = observers.begin(); obs != observers.end(); ++obs){
-        obs.base()->update(*this);
-    }
-}
-
-void Tile::add(state::IObserver observer) {
-    observers.push_back(observer);
-}
-
-void Tile::remove(state::IObserver observer) {
-    //remove observer from list.
-}

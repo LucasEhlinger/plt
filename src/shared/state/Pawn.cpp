@@ -59,18 +59,3 @@ void Pawn::setLP(int LifePoints) {
 int Pawn::getRot() {
     return this->resources->rot;
 }
-
-// Observers
-void Pawn::notify() {
-    for(auto obs = observers.begin(); obs != observers.end(); ++obs){
-        obs->update(*this);
-    }
-}
-
-void Pawn::add(state::IObserver observer) {
-    this->observers.push_back(observer);
-}
-
-void Pawn::remove(state::IObserver observer) {
-
-}
