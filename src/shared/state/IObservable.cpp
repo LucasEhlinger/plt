@@ -14,13 +14,9 @@ void IObservable::removeObserver(state::IObserver *observer) {
 
 void IObservable::notify() {
     for (std::vector<IObserver *>::const_iterator iterator = observers.begin();
-         iterator != observers.end();
-         ++iterator) {
+         iterator != observers.end(); ++iterator) {
         if (*iterator != 0) {
-            //(*iterator)->update(this);
             (*iterator)->update(this);
-            //(*iterator)->update(*this);
-            //(*iterator)->testeur();
         }
     }
 }

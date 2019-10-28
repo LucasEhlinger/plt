@@ -29,6 +29,7 @@ BOOST_AUTO_TEST_CASE(TestMountain) {
         pawn.setAP(3);
         mount->Effect(pawn);
         BOOST_CHECK_EQUAL(pawn.getAP(), 1);
+        BOOST_CHECK_EQUAL(mount->getMoveCost(), -2);
 
     }
 }
@@ -40,6 +41,7 @@ BOOST_AUTO_TEST_CASE(TestStart) {
         pawn.setAP(10);
         start.Effect(pawn);
         BOOST_CHECK_EQUAL(pawn.getAP(), -90);
+        BOOST_CHECK_EQUAL(start.getMoveCost(), -100);
 
     }
 }
@@ -59,6 +61,7 @@ BOOST_AUTO_TEST_CASE(TestRuin) {
         pawn.setAP(10);
         ruin->Effect(pawn);
         BOOST_CHECK_EQUAL(pawn.getAP(), 9);
+        BOOST_CHECK_EQUAL(ruin->getMoveCost(), -1);
     }
 }
 

@@ -2,7 +2,8 @@
 
 using namespace ::state;
 
-Tile::Tile(Coordinate position):coordinate(position) {}
+Tile::Tile(Coordinate position) : coordinate(position) {}
+
 /**
  * Get tile coordinates
  * @return Coordinate object containing x and y position
@@ -15,6 +16,14 @@ Coordinate Tile::getCoordinate() {
  * Apply effects of the tile on the pawn
  * @param pawn Pawn affected pawn
  */
-void Tile::Effect(state::Pawn& pawn){
+void Tile::Effect(state::Pawn &pawn) {
     pawn.modifyAP(this->moveCost);
+}
+
+void Tile::setCoordinate(const state::Coordinate &coordinate) {
+    this->coordinate = coordinate;
+}
+
+int Tile::getMoveCost() const {
+    return this->moveCost;
 }
