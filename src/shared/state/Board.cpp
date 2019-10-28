@@ -39,17 +39,3 @@ Board::Board() {
 void Board::changeTime() {
     this->day = !this->day;
 }
-
-void Board::notify() {
-    for (auto obs = observers.begin(); obs != observers.end(); ++obs) {
-        obs.base()->update(this);
-    }
-}
-
-void Board::add(state::IObserver observer) {
-    this->observers.push_back(observer);
-}
-
-void Board::remove(state::IObserver observer) {
-
-}
