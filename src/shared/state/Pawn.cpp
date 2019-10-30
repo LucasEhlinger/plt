@@ -52,10 +52,19 @@ Coordinate Pawn::getCoordinate() {
 int Pawn::getLP() {
     return this->lifePoints;
 }
+
 void Pawn::setLP(int LifePoints) {
     this->lifePoints = LifePoints;
 }
 
 int Pawn::getRot() {
     return this->resources->rot;
+}
+
+bool Pawn::operator==(state::Pawn &rhs) {
+    return rhs.coordinate == coordinate &&
+           rhs.resources == resources &&
+           rhs.lifePoints == lifePoints &&
+           rhs.actionPoints == actionPoints &&
+           rhs.stats == stats;
 }

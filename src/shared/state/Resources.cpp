@@ -20,3 +20,10 @@ void Resources::modifyPrestige(int offset) {
 void Resources::modifyRot(int offset) {
     this->rot += offset;
 }
+
+bool Resources::operator==(state::Resources &rhs) {
+    return rot == rhs.rot &&
+           mana == rhs.mana &&
+           prestige == rhs.prestige &&
+           gold == rhs.gold;
+}

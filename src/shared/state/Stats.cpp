@@ -22,3 +22,11 @@ void Stats::setSpirituality(int spirituality) { this->spirituality = spiritualit
 int Stats::getVitality() const { return vitality; }
 
 void Stats::setVitality(int vitality) { this->vitality = vitality; }
+
+
+bool Stats::operator==(state::Stats &rhs) {
+    return vitality == rhs.vitality &&
+           spirituality == rhs.spirituality &&
+           presenceOfMind == rhs.presenceOfMind &&
+           combativeness == rhs.combativeness;
+}

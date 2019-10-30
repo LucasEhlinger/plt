@@ -27,3 +27,10 @@ void Tile::setCoordinate(const state::Coordinate &coordinate) {
 int Tile::getMoveCost() const {
     return this->moveCost;
 }
+
+bool Tile::operator==(state::Tile &rhs) {
+    return rhs.moveCost == moveCost &&
+           rhs.coordinate == coordinate &&
+           rhs.path == path &&
+           rhs.observers.size() == observers.size();
+}
