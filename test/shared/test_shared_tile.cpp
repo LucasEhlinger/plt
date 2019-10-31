@@ -11,6 +11,11 @@ BOOST_AUTO_TEST_CASE(TestCastle) {
         ca.Effect(pa);
         BOOST_CHECK_EQUAL(pa.getAP(), 0);
     }
+    {
+        Castle ca1 = Castle{Coordinate(12, 21)};
+        Castle ca2 = Castle{Coordinate(12, 21)};
+        BOOST_CHECK(ca1 == ca2);
+    }
 }
 
 BOOST_AUTO_TEST_CASE(TestColony) {

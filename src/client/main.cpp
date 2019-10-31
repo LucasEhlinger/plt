@@ -59,7 +59,7 @@ int main(int argc,char* argv[])
 
     // create the window
     sf::VideoMode vm(1280, 720);
-    sf::RenderWindow window(vm , "Such_plt_WOW", sf::Style::Close); //sf::Style::Fullscreen or Default
+    sf::RenderWindow window(vm , "Affichage Verteses", sf::Style::Close); //sf::Style::Fullscreen or Default
 
     // run the program as long as the window is open
     while (window.isOpen())

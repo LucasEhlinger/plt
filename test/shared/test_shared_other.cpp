@@ -53,6 +53,11 @@ BOOST_AUTO_TEST_CASE(TestResources) {
         res.modifyRot(+2);
         BOOST_CHECK_EQUAL(res.rot, 2);
     }
+    {
+        Resources res1{1,2,3,4};
+        Resources res2{1,2,3,4};
+        BOOST_CHECK(res1 == res2);
+    }
 }
 
 BOOST_AUTO_TEST_CASE(TestStats) {
@@ -75,6 +80,11 @@ BOOST_AUTO_TEST_CASE(TestStats) {
         Stats sta{0, 0, 0, 0};
         sta.setVitality(16);
         BOOST_CHECK_EQUAL(sta.getVitality(), 16);
+    }
+    {
+        Stats sta1{1,2,3,4};
+        Stats sta2{1,2,3,4};
+        BOOST_CHECK(sta1 == sta2);
     }
 }
 

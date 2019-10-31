@@ -25,6 +25,6 @@ void Coordinate::setCoord(int row, int column) {
     setColumn(column);
 }
 
-bool Coordinate::operator==(Coordinate &rhs) {
+bool Coordinate::operator==(const Coordinate &rhs) {
     return (this->row == rhs.row) && (this->column == rhs.column);
 }

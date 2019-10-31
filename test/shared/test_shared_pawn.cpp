@@ -21,3 +21,7 @@ BOOST_AUTO_TEST_CASE(TestKing) {
         BOOST_CHECK_EQUAL(king.getRot(), -1);
     }
 }
+
+/*BOOST_AUTO_TEST_CASE(TestPlayer) {
+}*/
+
