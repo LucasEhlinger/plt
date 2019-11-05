@@ -7,6 +7,6 @@ Mountain::Mountain(state::Coordinate coordinate) : Tile(coordinate) {
     moveCost = -2;
 }
 
-void Mountain::Effect(state::Pawn &pawn) {
+void Mountain::effect(state::Pawn &pawn) {
     pawn.modifyAP(moveCost);
 }

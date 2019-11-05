@@ -7,6 +7,6 @@ Start::Start(Coordinate position):Tile(position) {
     moveCost     = -100;
 }
 
-void Start::Effect(state::Pawn &pawn) {
+void Start::effect(state::Pawn &pawn) {
     pawn.modifyAP(moveCost);
 }

@@ -10,7 +10,7 @@ Colony::Colony(state::Coordinate coordinate) :Tile(coordinate){
  * Apply effects of the Colony on the pawn
  * @param pawn Pawn affected pawn
  */
-void Colony::Effect(Pawn& pawn) {
+void Colony::effect(Pawn& pawn) {
     pawn.modifyAP(moveCost);
     this->property = &pawn;
 }
