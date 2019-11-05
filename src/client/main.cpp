@@ -16,8 +16,19 @@ using namespace std;
 
 int main(int argc,char* argv[])
 {
-    int nb_row = 13;
-    int nb_col = 13;
+    const int screen_width = 1536;
+    const int screen_height = 860;
+    const int nb_row = 13;
+    const int nb_col = nb_row;
+    const int middle_row = (nb_row+nb_row%2)/2;
+    const int off_mar_X = 172;
+    const int off_mar_Y = 10;
+    const int tile_w = 72;
+    const int tile_h = 84;
+    const int shift_X = tile_w/2;
+    const int shift_Y = tile_h*3/4;
+    const int ite_row = tile_w;
+    const int ite_col = tile_h*3/4;
 
     const char* castle_path = "./../res/hexagon-pack/PNG/castle.png";
     const char* colony_path = "./../res/hexagon-pack/PNG/colony.png";
@@ -58,8 +69,8 @@ int main(int argc,char* argv[])
         return 0;
 
     // create the window
-    sf::VideoMode vm(1280, 720);
-    sf::RenderWindow window(vm , "Affichage Verteses", sf::Style::Close); //sf::Style::Fullscreen or Default
+    sf::VideoMode vm(screen_width, screen_height);
+    sf::RenderWindow window(vm , "Such_plt_WOW", sf::Style::Close); //sf::Style::Fullscreen or Default
 
     // run the program as long as the window is open
     while (window.isOpen())
@@ -82,45 +93,82 @@ int main(int argc,char* argv[])
         sf::VertexArray tile(sf::TriangleFan, 8);
 
         // define texture area of tile
-        tile[0].texCoords = sf::Vector2f(36, 42);
-        tile[1].texCoords = sf::Vector2f(36, 0);
-        tile[2].texCoords = sf::Vector2f(0, 21);
-        tile[3].texCoords = sf::Vector2f(0, 63);
-        tile[4].texCoords = sf::Vector2f(36, 84);
-        tile[5].texCoords = sf::Vector2f(72, 63);
-        tile[6].texCoords = sf::Vector2f(72, 21);
-        tile[7].texCoords = sf::Vector2f(36, 0);
+        /* A bit tricky, before defining the shape of the vertex, we set what will be the 'texturabale' area,
+        without knowing if it will fit in the vertex. We assume that we know what we are doing and that at worst
+        this area can be wider, the texture won't leak. */
+        tile[0].texCoords = sf::Vector2f(tile_w/2, tile_h/2);
+        tile[1].texCoords = sf::Vector2f(tile_w/2, 0);
+        tile[2].texCoords = sf::Vector2f(0, tile_h/4);
+        tile[3].texCoords = sf::Vector2f(0, tile_h*3/4);
+        tile[4].texCoords = sf::Vector2f(tile_w/2, tile_h);
+        tile[5].texCoords = sf::Vector2f(tile_w, tile_h*3/4);
+        tile[6].texCoords = sf::Vector2f(tile_w, tile_h/4);
+        tile[7].texCoords = sf::Vector2f(tile_w/2, 0);
 
+        int nb_tiles;
         for(int i =  0; i<nb_row; ++i){
-            for(int j = 0; j<nb_col; ++j){
-                if(i%2 == 0){
-                    // define the position of the tile's points
-                    tile[0].position = sf::Vector2f(172+36+72*j, 0+42+63*i);
-                    tile[1].position = sf::Vector2f(172+36+72*j, 0+0+63*i);
-                    tile[2].position = sf::Vector2f(172+0+72*j, 0+21+63*i);
-                    tile[3].position = sf::Vector2f(172+0+72*j, 0+63+63*i);
-                    tile[4].position = sf::Vector2f(172+36+72*j, 0+84+63*i);
-                    tile[5].position = sf::Vector2f(172+72+72*j, 0+63+63*i);
-                    tile[6].position = sf::Vector2f(172+72+72*j, 0+21+63*i);
-                    tile[7].position = sf::Vector2f(172+36+72*j, 0+0+63*i);
+            int odd_offset = 0;
+            nb_tiles = nb_col-abs(middle_row-1-i);
+            if(nb_tiles%2 == 1) {
+                // define the position of the tile's points
+                // If odd number of tiles, we have to put a tile in the middle of the line
+                tile[0].position = sf::Vector2f(screen_width / 2, off_mar_Y + tile_h / 2 + ite_col * i);
+                tile[1].position = sf::Vector2f(screen_width / 2, off_mar_Y + 0 + ite_col * i);
+                tile[2].position = sf::Vector2f(screen_width / 2 - tile_w / 2,
+                        off_mar_Y + tile_h / 4 + ite_col * i);
+                tile[3].position = sf::Vector2f(screen_width / 2 - tile_w / 2,
+                        off_mar_Y + tile_h * 3 / 4 + ite_col * i);
+                tile[4].position = sf::Vector2f(screen_width / 2, off_mar_Y + tile_h + ite_col * i);
+                tile[5].position = sf::Vector2f(screen_width / 2 + tile_w / 2,
+                        off_mar_Y + tile_h * 3 / 4 + ite_col * i);
+                tile[6].position = sf::Vector2f(screen_width / 2 + tile_w / 2,
+                        off_mar_Y + tile_h / 4 + ite_col * i);
+                tile[7].position = sf::Vector2f(screen_width / 2, off_mar_Y + 0 + ite_col * i);
+                // draw
+                window.draw(tile, &texCastle);
 
-                    // draw
-                    window.draw(tile, &texCastle);
-                }
-                else{
-                    // define the position of the tile's points
-                    tile[0].position = sf::Vector2f(172+36+36+72*j, 0+63+42+63*(i-1));
-                    tile[1].position = sf::Vector2f(172+36+36+72*j, 0+63+0+63*(i-1));
-                    tile[2].position = sf::Vector2f(172+36+0+72*j, 0+63+21+63*(i-1));
-                    tile[3].position = sf::Vector2f(172+36+0+72*j, 0+63+63+63*(i-1));
-                    tile[4].position = sf::Vector2f(172+36+36+72*j, 0+63+84+63*(i-1));
-                    tile[5].position = sf::Vector2f(172+36+72+72*j, 0+63+63+63*(i-1));
-                    tile[6].position = sf::Vector2f(172+36+72+72*j, 0+63+21+63*(i-1));
-                    tile[7].position = sf::Vector2f(172+36+36+72*j, 0+63+0+63*(i-1));
-
-                    // draw
-                    window.draw(tile, &texMountain);
-                }
+                odd_offset = tile_w / 2;
+                --nb_tiles;
+            }
+            for(int j = 0; j<nb_tiles/2; ++j) {
+                tile[0].position = sf::Vector2f(screen_width / 2 + odd_offset + tile_w / 2 + ite_row * j,
+                                                off_mar_Y + tile_h / 2 + ite_col * i);
+                tile[1].position = sf::Vector2f(screen_width / 2 + odd_offset + tile_w / 2 + ite_row * j,
+                                                off_mar_Y + 0 + ite_col * i);
+                tile[2].position = sf::Vector2f(screen_width / 2 + odd_offset + 0 + ite_row * j,
+                                                off_mar_Y + tile_h / 4 + ite_col * i);
+                tile[3].position = sf::Vector2f(screen_width / 2 + odd_offset + 0 + ite_row * j,
+                                                off_mar_Y + tile_h * 3 / 4 + ite_col * i);
+                tile[4].position = sf::Vector2f(screen_width / 2 + odd_offset + tile_w / 2 + ite_row * j,
+                                                off_mar_Y + tile_h + ite_col * i);
+                tile[5].position = sf::Vector2f(screen_width / 2 + odd_offset + tile_w + ite_row * j,
+                                                off_mar_Y + tile_h * 3 / 4 + ite_col * i);
+                tile[6].position = sf::Vector2f(screen_width / 2 + odd_offset + tile_w + ite_row * j,
+                                                off_mar_Y + tile_h / 4 + ite_col * i);
+                tile[7].position = sf::Vector2f(screen_width / 2 + odd_offset + tile_w / 2 + ite_row * j,
+                                                off_mar_Y + 0 + ite_col * i);
+                // draw
+                window.draw(tile, &texField);
+            }
+            for(int j = 0; j<nb_tiles/2; ++j) {
+                tile[0].position = sf::Vector2f(screen_width / 2 - odd_offset + tile_w / 2 - ite_row * (j+1),
+                                                off_mar_Y + tile_h / 2 + ite_col * i);
+                tile[1].position = sf::Vector2f(screen_width / 2 - odd_offset + tile_w / 2 - ite_row * (j+1),
+                                                off_mar_Y + 0 + ite_col * i);
+                tile[2].position = sf::Vector2f(screen_width / 2 - odd_offset + 0 - ite_row * (j+1),
+                                                off_mar_Y + tile_h / 4 + ite_col * i);
+                tile[3].position = sf::Vector2f(screen_width / 2 - odd_offset + 0 - ite_row * (j+1),
+                                                off_mar_Y + tile_h * 3 / 4 + ite_col * i);
+                tile[4].position = sf::Vector2f(screen_width / 2 - odd_offset + tile_w / 2 - ite_row * (j+1),
+                                                off_mar_Y + tile_h + ite_col * i);
+                tile[5].position = sf::Vector2f(screen_width / 2 - odd_offset + tile_w - ite_row * (j+1),
+                                                off_mar_Y + tile_h * 3 / 4 + ite_col * i);
+                tile[6].position = sf::Vector2f(screen_width / 2 - odd_offset + tile_w - ite_row * (j+1),
+                                                off_mar_Y + tile_h / 4 + ite_col * i);
+                tile[7].position = sf::Vector2f(screen_width / 2 - odd_offset + tile_w / 2 - ite_row * (j+1),
+                                                off_mar_Y + 0 + ite_col * i);
+                // draw
+                window.draw(tile, &texSwamp);
             }
         }
 
