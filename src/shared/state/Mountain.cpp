@@ -2,7 +2,7 @@
 
 using namespace ::state;
 
-Mountain::Mountain(state::Coordinate coordinate) : Tile(coordinate) {
+Mountain::Mountain() : Tile() {
     this->path = "./../../../res/hexagon-pack/PNG/mountain.png";
     moveCost = -2;
 }

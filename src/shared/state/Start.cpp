@@ -2,7 +2,7 @@
 #include <iostream>
 using namespace ::state;
 
-Start::Start(Coordinate position):Tile(position) {
+Start::Start():Tile() {
     this->path = "./../../../res/hexagon-pack/PNG/start.png";
     moveCost     = -100;
 }

@@ -1,36 +1,14 @@
-#include "Board.h"
+#include "../state.h"
+#include <iostream>
+#include <string>
+#include <fstream>
+
+#define HEIGTH 13
 
 using namespace ::state;
 
 Board::Board() {
     this->day = true;
-
-    //c'est totalement temporaire ... vous imaginez bien qu'on va pas laisser ça comme ça !
-    /*
-    int i, j;
-    int t_edge1 = 0;
-    int t_edge2 = 6;
-    int t_edge3 = 12;
-
-    for(int i; i<row_length; ++i){
-        for(int j; j<nb_rows; ++j){
-            position = i+row_length*j;
-            if(len_null-i>0){
-                if(j<len_null-i+1)
-                    tiles[position] = nullptr;
-                else
-                    tiles[position] = std::unique_ptr<Tile>(new Tile(Coordinate{i,j}));
-            }
-            else if(i-len_null>0){
-                if(j>i-len_null+1)
-                    tiles[position] = nullptr;
-                else
-                    tiles[position] = std::unique_ptr<Tile>(new Tile(Coordinate{i,j}));
-            }
-            else
-                tiles[position] = std::unique_ptr<Tile>(new Tile(Coordinate{i,j}));
-        }
-    }*/
 }
 
 /**
@@ -38,4 +16,79 @@ Board::Board() {
  */
 void Board::changeTime() {
     this->day = !this->day;
+}
+
+std::vector<std::vector<std::string>> Board::generate() {
+    std::vector<std::vector<std::string>> tilesTypes;
+    srand(time(NULL));
+
+    for (int line = 0; line < HEIGTH; ++line) {
+        std::vector<std::string> tempString;
+        for (int column = 0; column < HEIGTH; ++column) {
+            switch (rand() % 7 + 1) {
+                case 1:
+                    //Swamp
+                    tempString.emplace_back("Sw");
+                    break;
+                case 2:
+                    //Forest
+                    tempString.emplace_back("Fo");
+                    break;
+                case 3:
+                    //Ruin
+                    tempString.emplace_back("Ru");
+                    break;
+                case 4:
+                    //Colony
+                    tempString.emplace_back("Co");
+                    break;
+                case 5:
+                    //Mountain
+                    tempString.emplace_back("Mo");
+                    break;
+                case 6:
+                    //Field
+                    tempString.emplace_back("Fi");
+                    break;
+                case 7:
+                    //StoneAge
+                    tempString.emplace_back("SA");
+                    break;
+            }
+        }
+        tilesTypes.emplace_back(tempString);
+    }
+    //TODO : Optimiser ce code
+    // Triangle haut gauche, pour hexagone
+    for (int line = 0; line < (HEIGTH - 1) / 2; ++line) {
+        for (int column = 0; column < ((HEIGTH - 1) / 2) - line; ++column) {
+            tilesTypes[line][column] = "Nu";
+        }
+    }
+
+    // Triangle bas droite
+    int itt = 0;
+    for (int line = (HEIGTH - 1 )/ 2; line < HEIGTH; ++line) {
+        ++itt;
+        for (int column = HEIGTH - 1 ; column > HEIGTH - itt; --column) {
+            tilesTypes[line][column] = "Nu";
+        }
+    }
+
+    return tilesTypes;
+}
+
+void Board::generateFile(std::vector<std::vector<std::string>> generated, std::string filePath) {
+    std::ofstream outfile (filePath);
+
+    for (int lines = 0; lines < generated.size(); ++lines) {
+        for (int column = 0; column < generated[lines].size(); ++column) {
+            std::string st = generated[lines][column];
+            outfile << st + " ";
+        }
+        outfile << "\n";
+    }
+
+    outfile << std::endl;
+    outfile.close();
 }

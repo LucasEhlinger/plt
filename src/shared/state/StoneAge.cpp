@@ -1,7 +1,7 @@
 #include "StoneAge.h"
 using namespace ::state;
 
-StoneAge::StoneAge(state::Coordinate coordinate) : Tile(coordinate){
+StoneAge::StoneAge() : Tile(){
     this->path = "./../../../res/hexagon-pack/PNG/stonage.png";
 }
 

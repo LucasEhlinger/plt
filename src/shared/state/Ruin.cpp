@@ -1,6 +1,6 @@
 #include "Ruin.h"
 using namespace ::state;
 
-Ruin::Ruin(Coordinate position):Tile(position) {
+Ruin::Ruin():Tile() {
     this->path = "./../../../res/hexagon-pack/PNG/ruin.png";
 }

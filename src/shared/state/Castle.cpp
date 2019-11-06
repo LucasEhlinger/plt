@@ -2,7 +2,7 @@
 
 using namespace ::state;
 
-Castle::Castle(state::Coordinate coordinate) : Tile(coordinate) {
+Castle::Castle() : Tile() {
     this->path = "./../../../res/hexagon-pack/PNG/castle.png";
 }
 

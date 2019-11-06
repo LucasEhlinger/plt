@@ -32,23 +32,9 @@ BOOST_AUTO_TEST_CASE(TestBoardObservable) {
     }
 }
 
-BOOST_AUTO_TEST_CASE(TestTileObservable) {
-    {
-        Coordinate coo1{16, 64};
-        Coordinate coo2{12, 5};
-        Tile tile{coo1};
-        TileVue tileVue{tile};
-        tile.addObserver(&tileVue);
-        tile.setCoordinate(coo2);
-        BOOST_CHECK(tileVue.tile.getCoordinate() == coo1);
-        tile.notify();
-        BOOST_CHECK(tileVue.tile.getCoordinate() == coo2);
-    }
-}
-
 BOOST_AUTO_TEST_CASE(TestAddAndRemove) {
     {
-        Tile tile{Coordinate{16, 64}};
+        Tile tile{};
         TileVue tileVue1{tile};
         TileVue tileVue2{tile};
         TileVue tileVue3{tile};

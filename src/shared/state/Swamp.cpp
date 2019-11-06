@@ -2,7 +2,7 @@
 
 using namespace ::state;
 
-Swamp::Swamp(state::Coordinate coordinate) : Tile(coordinate) {
+Swamp::Swamp() : Tile() {
     this->path = "./../../../res/hexagon-pack/PNG/swamp.png";
 }
 

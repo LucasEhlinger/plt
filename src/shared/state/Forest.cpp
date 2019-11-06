@@ -1,7 +1,7 @@
 #include "Forest.h"
 using namespace ::state;
 
-Forest::Forest(state::Coordinate coordinate) : Tile(coordinate){
+Forest::Forest() : Tile(){
     this->path = "./../../../res/hexagon-pack/PNG/forest.png";
 }
 
