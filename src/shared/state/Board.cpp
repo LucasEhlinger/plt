@@ -68,9 +68,9 @@ std::vector<std::vector<std::string>> Board::generate() {
 
     // Triangle bas droite
     int itt = 0;
-    for (int line = (HEIGTH - 1 )/ 2; line < HEIGTH; ++line) {
+    for (int line = (HEIGTH - 1) / 2; line < HEIGTH; ++line) {
         ++itt;
-        for (int column = HEIGTH - 1 ; column > HEIGTH - itt; --column) {
+        for (int column = HEIGTH - 1; column > HEIGTH - itt; --column) {
             tilesTypes[line][column] = "Nu";
         }
     }
@@ -79,10 +79,10 @@ std::vector<std::vector<std::string>> Board::generate() {
 }
 
 void Board::generateFile(std::vector<std::vector<std::string>> generated, std::string filePath) {
-    std::ofstream outfile (filePath);
+    std::ofstream outfile(filePath);
 
-    for (int lines = 0; lines < generated.size(); ++lines) {
-        for (int column = 0; column < generated[lines].size(); ++column) {
+    for (std::size_t lines = 0; lines < generated.size(); ++lines) {
+        for (std::size_t column = 0; column < generated[lines].size(); ++column) {
             std::string st = generated[lines][column];
             outfile << st + " ";
         }
