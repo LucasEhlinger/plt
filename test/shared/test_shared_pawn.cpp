@@ -22,6 +22,9 @@ BOOST_AUTO_TEST_CASE(TestKing) {
     }
 }
 
-/*BOOST_AUTO_TEST_CASE(TestPlayer) {
-}*/
+BOOST_AUTO_TEST_CASE(TestPlayer) {
+    {
+        Player player{Coordinate{12, 11}};
+    }
+}
 
