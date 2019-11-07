@@ -6,7 +6,7 @@ using namespace ::state;
 BOOST_AUTO_TEST_CASE(TestCastle) {
     {
         Castle ca = Castle{};
-        Pawn pa = Pawn(Coordinate{12, 21});
+        Pawn pa = Pawn(Coordinate{12, 21}, "pawn");
         pa.setAP(11);
         ca.effect(pa);
         BOOST_CHECK_EQUAL(pa.getAP(), 0);
@@ -21,7 +21,7 @@ BOOST_AUTO_TEST_CASE(TestCastle) {
 BOOST_AUTO_TEST_CASE(TestColony) {
     {
         Colony co = Colony{};
-        Pawn pa = Pawn(Coordinate{12, 21});
+        Pawn pa = Pawn(Coordinate{12, 21}, "pawn");
         co.effect(pa);
         BOOST_CHECK (co.property == &pa);
     }
@@ -29,7 +29,7 @@ BOOST_AUTO_TEST_CASE(TestColony) {
 
 BOOST_AUTO_TEST_CASE(TestMountain) {
     {
-        Pawn pawn{Coordinate{2, 1}};
+        Pawn pawn{Coordinate{2, 1}, "pawn"};
         Mountain mount{};
         pawn.setAP(3);
         mount.effect(pawn);
@@ -41,7 +41,7 @@ BOOST_AUTO_TEST_CASE(TestMountain) {
 
 BOOST_AUTO_TEST_CASE(TestStart) {
     {
-        Pawn pawn{Coordinate{2, 1}};
+        Pawn pawn{Coordinate{2, 1}, "pawn"};
         Start start{};
         pawn.setAP(10);
         start.effect(pawn);
@@ -53,7 +53,7 @@ BOOST_AUTO_TEST_CASE(TestStart) {
 
 BOOST_AUTO_TEST_CASE(TestRuin) {
     {
-        Pawn pawn{Coordinate{2, 1}};
+        Pawn pawn{Coordinate{2, 1}, "pawn"};
         Ruin ruin{};
         pawn.setAP(10);
         ruin.effect(pawn);
@@ -64,7 +64,7 @@ BOOST_AUTO_TEST_CASE(TestRuin) {
 
 BOOST_AUTO_TEST_CASE(TestField) {
     {
-        Pawn pawn{Coordinate{2, 1}};
+        Pawn pawn{Coordinate{2, 1}, "pawn"};
         Field field{};
         pawn.setAP(10);
         field.effect(pawn);
@@ -74,7 +74,7 @@ BOOST_AUTO_TEST_CASE(TestField) {
 
 BOOST_AUTO_TEST_CASE(TestForest) {
     {
-        Pawn pawn{Coordinate{2, 1}};
+        Pawn pawn{Coordinate{2, 1}, "pawn"};
         Forest forest{};
         pawn.setAP(10);
         forest.effect(pawn);
@@ -86,7 +86,7 @@ BOOST_AUTO_TEST_CASE(TestForest) {
 }
 BOOST_AUTO_TEST_CASE(TestStoneAge) {
     {
-        Pawn pawn{Coordinate{2, 1}};
+        Pawn pawn{Coordinate{2, 1}, "pawn"};
         StoneAge sta{};
         pawn.setAP(10);
         sta.effect(pawn);
@@ -96,7 +96,7 @@ BOOST_AUTO_TEST_CASE(TestStoneAge) {
 
 BOOST_AUTO_TEST_CASE(TestSwamp) {
     {
-        Pawn pawn{Coordinate{2, 1}};
+        Pawn pawn{Coordinate{2, 1}, "pawn"};
         Swamp swp{};
         pawn.setAP(10);
         pawn.setLP(4);

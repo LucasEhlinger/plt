@@ -6,7 +6,7 @@
 
 using namespace ::state;
 
-Pawn::Pawn(state::Coordinate position) : coordinate(position) {
+Pawn::Pawn(state::Coordinate position, std::string name) : coordinate(position), name(name) {
     lifePoints = 0;
     actionPoints = 0;
     resources = new Resources(0, 0, 0, 0);

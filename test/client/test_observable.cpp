@@ -7,7 +7,7 @@ using namespace ::render;
 
 BOOST_AUTO_TEST_CASE(TestPawnObservable) {
     {
-        Pawn pawn{Coordinate{12, 24}};
+        Pawn pawn{Coordinate{12, 24}, "pawn"};
         PawnVue pawnVue{pawn};
         pawn.addObserver(&pawnVue);
         BOOST_CHECK_EQUAL(pawnVue.pawn.getAP(), 0);
@@ -31,6 +31,17 @@ BOOST_AUTO_TEST_CASE(TestBoardObservable) {
         BOOST_CHECK(!boardVue.board.day);
     }
 }
+
+BOOST_AUTO_TEST_CASE(TestTileObservable) {
+    {
+        Castle ca{};
+        TileVue tileVue(ca);
+        ca.addObserver(&tileVue);
+        ca.notify();
+        BOOST_CHECK(ca == tileVue.tile);
+    }
+}
+
 
 BOOST_AUTO_TEST_CASE(TestAddAndRemove) {
     {
