@@ -3,7 +3,7 @@
 using namespace ::state;
 
 Start::Start():Tile() {
-    this->path = "./../../../res/hexagon-pack/PNG/start.png";
+    this->path = "St";
     moveCost     = -100;
 }
 

@@ -2,7 +2,7 @@
 using namespace ::state;
 
 Forest::Forest() : Tile(){
-    this->path = "./../../../res/hexagon-pack/PNG/forest.png";
+    this->path = "Fo";
 }
 
 void Forest::effect(Pawn &pawn) {

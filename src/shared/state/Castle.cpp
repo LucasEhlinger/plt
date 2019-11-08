@@ -3,7 +3,7 @@
 using namespace ::state;
 
 Castle::Castle() : Tile() {
-    this->path = "./../../../res/hexagon-pack/PNG/castle.png";
+    this->path = "Ca";
 }
 
 /**

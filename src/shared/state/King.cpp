@@ -3,7 +3,7 @@
 using namespace ::state;
 
 King::King(state::Coordinate coordinate) : Pawn(coordinate, "King") {
-    this->path = "./../../../res/hexagon-pack/PNG/castle.png";
+    this->path = "Kg";
     lifePoints = 9;
     moveCost = -3;
 

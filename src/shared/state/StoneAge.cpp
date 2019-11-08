@@ -2,7 +2,7 @@
 using namespace ::state;
 
 StoneAge::StoneAge() : Tile(){
-    this->path = "./../../../res/hexagon-pack/PNG/stonage.png";
+    this->path = "SA";
 }
 
 void StoneAge::effect(state::Pawn& pawn) {
