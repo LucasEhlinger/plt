@@ -4,7 +4,7 @@ using namespace ::state;
 
 Colony::Colony() : Tile() {
     this->property = nullptr;
-    this->path = "./../../../res/hexagon-pack/PNG/colony.png";
+    this->path = "Co";
 }
 
 /**

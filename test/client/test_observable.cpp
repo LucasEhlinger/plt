@@ -8,37 +8,37 @@ using namespace ::render;
 BOOST_AUTO_TEST_CASE(TestPawnObservable) {
     {
         Pawn pawn{Coordinate{12, 24}, "pawn"};
-        PawnVue pawnVue{pawn};
-        pawn.addObserver(&pawnVue);
-        BOOST_CHECK_EQUAL(pawnVue.pawn.getAP(), 0);
+        PawnView pawnView{pawn};
+        pawn.addObserver(&pawnView);
+        BOOST_CHECK_EQUAL(pawnView.pawn.getAP(), 0);
 
         pawn.setAP(12);
-        BOOST_CHECK_EQUAL(pawnVue.pawn.getAP(), 0);
+        BOOST_CHECK_EQUAL(pawnView.pawn.getAP(), 0);
         pawn.notify();
 
-        BOOST_CHECK_EQUAL(pawnVue.pawn.getAP(), 12);
+        BOOST_CHECK_EQUAL(pawnView.pawn.getAP(), 12);
     }
 }
 
 BOOST_AUTO_TEST_CASE(TestBoardObservable) {
     {
         Board bo{};
-        BoardVue boardVue{bo};
-        bo.addObserver(&boardVue);
-        BOOST_CHECK(boardVue.board.day);
+        BoardView boardView{bo};
+        bo.addObserver(&boardView);
+        BOOST_CHECK(boardView.board.day);
         bo.changeTime();
         bo.notify();
-        BOOST_CHECK(!boardVue.board.day);
+        BOOST_CHECK(!boardView.board.day);
     }
 }
 
 BOOST_AUTO_TEST_CASE(TestTileObservable) {
     {
         Castle ca{};
-        TileVue tileVue(ca);
-        ca.addObserver(&tileVue);
+        TileView tileView(ca);
+        ca.addObserver(&tileView);
         ca.notify();
-        BOOST_CHECK(ca == tileVue.tile);
+        BOOST_CHECK(ca == tileView.tile);
     }
 }
 
@@ -46,14 +46,14 @@ BOOST_AUTO_TEST_CASE(TestTileObservable) {
 BOOST_AUTO_TEST_CASE(TestAddAndRemove) {
     {
         Tile tile{};
-        TileVue tileVue1{tile};
-        TileVue tileVue2{tile};
-        TileVue tileVue3{tile};
-        tile.addObserver(&tileVue1);
-        tile.addObserver(&tileVue2);
-        tile.addObserver(&tileVue3);
+        TileView tileView1{tile};
+        TileView tileView2{tile};
+        TileView tileView3{tile};
+        tile.addObserver(&tileView1);
+        tile.addObserver(&tileView2);
+        tile.addObserver(&tileView3);
         BOOST_CHECK_EQUAL(tile.observers.size(), 3);
-        tile.removeObserver(&tileVue3);
+        tile.removeObserver(&tileView3);
         BOOST_CHECK_EQUAL(tile.observers.size(), 2);
     }
 }

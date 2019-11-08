@@ -3,7 +3,7 @@
 using namespace ::state;
 
 Swamp::Swamp() : Tile() {
-    this->path = "./../../../res/hexagon-pack/PNG/swamp.png";
+    this->path = "Sw";
 }
 
 void Swamp::effect(state::Pawn &pawn) {
