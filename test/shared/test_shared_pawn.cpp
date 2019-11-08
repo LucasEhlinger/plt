@@ -27,7 +27,9 @@ BOOST_AUTO_TEST_CASE(TestKing) {
 
 BOOST_AUTO_TEST_CASE(TestPlayer) {
     {
-        Player player{Coordinate{12, 11}, "me"};
+        Player player1{Coordinate{12, 11}, "me"};
+        Player player2{Coordinate{12, 11}, "me"};
+        BOOST_CHECK(player1 == player2);
     }
 }
 

@@ -63,8 +63,9 @@ int Pawn::getRot() {
 
 bool Pawn::operator==(state::Pawn &rhs) {
     return rhs.coordinate == coordinate &&
-           rhs.resources == resources &&
+           *rhs.resources == *resources &&
            rhs.lifePoints == lifePoints &&
            rhs.actionPoints == actionPoints &&
-           rhs.stats == stats;
+           *rhs.stats == *stats &&
+           rhs.name == name;
 }
