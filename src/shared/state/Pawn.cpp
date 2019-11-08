@@ -30,37 +30,58 @@ void Pawn::modifyLP(int offset) {
 }
 
 /**
- *
- * @return
+ * get the number of actionPoints of the player
+ * @return int action points
  */
 int Pawn::getAP() {
     return this->actionPoints;
 }
 
 /**
- *
- * @param value
+ * set the action points of the player
+ * @param value int action points
  */
 void Pawn::setAP(int value) {
     this->actionPoints = value;
 }
 
+/**
+ * get player coordinates
+ * @return Coordinate of pawn
+ */
 Coordinate Pawn::getCoordinate() {
     return this->coordinate;
 }
 
+/**
+ * get the life points of the player
+ * @return int number of life points
+ */
 int Pawn::getLP() {
     return this->lifePoints;
 }
 
+/**
+ * set life points
+ * @param LifePoints int
+ */
 void Pawn::setLP(int LifePoints) {
     this->lifePoints = LifePoints;
 }
 
+/**
+ * get rot of the pawn
+ * @return int rot
+ */
 int Pawn::getRot() {
     return this->resources->rot;
 }
 
+/**
+ * equality operator to test if too players are the same.
+ * @param rhs state::Pawn
+ * @return bool
+ */
 bool Pawn::operator==(state::Pawn &rhs) {
     return rhs.coordinate == coordinate &&
            *rhs.resources == *resources &&

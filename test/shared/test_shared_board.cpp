@@ -20,7 +20,7 @@ BOOST_AUTO_TEST_CASE(TestGeneration) {
             std::istringstream iss(line);
             std::string a;
             iss >> a;
-            BOOST_CHECK_EQUAL(a, "Nu");
+            BOOST_CHECK_EQUAL(a, "9");
 
         }
     }

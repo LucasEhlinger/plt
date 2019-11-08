@@ -18,6 +18,10 @@ void Board::changeTime() {
     this->day = !this->day;
 }
 
+/**
+ * Board template generation
+ * @return std::vector<std::vector<std::string>> 2D table of Tile name
+ */
 std::vector<std::vector<std::string>> Board::generate() {
     std::vector<std::vector<std::string>> tilesTypes;
     srand(time(NULL));
@@ -28,31 +32,31 @@ std::vector<std::vector<std::string>> Board::generate() {
             switch (rand() % 7 + 1) {
                 case 1:
                     //Swamp
-                    tempString.emplace_back("Sw");
+                    tempString.emplace_back("5");
                     break;
                 case 2:
                     //Forest
-                    tempString.emplace_back("Fo");
+                    tempString.emplace_back("2");
                     break;
                 case 3:
                     //Ruin
-                    tempString.emplace_back("Ru");
+                    tempString.emplace_back("0");
                     break;
                 case 4:
                     //Colony
-                    tempString.emplace_back("Co");
+                    tempString.emplace_back("6");
                     break;
                 case 5:
                     //Mountain
-                    tempString.emplace_back("Mo");
+                    tempString.emplace_back("3");
                     break;
                 case 6:
                     //Field
-                    tempString.emplace_back("Fi");
+                    tempString.emplace_back("1");
                     break;
                 case 7:
                     //StoneAge
-                    tempString.emplace_back("SA");
+                    tempString.emplace_back("4");
                     break;
             }
         }
@@ -62,7 +66,7 @@ std::vector<std::vector<std::string>> Board::generate() {
     // Triangle haut gauche, pour hexagone
     for (int line = 0; line < (HEIGTH - 1) / 2; ++line) {
         for (int column = 0; column < ((HEIGTH - 1) / 2) - line; ++column) {
-            tilesTypes[line][column] = "Nu";
+            tilesTypes[line][column] = "9";
         }
     }
 
@@ -71,13 +75,18 @@ std::vector<std::vector<std::string>> Board::generate() {
     for (int line = (HEIGTH - 1) / 2; line < HEIGTH; ++line) {
         ++itt;
         for (int column = HEIGTH - 1; column > HEIGTH - itt; --column) {
-            tilesTypes[line][column] = "Nu";
+            tilesTypes[line][column] = "9";
         }
     }
 
     return tilesTypes;
 }
 
+/**
+ * Transform board generated in 2D table to file.
+ * @param generated std::vector<std::vector<std::string>> the table to put in a file
+ * @param filePath std::string where put the file.
+ */
 void Board::generateFile(std::vector<std::vector<std::string>> generated, std::string filePath) {
     std::ofstream outfile(filePath);
 

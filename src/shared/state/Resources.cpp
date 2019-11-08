@@ -4,7 +4,6 @@ using namespace ::state;
 
 Resources::Resources(int gold, int mana, int prestige, int rot) : gold(gold), mana(mana), prestige(prestige),
                                                                   rot(rot) {}
-
 void Resources::modifyGold(int offset) {
     this->gold += offset;
 }
