@@ -1,6 +1,7 @@
 #include <iostream>
 #include <array>
 #include <string.h>
+#include "render.h"
 
 // Les lignes suivantes ne servent qu'à vérifier que la compilation avec SFML fonctionne
 #include <SFML/Graphics.hpp>
@@ -33,11 +34,11 @@ public:
         for (unsigned int i = 0; i < nb_col; ++i) {
             unsigned int odd_offset = 0;
             for (unsigned int j = 0; j < nb_row; ++j) {
-                if (tiles[i * nb_row+ j] == 9)
+                if (tiles[i * nb_row + j] == 9)
                     continue;
                 else {
                     // get the current tile type
-                    int tileNumber = tiles[i *nb_row + j];
+                    int tileNumber = tiles[i * nb_row + j];
 
                     // get a pointer to the current tile's quad
                     sf::Vertex *hex = &m_vertices[(i + j * nb_col) * 3 * 4];
@@ -71,29 +72,29 @@ public:
                                                     tileSize.y + tileSize.y * 3 / 4 * i);
 
                     hex[0].texCoords = sf::Vector2f(tileSize.x + tileSize.x * tileNumber,
-                                                   tileSize.y / 4);
-                    hex[1].texCoords = sf::Vector2f(tileSize.x / 2 + tileSize.x * tileNumber,
-                                                   0);
-                    hex[2].texCoords = sf::Vector2f(0 + tileSize.x * tileNumber,
-                                                   tileSize.y / 4);
-                    hex[3].texCoords = sf::Vector2f(0 + tileSize.x * tileNumber,
-                                                   tileSize.y / 4);
-                    hex[4].texCoords = sf::Vector2f(0 + tileSize.x * tileNumber,
-                                                   tileSize.y * 3 / 4);
-                    hex[5].texCoords = sf::Vector2f(tileSize.x / 2 + tileSize.x * tileNumber,
-                                                   tileSize.y);
-                    hex[6].texCoords = sf::Vector2f(tileSize.x / 2 + tileSize.x * tileNumber,
-                                                   tileSize.y);
-                    hex[7].texCoords = sf::Vector2f(tileSize.x + tileSize.x * tileNumber,
-                                                   tileSize.y * 3 / 4);
-                    hex[8].texCoords = sf::Vector2f(tileSize.x + tileSize.x * tileNumber,
-                                                   tileSize.y / 4);
-                    hex[9].texCoords = sf::Vector2f(tileSize.x + tileSize.x * tileNumber,
-                                                   tileSize.y / 4);
-                    hex[10].texCoords = sf::Vector2f(0 + tileSize.x * tileNumber,
                                                     tileSize.y / 4);
-                    hex[11].texCoords = sf::Vector2f(tileSize.x / 2 + tileSize.x * tileNumber,
+                    hex[1].texCoords = sf::Vector2f(tileSize.x / 2 + tileSize.x * tileNumber,
+                                                    0);
+                    hex[2].texCoords = sf::Vector2f(0 + tileSize.x * tileNumber,
+                                                    tileSize.y / 4);
+                    hex[3].texCoords = sf::Vector2f(0 + tileSize.x * tileNumber,
+                                                    tileSize.y / 4);
+                    hex[4].texCoords = sf::Vector2f(0 + tileSize.x * tileNumber,
+                                                    tileSize.y * 3 / 4);
+                    hex[5].texCoords = sf::Vector2f(tileSize.x / 2 + tileSize.x * tileNumber,
                                                     tileSize.y);
+                    hex[6].texCoords = sf::Vector2f(tileSize.x / 2 + tileSize.x * tileNumber,
+                                                    tileSize.y);
+                    hex[7].texCoords = sf::Vector2f(tileSize.x + tileSize.x * tileNumber,
+                                                    tileSize.y * 3 / 4);
+                    hex[8].texCoords = sf::Vector2f(tileSize.x + tileSize.x * tileNumber,
+                                                    tileSize.y / 4);
+                    hex[9].texCoords = sf::Vector2f(tileSize.x + tileSize.x * tileNumber,
+                                                    tileSize.y / 4);
+                    hex[10].texCoords = sf::Vector2f(0 + tileSize.x * tileNumber,
+                                                     tileSize.y / 4);
+                    hex[11].texCoords = sf::Vector2f(tileSize.x / 2 + tileSize.x * tileNumber,
+                                                     tileSize.y);
                 }
             }
         }
@@ -124,7 +125,9 @@ int main(int argc, char *argv[]) {
         if (strcmp(argv[1], "hello") == 0) {
             cout << "Bonjour à tous !" << endl;
         } else if (strcmp(argv[1], "render") == 0) {
-            testRender();
+            render::Scene scene;
+            scene.draw();
+            //testRender();
         } else if (strcmp(argv[1], "engine") == 0) {
 
         }
@@ -139,6 +142,9 @@ int testRender() {
 
     // create the window
     sf::RenderWindow window(sf::VideoMode(1536, 860), "Tilemap");
+
+    render::Scene scene;
+    scene.draw();
 
     // define the level with an array of tile indices
     const int level[] =
