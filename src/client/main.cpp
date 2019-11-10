@@ -1,9 +1,10 @@
 #include <iostream>
 #include <array>
+#include <unistd.h>
 #include <string.h>
 #include "render.h"
 
-// Les lignes suivantes ne servent qu'à vérifier que la compilation avec SFML fonctionne
+// Those lines have for sole purpose to check if the SFML is working properly
 #include <SFML/Graphics.hpp>
 #include <SFML/System.hpp>
 
@@ -11,7 +12,7 @@ void testSFML() {
     sf::Texture texture;
 }
 
-// Fin test SFML
+// End SFML test
 #include "state.h"
 
 using namespace std;
@@ -30,22 +31,26 @@ public:
         m_vertices.setPrimitiveType(sf::Triangles);
         m_vertices.resize(nb_col * nb_row * 3 * 4);
 
-        // populate the vertex array, with one quad per tile
+        // populate the vertex array, with one hexagon per tile
         for (unsigned int i = 0; i < nb_col; ++i) {
             unsigned int odd_offset = 0;
+
+            if (i % 2 == 1)
+                odd_offset = tileSize.x / 2;
+
             for (unsigned int j = 0; j < nb_row; ++j) {
+
                 if (tiles[i * nb_row + j] == 9)
                     continue;
+
                 else {
                     // get the current tile type
                     int tileNumber = tiles[i * nb_row + j];
 
-                    // get a pointer to the current tile's quad
+                    // get a pointer to the current tile's hexagone
                     sf::Vertex *hex = &m_vertices[(i + j * nb_col) * 3 * 4];
 
-                    if (i % 2 == 1)
-                        odd_offset = tileSize.x / 2;
-
+                    // set hex position
                     hex[0].position = sf::Vector2f(odd_offset + tileSize.x + tileSize.x * j,
                                                    tileSize.y / 4 + tileSize.y * 3 / 4 * i);
                     hex[1].position = sf::Vector2f(odd_offset + tileSize.x / 2 + tileSize.x * j,
@@ -71,6 +76,7 @@ public:
                     hex[11].position = sf::Vector2f(odd_offset + tileSize.x / 2 + tileSize.x * j,
                                                     tileSize.y + tileSize.y * 3 / 4 * i);
 
+                    // texture coord
                     hex[0].texCoords = sf::Vector2f(tileSize.x + tileSize.x * tileNumber,
                                                     tileSize.y / 4);
                     hex[1].texCoords = sf::Vector2f(tileSize.x / 2 + tileSize.x * tileNumber,
@@ -140,24 +146,32 @@ int main(int argc, char *argv[]) {
 
 int testRender() {
 
+    const unsigned int screen_width = 1536;
+    const unsigned int screen_height = 860;
+    const unsigned int tile_width = 72;
+    const unsigned int tile_height = 84;
+    const unsigned int nb_col = 13;
+    const unsigned int nb_row = 13;
+    std::array<state::Tile, nb_col * nb_row> tiles;
+    unsigned int level[nb_col * nb_row];
+
     // create the window
-    sf::RenderWindow window(sf::VideoMode(1536, 860), "Tilemap");
+    sf::RenderWindow window(sf::VideoMode(screen_width, screen_height), "just_another_plt_map");
 
-    render::Scene scene;
-    scene.draw();
-
-    // define the level with an array of tile indices
-    const int level[] =
-            {
-                    0, 0, 0, 0,
-                    1, 1, 1, 1,
-                    2, 2, 2, 2,
-                    3, 3, 3, 3
-            };
+    // parsing of the array of pointers
+    for (unsigned int i = 0; i < nb_row; ++i)
+        for (unsigned int j = 0; j < nb_col; ++j) {
+            if (tiles[i * nb_row + j] == nullptr) {
+                level[i * nb_row + j] = 9;
+                continue;
+            }
+            level[i * nb_row + j] = tiles[i * nb_row + j]->number_type;
+        }
 
     // create the tilemap from the level definition
     TileMap map;
-    if (!map.load("./../res/hexagon-pack/PNG/tileset.png", sf::Vector2u(72, 84), level, 4, 4))
+    if (!map.load("./../res/hexagon-pack/PNG/tileset.png", sf::Vector2u(tile_width, tile_height), level, nb_col,
+                  nb_row))
         return -1;
 
     // run the main loop
@@ -173,6 +187,7 @@ int testRender() {
         window.clear();
         window.draw(map);
         window.display();
+        sleep(3);
     }
 
     return 0;
