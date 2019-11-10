@@ -24,7 +24,7 @@ Scene::Scene() {
     }
 }
 
-void Scene::draw(unsigned int level[HEIGHT * HEIGHT]) {
+void Scene::draw(unsigned int level[13 * 13]) {
     for (int i = 0; i < HEIGHT; ++i) {
         for (int j = 0; j < HEIGHT; ++j) {
             if (tilesView[(i * HEIGHT) + j] != nullptr)
