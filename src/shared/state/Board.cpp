@@ -26,33 +26,33 @@ void Board::generate() {
 
     for (int i = 0; i < (HEIGHT * WIDTH) - 1; ++i) {
         switch (rand() % 7) {
-            case 5:
-                // Swamp
-                tiles[i] = new Swamp();
-                break;
-            case 2:
-                // Forest
-                tiles[i] = new Forest();
-                break;
             case 0:
                 // Ruin
                 tiles[i] = new Ruin();
-                break;
-            case 6:
-                // Colony
-                tiles[i] = new Colony();
-                break;
-            case 3:
-                // Mountain
-                tiles[i] = new Mountain();
                 break;
             case 1:
                 // Field
                 tiles[i] = new Field();
                 break;
+            case 2:
+                // Forest
+                tiles[i] = new Forest();
+                break;
+            case 3:
+                // Mountain
+                tiles[i] = new Mountain();
+                break;
             case 4:
                 // StoneAge
                 tiles[i] = new StoneAge();
+                break;
+            case 5:
+                // Swamp
+                tiles[i] = new Swamp();
+                break;
+            case 6:
+                // Colony
+                tiles[i] = new Colony();
                 break;
         }
     }
