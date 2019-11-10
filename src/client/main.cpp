@@ -22,7 +22,7 @@ using namespace render;
 class TileMap : public sf::Drawable, public sf::Transformable {
 public:
 
-    bool load(const std::string &tileset, sf::Vector2u tileSize, unsigned int *tiles, unsigned int nb_col,
+    bool load(const std::string &tileset, sf::Vector2u tileSize, unsigned int *level, unsigned int nb_col,
               unsigned int nb_row) {
         // load the tileset texture
         if (!m_tileset.loadFromFile(tileset))
@@ -33,20 +33,20 @@ public:
         m_vertices.resize(nb_col * nb_row * 3 * 4);
 
         // populate the vertex array, with one hexagon per tile
-        for (unsigned int i = 0; i < nb_col; ++i) {
+        for (unsigned int i = 0; i < nb_row; ++i) {
             unsigned int odd_offset = 0;
 
-            if (i % 2 == 1)
+            if (i % 2 == 0)
                 odd_offset = tileSize.x / 2;
 
-            for (unsigned int j = 0; j < nb_row; ++j) {
+            for (unsigned int j = 0; j < nb_col; ++j) {
 
-                if (tiles[i * nb_row + j] == 9)
+                if (level[i * nb_row + j] == 9)
                     continue;
 
                 else {
                     // get the current tile type
-                    int tileNumber = tiles[i * nb_row + j];
+                    int tileNumber = level[i * nb_row + j];
 
                     // get a pointer to the current tile's hexagone
                     sf::Vertex *hex = &m_vertices[(i + j * nb_col) * 3 * 4];
@@ -148,19 +148,40 @@ int main(int argc, char *argv[]) {
 
 int testRender() {
 
-    const unsigned int screen_width = 1536;
-    const unsigned int screen_height = 860;
-    const unsigned int tile_width = 72;
-    const unsigned int tile_height = 84;
-    const unsigned int nb_col = 13;
-    const unsigned int nb_row = 13;
+    const int screen_width = 1536;
+    const int screen_height = 860;
+    const int tile_width = 72;
+    const int tile_height = 84;
+    const int nb_col = 13;
+    const int nb_row = 13;
+    unsigned int tiles[nb_col * nb_row];
     unsigned int level[nb_col * nb_row];
 
     // create the window
     sf::RenderWindow window(sf::VideoMode(screen_width, screen_height), "just_another_plt_map");
 
     render::Scene scene{};
-    scene.draw(level);
+    scene.draw(tiles);
+    for (int i = 0; i < nb_row; ++i) {
+        int blanks = abs((nb_row - 1) / 2 - i);
+        int blanks_even = blanks % 2;
+        for (int j = 0; j < nb_col; ++j) {
+            if (j < (blanks + blanks_even) / 2)
+                level[i * nb_row + j] = 9;
+            else if (j >= nb_col - blanks + (blanks + blanks_even) / 2)
+                level[i * nb_row + j] = 9;
+            else
+                if (i < (nb_row - 1) / 2)
+                    level[i * nb_row + j] = tiles[i * nb_row + j + (blanks - blanks_even) / 2];
+                else
+                    level[i * nb_row + j] = tiles[i * nb_row + j - (blanks + blanks_even) / 2];
+        }
+    }
+    for(int i = 0; i < nb_col*nb_row; ++i)
+        cout << tiles[i];
+    cout << endl;
+    for(int i = 0; i < nb_col*nb_row; ++i)
+        cout << level[i];
 
     // create the tilemap from the level definition
     TileMap map;
