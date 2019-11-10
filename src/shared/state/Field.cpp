@@ -1,5 +1,7 @@
 #include "Field.h"
+
 using namespace ::state;
 
-Field::Field() : Tile(){
+Field::Field() : Tile() {
+    number_type = 1;
 }

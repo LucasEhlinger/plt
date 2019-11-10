@@ -1,9 +1,10 @@
 #include "Start.h"
-#include <iostream>
+
 using namespace ::state;
 
-Start::Start():Tile() {
-    moveCost     = -100;
+Start::Start() : Tile() {
+    moveCost = -100;
+    number_type = 7;
 }
 
 void Start::effect(state::Pawn &pawn) {

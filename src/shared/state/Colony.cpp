@@ -4,6 +4,7 @@ using namespace ::state;
 
 Colony::Colony() : Tile() {
     this->property = nullptr;
+    number_type = 6;
 }
 
 /**

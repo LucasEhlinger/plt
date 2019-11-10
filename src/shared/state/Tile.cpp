@@ -2,7 +2,9 @@
 
 using namespace ::state;
 
-Tile::Tile() {}
+Tile::Tile() {
+    number_type = 9;
+}
 
 /**
  * Apply effects of the tile on the pawn

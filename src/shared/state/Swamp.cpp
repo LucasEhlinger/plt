@@ -3,6 +3,7 @@
 using namespace ::state;
 
 Swamp::Swamp() : Tile() {
+    number_type = 5;
 }
 
 void Swamp::effect(state::Pawn &pawn) {

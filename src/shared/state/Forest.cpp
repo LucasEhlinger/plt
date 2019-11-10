@@ -1,7 +1,9 @@
 #include "Forest.h"
+
 using namespace ::state;
 
-Forest::Forest() : Tile(){
+Forest::Forest() : Tile() {
+    number_type = 2;
 }
 
 void Forest::effect(Pawn &pawn) {
