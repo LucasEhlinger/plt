@@ -3,7 +3,6 @@
 using namespace ::state;
 
 Swamp::Swamp() : Tile() {
-    this->path = "Sw";
 }
 
 void Swamp::effect(state::Pawn &pawn) {

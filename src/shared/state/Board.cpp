@@ -3,6 +3,7 @@
 #include <iostream>
 
 #define HEIGHT 13
+#define WIDTH 13
 
 using namespace ::state;
 
@@ -21,7 +22,7 @@ void Board::generate() {
 
     srand(time(NULL));
 
-    for (int i = 0; i < (HEIGHT * HEIGHT) - 1; ++i) {
+    for (int i = 0; i < (HEIGHT * WIDTH) - 1; ++i) {
         switch (rand() % 7 + 1) {
             case 1:
                 // Swamp
@@ -54,10 +55,10 @@ void Board::generate() {
         }
     }
     for (int line = 0; line < ((HEIGHT - 1) / 2); ++line) {
-        for (int column = 0; column < HEIGHT; ++column) {
-            if (column < (HEIGHT / 2) - line) {
+        for (int column = 0; column < WIDTH; ++column) {
+            if (column < (WIDTH / 2) - line) {
                 tiles[line * HEIGHT + column] = nullptr;
-                tiles[((HEIGHT - 1) - line) * HEIGHT + (HEIGHT - 1) - column] = nullptr;
+                tiles[((HEIGHT - 1) - line) * HEIGHT + (WIDTH - 1) - column] = nullptr;
             }
         }
     }

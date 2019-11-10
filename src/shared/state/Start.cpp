@@ -3,7 +3,6 @@
 using namespace ::state;
 
 Start::Start():Tile() {
-    this->path = "St";
     moveCost     = -100;
 }
 

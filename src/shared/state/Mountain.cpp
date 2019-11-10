@@ -3,7 +3,6 @@
 using namespace ::state;
 
 Mountain::Mountain() : Tile() {
-    this->path = "Mo";
     moveCost = -2;
 }
 

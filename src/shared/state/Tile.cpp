@@ -18,6 +18,5 @@ int Tile::getMoveCost() const {
 
 bool Tile::operator==(state::Tile &rhs) {
     return rhs.moveCost == moveCost &&
-           rhs.path == path &&
            rhs.observers.size() == observers.size();
 }

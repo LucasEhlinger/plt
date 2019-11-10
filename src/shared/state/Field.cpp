@@ -2,5 +2,4 @@
 using namespace ::state;
 
 Field::Field() : Tile(){
-    this->path = "Fi";
 }

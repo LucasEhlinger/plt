@@ -4,7 +4,6 @@ using namespace ::state;
 
 Colony::Colony() : Tile() {
     this->property = nullptr;
-    this->path = "Co";
 }
 
 /**

@@ -10,7 +10,7 @@ Scene::Scene() {
     state::Board board{};
     board.generate();
     boardView = new BoardView{board};
-    for (int i = 0; i < tilesView.size(); ++i) {
+    for (long unsigned int i = 0; i < tilesView.size(); ++i) {
         if (board.tiles[i] != NULL) {
             tilesView[i] = new TileView(*board.tiles[i]);
             boardView->board.tiles[i]->addObserver(tilesView[i]);
@@ -18,20 +18,19 @@ Scene::Scene() {
             tilesView[i] = nullptr;
         }
     }
-    for (int i = 0; i < board.pawns.size(); ++i) {
+    for (long unsigned int i = 0; i < board.pawns.size(); ++i) {
         pawnsView[i] = new PawnView(*board.pawns[i]);
         boardView->board.pawns[i]->addObserver(pawnsView[i]);
     }
 }
 
-void Scene::draw() {
+void Scene::draw(unsigned int level[HEIGHT * HEIGHT]) {
     for (int i = 0; i < HEIGHT; ++i) {
         for (int j = 0; j < HEIGHT; ++j) {
             if (tilesView[(i * HEIGHT) + j] != nullptr)
-                std::cout << tilesView[(i * HEIGHT) + j]->tile.path + " ";
+                level[i * HEIGHT + j] = tilesView[(i * HEIGHT) + j]->tile.number_type;
             else
-                std::cout << "Nu ";
+                level[i * HEIGHT + j] = 9;
         }
-        std::cout << "\n";
     }
 }

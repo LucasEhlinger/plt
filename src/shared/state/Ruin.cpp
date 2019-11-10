@@ -2,5 +2,4 @@
 using namespace ::state;
 
 Ruin::Ruin():Tile() {
-    this->path = "Ru";
 }

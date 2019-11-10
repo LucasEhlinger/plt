@@ -16,12 +16,13 @@ void testSFML() {
 #include "state.h"
 
 using namespace std;
+using namespace render;
 
 // From sfml doc, turning verteces into entities, here a map
 class TileMap : public sf::Drawable, public sf::Transformable {
 public:
 
-    bool load(const std::string &tileset, sf::Vector2u tileSize, const int *tiles, unsigned int nb_col,
+    bool load(const std::string &tileset, sf::Vector2u tileSize, unsigned int *tiles, unsigned int nb_col,
               unsigned int nb_row) {
         // load the tileset texture
         if (!m_tileset.loadFromFile(tileset))
@@ -127,7 +128,8 @@ private:
 int testRender();
 
 int main(int argc, char *argv[]) {
-    if (argc == 2) {
+    testRender();
+    /*if (argc == 2) {
         if (strcmp(argv[1], "hello") == 0) {
             cout << "Bonjour à tous !" << endl;
         } else if (strcmp(argv[1], "render") == 0) {
@@ -140,7 +142,7 @@ int main(int argc, char *argv[]) {
     } else {
         cout << "Je n'ai pas compris, entrez une de ces commandes :" << endl;
         cout << "hello, render, engine" << endl;
-    }
+    }*/
     return 0;
 }
 
@@ -152,21 +154,13 @@ int testRender() {
     const unsigned int tile_height = 84;
     const unsigned int nb_col = 13;
     const unsigned int nb_row = 13;
-    std::array<state::Tile, nb_col * nb_row> tiles;
     unsigned int level[nb_col * nb_row];
 
     // create the window
     sf::RenderWindow window(sf::VideoMode(screen_width, screen_height), "just_another_plt_map");
 
-    // parsing of the array of pointers
-    for (unsigned int i = 0; i < nb_row; ++i)
-        for (unsigned int j = 0; j < nb_col; ++j) {
-            if (tiles[i * nb_row + j] == nullptr) {
-                level[i * nb_row + j] = 9;
-                continue;
-            }
-            level[i * nb_row + j] = tiles[i * nb_row + j]->number_type;
-        }
+    render::Scene scene{};
+    scene.draw(level);
 
     // create the tilemap from the level definition
     TileMap map;

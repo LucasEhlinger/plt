@@ -3,7 +3,6 @@
 using namespace ::state;
 
 Castle::Castle() : Tile() {
-    this->path = "Ca";
 }
 
 /**
