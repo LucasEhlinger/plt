@@ -27,7 +27,7 @@ Scene::Scene() {
 void Scene::draw(unsigned int level[13 * 13]) {
     for (int i = 0; i < HEIGHT; ++i) {
         for (int j = 0; j < HEIGHT; ++j) {
-            if (tilesView[(i * HEIGHT) + j] != nullptr)
+            if (tilesView[(i * HEIGHT) + j] != NULL)
                 level[i * HEIGHT + j] = tilesView[(i * HEIGHT) + j]->tile.number_type;
             else
                 level[i * HEIGHT + j] = 9;
