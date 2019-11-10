@@ -68,14 +68,14 @@ void Board::generate() {
         for (int j = 0; j < WIDTH; j += MID_WIDTH) {
             for (int k = 0; k < 2; ++k) {
                 if (i == 0 && k == 1)
-                    tiles[7] = new Castle();
+                    tiles[7] = new Field();
                 else if (i != 0 || k != 0) {
-                    tiles[(std::max(i - 1, 0) + k) * HEIGHT + j] = new Castle();
-                    tiles[(std::max(i - 1, 0) + k) * HEIGHT + std::min(j + 1, WIDTH - 1)] = new Castle();
+                    tiles[(std::max(i - 1, 0) + k) * HEIGHT + j] = new Field();
+                    tiles[(std::max(i - 1, 0) + k) * HEIGHT + std::min(j + 1, WIDTH - 1)] = new Field();
                 }
                 if (i != HEIGHT - 1 || k != 1) {
-                    tiles[(std::min(i + 1, HEIGHT - 1) - k) * HEIGHT + j] = new Castle();
-                    tiles[(std::min(i + 1, HEIGHT - 1) - k) * HEIGHT + std::max(j - 1, 0)] = new Castle();
+                    tiles[(std::min(i + 1, HEIGHT - 1) - k) * HEIGHT + j] = new Field();
+                    tiles[(std::min(i + 1, HEIGHT - 1) - k) * HEIGHT + std::max(j - 1, 0)] = new Field();
                 }
             }
             tiles[i * HEIGHT + j] = new Start();
@@ -83,6 +83,7 @@ void Board::generate() {
     }
 
     for (int i = 0; i < 2; ++i) {
+        //Castle of the king
         tiles[(MID_HEIGHT - 1 + i) * HEIGHT + MID_WIDTH] = new Castle();
         tiles[(MID_HEIGHT - 1 + i) * HEIGHT + MID_WIDTH + 1] = new Castle();
         tiles[(MID_HEIGHT + 1 - i) * HEIGHT + MID_WIDTH] = new Castle();
