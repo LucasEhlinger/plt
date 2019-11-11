@@ -12,7 +12,6 @@ using namespace std;
 
 
 BOOST_AUTO_TEST_CASE(TestLoad) {
-    {
         const int screen_width = 1536;
         const int screen_height = 860;
         const int tile_width = 72;
@@ -47,10 +46,9 @@ BOOST_AUTO_TEST_CASE(TestLoad) {
         BOOST_CHECK(map.load("../../../res/hexagon-pack/PNG/tileset.png", sf::Vector2u(tile_width, tile_height), level,
                              nb_col,
                              nb_row));
-    }
 }
 
-BOOST_AUTO_TEST_CASE(TestFailLoad) {
+/*BOOST_AUTO_TEST_CASE(TestFailLoad) {
     {
         const int screen_width = 1536;
         const int screen_height = 860;
@@ -87,4 +85,4 @@ BOOST_AUTO_TEST_CASE(TestFailLoad) {
                               nb_col,
                               nb_row));
     }
-}
+}*/
