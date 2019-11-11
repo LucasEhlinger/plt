@@ -1,41 +1,17 @@
+#include <boost/test/unit_test.hpp>
+
 #include <iostream>
 #include <array>
 #include <unistd.h>
-#include "render.h"
-#include <string.h>
-
-// Those lines have for sole purpose to check if the SFML is working properly
 #include <SFML/Graphics.hpp>
 #include <SFML/System.hpp>
-
-void testSFML() {
-    sf::Texture texture;
-}
-// End SFML test
+#include <string.h>
+#include "../../src/client/render.h"
 
 using namespace std;
-using namespace render;
 
-int testRender();
 
-int main(int argc, char *argv[]) {
-    if (argc == 2) {
-        if (strcmp(argv[1], "hello") == 0) {
-            cout << "Bonjour à tous !" << endl;
-        } else if (strcmp(argv[1], "render") == 0) {
-            testRender();
-        } else if (strcmp(argv[1], "engine") == 0) {
-
-        }
-    } else {
-        cout << "Je n'ai pas compris, entrez une de ces commandes :" << endl;
-        cout << "hello, render, engine" << endl;
-    }
-    return 0;
-}
-
-int testRender() {
-
+BOOST_AUTO_TEST_CASE(TestLoad) {
     const int screen_width = 1536;
     const int screen_height = 860;
     const int tile_width = 72;
@@ -66,26 +42,10 @@ int testRender() {
     }
 
     // create the tilemap from the level definition
-    TileMap map;
-    if (!map.load("./../res/hexagon-pack/PNG/tileset.png", sf::Vector2u(tile_width, tile_height), level, nb_col,
-                  nb_row))
-        return -1;
+    render::TileMap map;
+    //"./../res/hexagon-pack/PNG/tileset.png"
+    BOOST_CHECK(map.load("../../../res/hexagon-pack/PNG/tileset.png", sf::Vector2u(tile_width, tile_height), level, nb_col,
+                         nb_row));
 
-    // run the main loop
-    while (window.isOpen()) {
-        // handle events
-        sf::Event event;
-        while (window.pollEvent(event)) {
-            if (event.type == sf::Event::Closed)
-                window.close();
-        }
 
-        // draw the map
-        window.clear();
-        window.draw(map);
-        window.display();
-        sleep(3);
-    }
-
-    return 0;
 }
