@@ -2,8 +2,7 @@
 
 using namespace ::state;
 
-King::King(state::Coordinate coordinate) : Pawn(coordinate) {
-    this->path = "./../../../res/hexagon-pack/PNG/castle.png";
+King::King(state::Coordinate coordinate) : Pawn(coordinate, "King") {
     lifePoints = 9;
     moveCost = -3;
 

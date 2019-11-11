@@ -1,16 +1,15 @@
 #include <boost/test/unit_test.hpp>
 #include "state.h"
-#include <fstream>
-#include <sstream>
-#include <string>
 
 
 using namespace ::state;
 
 BOOST_AUTO_TEST_CASE(TestGeneration) {
     {
-        std::string filename = "./testing.txt";
-        Board::generateFile(Board::generate(), filename);
+        Board bo{};
+        bo.generate();
+
+        /*std::string filename = "./testing.txt";
         std::ifstream infile(filename);
 
         std::string line;
@@ -20,8 +19,8 @@ BOOST_AUTO_TEST_CASE(TestGeneration) {
             std::istringstream iss(line);
             std::string a;
             iss >> a;
-            BOOST_CHECK_EQUAL(a, "Nu");
+            BOOST_CHECK_EQUAL(a, "9");
 
-        }
+        }*/
     }
 }

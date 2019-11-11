@@ -1,11 +1,12 @@
 #include "StoneAge.h"
+
 using namespace ::state;
 
-StoneAge::StoneAge() : Tile(){
-    this->path = "./../../../res/hexagon-pack/PNG/stonage.png";
+StoneAge::StoneAge() : Tile() {
+    number_type = 4;
 }
 
-void StoneAge::effect(state::Pawn& pawn) {
+void StoneAge::effect(state::Pawn &pawn) {
     pawn.modifyAP(moveCost);
     pawn.modifyLP(+1);
 }

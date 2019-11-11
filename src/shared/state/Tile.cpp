@@ -2,7 +2,9 @@
 
 using namespace ::state;
 
-Tile::Tile() {}
+Tile::Tile() {
+    number_type = 9;
+}
 
 /**
  * Apply effects of the tile on the pawn
@@ -18,6 +20,5 @@ int Tile::getMoveCost() const {
 
 bool Tile::operator==(state::Tile &rhs) {
     return rhs.moveCost == moveCost &&
-           rhs.path == path &&
            rhs.observers.size() == observers.size();
 }

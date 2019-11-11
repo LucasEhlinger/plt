@@ -3,8 +3,8 @@
 using namespace ::state;
 
 Mountain::Mountain() : Tile() {
-    this->path = "./../../../res/hexagon-pack/PNG/mountain.png";
     moveCost = -2;
+    number_type = 3;
 }
 
 void Mountain::effect(state::Pawn &pawn) {
