@@ -44,7 +44,6 @@ BOOST_AUTO_TEST_CASE(TestLoad) {
 
         // create the tilemap from the level definition
         render::TileMap map;
-        //"./../res/hexagon-pack/PNG/tileset.png"
         BOOST_CHECK(map.load("../../../res/hexagon-pack/PNG/tileset.png", sf::Vector2u(tile_width, tile_height), level,
                              nb_col,
                              nb_row));
@@ -82,11 +81,10 @@ BOOST_AUTO_TEST_CASE(TestLoad) {
 
         // create the tilemap from the level definition
         render::TileMap map;
-        //"./../res/hexagon-pack/PNG/tileset.png"
         BOOST_CHECK(map.load("../../../res/hexagon-pack/PNG/tileset.png", sf::Vector2u(tile_width, tile_height), level,
                              nb_col,
                              nb_row));
-        
+
         while (window.isOpen()){
             window.clear();
             window.draw(map);
@@ -128,7 +126,6 @@ BOOST_AUTO_TEST_CASE(TestFailLoad){
 
         // create the tilemap from the level definition
         render::TileMap map;
-        //"./../res/hexagon-pack/PNG/tileset.png"
         BOOST_CHECK(!map.load("../../res/hexagon-pack/PNG/tileset.png", sf::Vector2u(tile_width, tile_height), level,
                               nb_col,
                               nb_row));
