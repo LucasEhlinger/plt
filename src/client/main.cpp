@@ -2,6 +2,7 @@
 #include <array>
 #include <unistd.h>
 #include "render.h"
+#include <string.h>
 
 // Those lines have for sole purpose to check if the SFML is working properly
 #include <SFML/Graphics.hpp>
