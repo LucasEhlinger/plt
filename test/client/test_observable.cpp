@@ -7,7 +7,7 @@ using namespace ::render;
 
 BOOST_AUTO_TEST_CASE(TestPawnObservable) {
     {
-        Pawn pawn{Coordinate{12, 24}, "pawn"};
+        Pawn pawn{Coordinate{11, 5}, "pawn"};
         PawnView pawnView{pawn};
         pawn.addObserver(&pawnView);
         BOOST_CHECK_EQUAL(pawnView.pawn.getAP(), 0);

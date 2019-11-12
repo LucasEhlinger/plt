@@ -6,7 +6,7 @@ using namespace ::state;
 BOOST_AUTO_TEST_CASE(TestCastle) {
     {
         Castle ca = Castle{};
-        Pawn pa = Pawn(Coordinate{12, 21}, "pawn");
+        Pawn pa = Pawn(Coordinate{3, 9}, "pawn");
         pa.setAP(11);
         ca.effect(pa);
         BOOST_CHECK_EQUAL(pa.getAP(), 0);
@@ -21,7 +21,7 @@ BOOST_AUTO_TEST_CASE(TestCastle) {
 BOOST_AUTO_TEST_CASE(TestColony) {
     {
         Colony co = Colony{};
-        Pawn pa = Pawn(Coordinate{12, 21}, "pawn");
+        Pawn pa = Pawn(Coordinate{12, 4}, "pawn");
         co.effect(pa);
         BOOST_CHECK (co.property == &pa);
     }

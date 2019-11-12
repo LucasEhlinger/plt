@@ -4,34 +4,6 @@
 
 using namespace ::state;
 
-BOOST_AUTO_TEST_CASE(TestCoordinate) {
-    {
-        Coordinate coo{123, 321};
-        BOOST_CHECK_EQUAL(coo.getRow(), 123);
-        BOOST_CHECK_EQUAL(coo.getColumn(), 321);
-        coo.setRow(456);
-        coo.setColumn(987);
-        BOOST_CHECK_EQUAL(coo.getRow(), 456);
-        BOOST_CHECK_EQUAL(coo.getColumn(), 987);
-
-    }
-    {
-        Coordinate coo{123, 321};
-        coo.setCoord(456, 987);
-        BOOST_CHECK_EQUAL(coo.getRow(), 456);
-        BOOST_CHECK_EQUAL(coo.getColumn(), 987);
-
-    }
-    {
-        Coordinate coo1{123, 987};
-        Coordinate coo2{123, 987};
-        Coordinate coo3{1098, 1};
-        BOOST_CHECK(coo1 == coo2);
-        BOOST_CHECK(!(coo1 == coo3));
-
-    }
-}
-
 BOOST_AUTO_TEST_CASE(TestResources) {
     {
         Resources res{0, 0, 0, 0};
