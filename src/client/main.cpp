@@ -84,7 +84,7 @@ int testRender() {
         window.clear();
         window.draw(map);
         window.display();
-        sleep(3);
+        usleep(5000);
     }
 
     return 0;
