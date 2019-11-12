@@ -13,6 +13,10 @@ Pawn::Pawn(state::Coordinate position, std::string name) : coordinate(position),
     stats = new Stats(0, 0, 0, 0);
 }
 
+void Pawn::move(state::Coordinate coordinate) {
+    this->coordinate = coordinate;
+}
+
 /**
  * Remove or add action points depending of argument passed
  * @param offset int number of points added or deleted (minus)
