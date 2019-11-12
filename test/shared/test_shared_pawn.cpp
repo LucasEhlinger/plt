@@ -32,6 +32,11 @@ BOOST_AUTO_TEST_CASE(TestPlayer) {
         Player player2{Coordinate{12, 11}, "me"};
         BOOST_CHECK(player1 == player2);
     }
+    {
+        Player player1{Coordinate{12, 11}, "me"};
+        player1.set_number_type(3);
+        BOOST_CHECK_EQUAL(player1.number_type, 3);
+    }
 }
 
 BOOST_AUTO_TEST_CASE(TestGuard) {

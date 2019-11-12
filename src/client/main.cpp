@@ -8,11 +8,6 @@
 #include <SFML/Graphics.hpp>
 #include <SFML/System.hpp>
 
-void testSFML() {
-    sf::Texture texture;
-}
-// End SFML test
-
 using namespace std;
 using namespace render;
 
