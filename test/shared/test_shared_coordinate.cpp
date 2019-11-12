@@ -46,6 +46,12 @@ BOOST_AUTO_TEST_CASE(TestConversion) {
         BOOST_CHECK_EQUAL(coo.getRow(), 3);
     }
     {
+        Coordinate coo{0, 0};
+        coo.setCoord(168);
+        BOOST_CHECK_EQUAL(coo.getColumn(), 12);
+        BOOST_CHECK_EQUAL(coo.getRow(), 12);
+    }
+    {
         Coordinate coo{3, 11};
         BOOST_CHECK_EQUAL(coo.getCoordInLine(), 50);
     }
