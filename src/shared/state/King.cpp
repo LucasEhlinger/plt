@@ -5,7 +5,6 @@ using namespace ::state;
 King::King(state::Coordinate coordinate) : Pawn(coordinate, "King") {
     number_type = 4;
     lifePoints = 9;
-    moveCost = -3;
 
     //TODO : A completer avec les valeurs reeles de jeu.
     resources = new Resources(0, 0, 0, 0);
