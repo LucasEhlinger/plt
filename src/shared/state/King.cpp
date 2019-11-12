@@ -3,6 +3,7 @@
 using namespace ::state;
 
 King::King(state::Coordinate coordinate) : Pawn(coordinate, "King") {
+    number_type = 4;
     lifePoints = 9;
     moveCost = -3;
 
