@@ -37,8 +37,6 @@ int main(int argc, char *argv[]) {
 
 int testRender() {
 
-    const int screen_width = 1536;
-    const int screen_height = 860;
     const int tile_width = 72;
     const int tile_height = 84;
     const int nb_col = 13;
@@ -47,7 +45,7 @@ int testRender() {
     unsigned int table[nb_col * nb_row];
 
     // create the window
-    sf::RenderWindow window(sf::VideoMode(screen_width, screen_height), "just_another_plt_map");
+    sf::RenderWindow window(sf::VideoMode(1536, 860), "just_another_plt_map");
 
     state::Board board{};
     board.generate();

@@ -11,15 +11,15 @@ Scene::Scene(state::Board &board) {
     //board.generate();
     boardView = new BoardView{board};
     for (long unsigned int i = 0; i < tilesView.size(); ++i) {
-        if (this->boardView->board.tiles[i] != nullptr) {
-            tilesView[i] = new TileView(*this->boardView->board.tiles[i]);
-            boardView->board.tiles[i]->addObserver(tilesView[i]);
+        if (this->boardView->board.tiles[i].exist) {
+            tilesView[i] = new TileView(this->boardView->board.tiles[i]);
+            boardView->board.tiles[i].addObserver(tilesView[i]);
         } else {
             tilesView[i] = nullptr;
         }
     }
     for (long unsigned int i = 0; i < boardView->board.pawns.size(); ++i) {
-        pawnsView.emplace_back(new PawnView(*boardView->board.pawns[i]));
+        pawnsView.emplace_back(new PawnView(boardView->board.pawns[i]));
         //boardView->board.pawns[i]->addObserver(pawnsView[i]);
     }
 }
