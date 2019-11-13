@@ -16,12 +16,16 @@ Board::Board() {
 
 Board::Board(const state::Board &board) {
     this->day = board.day;
-    for( int i = 0; i < board.tiles.size(); i++){
-        tiles.at(i) = board.tiles[i];
+
+    if (board.tiles.size() != 0) {
+        for (int i = 0; i < board.tiles.size(); i++) {
+            tiles.at(i) = board.tiles[i];
+        }
+        //this->tiles(new std::array<std::unique_ptr<Tile>,13*13> (board.tiles))
+        this->pawns = board.pawns;
     }
-    //this->tiles(new std::array<std::unique_ptr<Tile>,13*13> (board.tiles))
-    this->pawns = board.pawns;
 }
+
 /**
  * Pass from day to night and vice versa
  */
@@ -98,9 +102,4 @@ void Board::generate() {
         tiles[(MID_HEIGHT + 1 - i) * HEIGHT + MID_WIDTH] = Castle();
         tiles[(MID_HEIGHT + 1 - i) * HEIGHT + MID_WIDTH - 1] = Castle();
     }
-}
-
-Board::~Board() {
-    delete(&pawns);
-    delete(&tiles);
 }

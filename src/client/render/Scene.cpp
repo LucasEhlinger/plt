@@ -20,7 +20,7 @@ Scene::Scene(state::Board &board) {
     }
     for (long unsigned int i = 0; i < boardView->board.pawns.size(); ++i) {
         pawnsView.emplace_back(new PawnView(boardView->board.pawns[i]));
-        //boardView->board.pawns[i]->addObserver(pawnsView[i]);
+        boardView->board.pawns[i].addObserver(pawnsView[i]);
     }
 }
 

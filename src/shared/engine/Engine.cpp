@@ -6,9 +6,13 @@ Engine::Engine(state::Board& board) : board(&board){
     state::Player player1{state::Coordinate{0,6}, "player 1"};
     player1.number_type = 1;
 
+    state::Player player2{state::Coordinate{12,6}, "player 2"};
+    player2.number_type = 2;
+
     state::King king{state::Coordinate{6,6}};
     this->board->pawns.emplace_back(king);
     this->board->pawns.emplace_back(player1);
+    this->board->pawns.emplace_back(player2);
 }
 
 void Engine::move(state::Pawn &pawn, state::Coordinate to){
