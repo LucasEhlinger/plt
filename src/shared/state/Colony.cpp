@@ -18,5 +18,4 @@ void Colony::effect(Pawn &pawn) {
 }
 
 Colony::~Colony() {
-    delete(property);
 }

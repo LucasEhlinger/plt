@@ -24,8 +24,11 @@ BOOST_AUTO_TEST_CASE(TestLoad) {
     // create the window
     sf::RenderWindow window(sf::VideoMode(screen_width, screen_height), "just_another_plt_map");
 
-    render::Scene scene{};
-    scene.draw(tiles);
+    state::Board board{};
+    board.generate();
+
+    render::Scene scene{board};
+
     for (int i = 0; i < nb_row; ++i) {
         int blanks = abs((nb_row - 1) / 2 - i);
         int blanks_even = blanks % 2;

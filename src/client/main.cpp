@@ -4,6 +4,7 @@
 #include "render.h"
 #include <string.h>
 #include "engine.h"
+#include "state.h"
 
 // Those lines have for sole purpose to check if the SFML is working properly
 #include <SFML/Graphics.hpp>
@@ -71,6 +72,7 @@ int testRender() {
     // run the main loop
     while (window.isOpen()) {
         parse(nb_row, nb_col, scene.matrixPawn(), table);
+
         if (!pawn_map.load("./../res/pawn/pawnset.png", sf::Vector2u(tile_width, tile_height), table, nb_row, nb_col))
             return -1;
 
@@ -87,7 +89,10 @@ int testRender() {
         window.draw(tile_map);
         window.draw(pawn_map);
         window.display();
-        usleep(5000);
+        sleep(3);
+
+        engine1.move(engine1.board->pawns[0],state::Coordinate{0,7});
+        engine1.board->notify();
     }
 
     return 0;

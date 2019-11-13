@@ -9,9 +9,11 @@
 BOOST_AUTO_TEST_CASE(TestSceneValues) {
     state::Start st{};
     state::Field fi{};
-    unsigned int tiles[13 * 13];
-    render::Scene scene{};
-    scene.draw(tiles);
+    state::Board board{};
+    board.generate();
+
+    render::Scene scene{board};
+    auto tiles = scene.draw();
 
     BOOST_CHECK_EQUAL(tiles[6], st.number_type);
     BOOST_CHECK_EQUAL(tiles[7], fi.number_type);
