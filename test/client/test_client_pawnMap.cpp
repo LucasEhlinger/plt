@@ -83,6 +83,7 @@ BOOST_AUTO_TEST_CASE(TestLoad) {
         }
     }
 
+    // create the pawnMap from the level definition
     render::PawnMap pawn_map;
     BOOST_CHECK (pawn_map.load("../../../res/pawn/pawnset.png", sf::Vector2u(tile_width, tile_height), table, nb_row, nb_col));
     BOOST_CHECK (!pawn_map.load("../../res/pawn/pawnset.png", sf::Vector2u(tile_width, tile_height), table, nb_row, nb_col));
