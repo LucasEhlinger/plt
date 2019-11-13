@@ -50,15 +50,11 @@ int testRender() {
 
     state::Board board{};
     board.generate();
-
-
     engine::Engine engine1{board};
     render::Scene scene{board};
 
 
     parse(nb_row, nb_col, scene.draw(), level);
-
-
 
     // create the tilemap from the level definition
     TileMap tile_map;
@@ -66,16 +62,15 @@ int testRender() {
                        nb_row))
         return -1;
 
-    PawnMap pawn_map;
-
-
+    int i = 0;
     // run the main loop
     while (window.isOpen()) {
+        ++i;
+        PawnMap pawn_map;
         parse(nb_row, nb_col, scene.matrixPawn(), table);
 
         if (!pawn_map.load("./../res/pawn/pawnset.png", sf::Vector2u(tile_width, tile_height), table, nb_row, nb_col))
             return -1;
-
 
         // handle events
         sf::Event event;
@@ -84,15 +79,31 @@ int testRender() {
                 window.close();
         }
 
+        if (i > 2000 && i < 2500) {
+            engine1.move(board.pawns[1], state::Coordinate{0, 7});
+            board.pawns.front().notify();
+        } else if (i > 3000 && i < 3500) {
+            engine1.move(board.pawns[1], state::Coordinate{1, 7});
+            board.pawns.front().notify();
+        } else if (i > 4000 && i < 4500) {
+            engine1.move(board.pawns[1], state::Coordinate{1, 8});
+            board.pawns.front().notify();
+        } else if (i > 5000 && i < 5500) {
+            engine1.move(board.pawns[1], state::Coordinate{2, 7});
+            board.pawns.front().notify();
+        } else if (i > 6000 && i < 6500) {
+            engine1.move(board.pawns[1], state::Coordinate{3, 7});
+            board.pawns.front().notify();
+        }
+        
+
         // draw the map
         window.clear();
         window.draw(tile_map);
         window.draw(pawn_map);
         window.display();
-        sleep(3);
+        usleep(500);
 
-        engine1.move(engine1.board->pawns[0],state::Coordinate{0,7});
-        engine1.board->notify();
     }
 
     return 0;

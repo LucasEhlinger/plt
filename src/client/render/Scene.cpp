@@ -18,9 +18,9 @@ Scene::Scene(state::Board &board) {
             tilesView[i] = nullptr;
         }
     }
-    for (long unsigned int i = 0; i < boardView->board.pawns.size(); ++i) {
+    for (long unsigned int i = 0; i < board.pawns.size(); ++i) {
         pawnsView.emplace_back(new PawnView(boardView->board.pawns[i]));
-        boardView->board.pawns[i].addObserver(pawnsView[i]);
+        board.pawns[i].addObserver(pawnsView[i]);
     }
 }
 
