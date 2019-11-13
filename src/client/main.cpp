@@ -3,6 +3,7 @@
 #include <unistd.h>
 #include "render.h"
 #include <string.h>
+#include "engine.h"
 
 // Those lines have for sole purpose to check if the SFML is working properly
 #include <SFML/Graphics.hpp>
@@ -15,8 +16,10 @@ int testRender();
 
 void parse(int nb_row, int nb_col, unsigned int raw_table[], unsigned int table[]);
 
+void parse(int nb_row, int nb_col, std::array<int, 169> raw_table, unsigned int table[]);
+
 int main(int argc, char *argv[]) {
-    testRender();
+    //testRender();
     if (argc == 2) {
         if (strcmp(argv[1], "hello") == 0) {
             cout << "Bonjour à tous !" << endl;
@@ -34,53 +37,44 @@ int main(int argc, char *argv[]) {
 
 int testRender() {
 
-    const int screen_width = 1536;
-    const int screen_height = 860;
     const int tile_width = 72;
     const int tile_height = 84;
     const int nb_col = 13;
     const int nb_row = 13;
-    unsigned int tiles[nb_col * nb_row];
     unsigned int level[nb_col * nb_row];
     unsigned int table[nb_col * nb_row];
 
     // create the window
-    sf::RenderWindow window(sf::VideoMode(screen_width, screen_height), "just_another_plt_map");
+    sf::RenderWindow window(sf::VideoMode(1536, 860), "just_another_plt_map");
 
-    render::Scene scene{};
-    scene.draw(tiles);
+    state::Board board{};
+    board.generate();
 
-    parse(nb_row, nb_col, tiles, level);
+
+    engine::Engine engine1{board};
+    render::Scene scene{board};
+
+
+    parse(nb_row, nb_col, scene.draw(), level);
+
+
+
     // create the tilemap from the level definition
     TileMap tile_map;
     if (!tile_map.load("./../res/hexagon-pack/PNG/tileset.png", sf::Vector2u(tile_width, tile_height), level, nb_col,
                        nb_row))
         return -1;
 
-    unsigned int pawn_pos[] = {
-            9, 9, 9, 9, 9, 9, 0, 9, 9, 9, 9, 9, 1,
-            9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9,
-            9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9,
-            9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9,
-            9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9,
-            9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9,
-            9, 9, 9, 9, 9, 5, 4, 5, 9, 9, 9, 9, 9,
-            9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9,
-            9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9,
-            9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9,
-            9, 9, 9, 9, 9, 9, 9, 6, 9, 9, 9, 9, 9,
-            9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9,
-            2, 9, 9, 9, 9, 9, 3, 9, 9, 9, 9, 9, 9,
-    };
-
-    parse(nb_row, nb_col, pawn_pos, table);
-
     PawnMap pawn_map;
-    if (!pawn_map.load("./../res/pawn/pawnset.png", sf::Vector2u(tile_width, tile_height), table, nb_row, nb_col))
-        return -1;
+
 
     // run the main loop
     while (window.isOpen()) {
+        parse(nb_row, nb_col, scene.matrixPawn(), table);
+        if (!pawn_map.load("./../res/pawn/pawnset.png", sf::Vector2u(tile_width, tile_height), table, nb_row, nb_col))
+            return -1;
+
+
         // handle events
         sf::Event event;
         while (window.pollEvent(event)) {
@@ -99,7 +93,7 @@ int testRender() {
     return 0;
 }
 
-void parse(int nb_row, int nb_col, unsigned int raw_table[], unsigned int table[]) {
+void parse(int nb_row, int nb_col, std::array<int, 169> raw_table, unsigned int table[]) {
     for (int i = 0; i < nb_row; ++i) {
         int blanks = abs((nb_row - 1) / 2 - i);
         int blanks_even = blanks % 2;

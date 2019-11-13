@@ -4,6 +4,7 @@ using namespace ::state;
 
 Castle::Castle() : Tile() {
     number_type = 8;
+    exist = true;
 }
 
 /**

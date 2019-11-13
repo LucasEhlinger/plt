@@ -3,8 +3,9 @@
 using namespace ::state;
 
 Colony::Colony() : Tile() {
-    this->property = nullptr;
+    property = nullptr;
     number_type = 6;
+    exist = true;
 }
 
 /**
@@ -14,4 +15,8 @@ Colony::Colony() : Tile() {
 void Colony::effect(Pawn &pawn) {
     pawn.modifyAP(moveCost);
     this->property = &pawn;
+}
+
+Colony::~Colony() {
+    delete(property);
 }

@@ -4,4 +4,5 @@ using namespace ::state;
 
 Ruin::Ruin() : Tile() {
     number_type = 0;
+    exist = true;
 }
