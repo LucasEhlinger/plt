@@ -12,17 +12,12 @@ using namespace std;
 
 
 BOOST_AUTO_TEST_CASE(TestLoad) {
-    const int screen_width = 1536;
-    const int screen_height = 860;
     const int tile_width = 72;
     const int tile_height = 84;
     const int nb_col = 13;
     const int nb_row = 13;
     unsigned int tiles[nb_col * nb_row];
     unsigned int level[nb_col * nb_row];
-
-    // create the window
-    sf::RenderWindow window(sf::VideoMode(screen_width, screen_height), "just_another_plt_map");
 
     state::Board board{};
     board.generate();
