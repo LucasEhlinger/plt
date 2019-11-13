@@ -4,7 +4,6 @@
 #include "render.h"
 #include <string.h>
 #include "engine.h"
-#include "state.h"
 
 // Those lines have for sole purpose to check if the SFML is working properly
 #include <SFML/Graphics.hpp>
@@ -84,29 +83,13 @@ int testRender() {
                 window.close();
             if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
                 while (sf::Mouse::isButtonPressed(sf::Mouse::Left));
+
+                //TODO : Handle the exeption here !
                 state::Coordinate pos = pixel_to_hex(sf::Mouse::getPosition(window));
-                cout << "x " << pos.getRow() << " y " << pos.getColumn() << endl;
+                //cout << "x " << pos.getRow() << " y " << pos.getColumn() << endl;
                 engine1.move(board.pawns[1], pos);
             }
         }
-
-        /*if (i > 2000 && i < 2500) {
-            engine1.move(board.pawns[1], state::Coordinate{0, 7});
-            board.pawns.front().notify();
-        } else if (i > 3000 && i < 3500) {
-            engine1.move(board.pawns[1], state::Coordinate{1, 7});
-            board.pawns.front().notify();
-        } else if (i > 4000 && i < 4500) {
-            engine1.move(board.pawns[1], state::Coordinate{1, 8});
-            board.pawns.front().notify();
-        } else if (i > 5000 && i < 5500) {
-            engine1.move(board.pawns[1], state::Coordinate{2, 7});
-            board.pawns.front().notify();
-        } else if (i > 6000 && i < 6500) {
-            engine1.move(board.pawns[1], state::Coordinate{3, 7});
-            board.pawns.front().notify();
-        }*/
-
 
         // draw the map
         window.clear();
