@@ -9,15 +9,20 @@
 // Those lines have for sole purpose to check if the SFML is working properly
 #include <SFML/Graphics.hpp>
 #include <SFML/System.hpp>
+#include <cmath>
 
 using namespace std;
 using namespace render;
 
 int testRender();
 
-void parse(int nb_row, int nb_col, unsigned int raw_table[], unsigned int table[]);
-
 void parse(int nb_row, int nb_col, std::array<int, 169> raw_table, unsigned int table[]);
+
+state::Coordinate pixel_to_hex(sf::Vector2i point);
+
+sf::Vector3i cube_round(sf::Vector3f cube);
+
+state::Coordinate cube_to_evenr(sf::Vector3i cube);
 
 int main(int argc, char *argv[]) {
     //testRender();
@@ -77,9 +82,15 @@ int testRender() {
         while (window.pollEvent(event)) {
             if (event.type == sf::Event::Closed)
                 window.close();
+            if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
+                while (sf::Mouse::isButtonPressed(sf::Mouse::Left));
+                state::Coordinate pos = pixel_to_hex(sf::Mouse::getPosition(window));
+                cout << "x " << pos.getRow() << " y " << pos.getColumn() << endl;
+                engine1.move(board.pawns[1], pos);
+            }
         }
 
-        if (i > 2000 && i < 2500) {
+        /*if (i > 2000 && i < 2500) {
             engine1.move(board.pawns[1], state::Coordinate{0, 7});
             board.pawns.front().notify();
         } else if (i > 3000 && i < 3500) {
@@ -94,8 +105,8 @@ int testRender() {
         } else if (i > 6000 && i < 6500) {
             engine1.move(board.pawns[1], state::Coordinate{3, 7});
             board.pawns.front().notify();
-        }
-        
+        }*/
+
 
         // draw the map
         window.clear();
@@ -124,4 +135,35 @@ void parse(int nb_row, int nb_col, std::array<int, 169> raw_table, unsigned int 
                 table[i * nb_row + j] = raw_table[i * nb_row + j - (blanks + blanks_even) / 2];
         }
     }
+}
+
+state::Coordinate pixel_to_hex(sf::Vector2i point) {
+    float q = (sqrt(3) / 3 * point.x - 1. / 3 * point.y) / 42;
+    float r = (2. / 3 * point.y) / 42;
+    return cube_to_evenr(cube_round(sf::Vector3f{q, -q - r, r}));
+}
+
+state::Coordinate cube_to_evenr(sf::Vector3i cube) {
+    int col = cube.x + (cube.z + (cube.z & 1)) / 2;
+    int row = cube.z;
+    return state::Coordinate{row, col};
+}
+
+sf::Vector3i cube_round(sf::Vector3f cube) {
+    int rx = round(cube.x);
+    int ry = round(cube.y);
+    int rz = round(cube.z);
+
+    float x_diff = abs(rx - cube.x);
+    float y_diff = abs(ry - cube.y);
+    float z_diff = abs(rz - cube.z);
+
+    if (x_diff > y_diff && x_diff > z_diff)
+        rx = -ry - rz;
+    else if (y_diff > z_diff)
+        ry = -rx - rz;
+    else
+        rz = -rx - ry;
+
+    return sf::Vector3i{rx, ry, rz};
 }
