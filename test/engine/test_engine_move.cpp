@@ -10,7 +10,7 @@ BOOST_AUTO_TEST_CASE(TestMove){
     {
         Board bo{};
         bo.generate();
-        bo.pawns.push_back(Player{Coordinate{0,6}, "player1"});
+        bo.pawns.push_back(Player{Coordinate{0,6}, "player1", true});
         Engine en{bo};
         en.move(bo.pawns.front(), Coordinate{1,7});
 

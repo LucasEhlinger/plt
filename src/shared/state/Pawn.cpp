@@ -6,9 +6,11 @@
 
 using namespace ::state;
 
-Pawn::Pawn(state::Coordinate position, std::string name) : coordinate(position), name(name), stats(0, 0, 0, 0), resources(0, 0, 0, 0) {
+Pawn::Pawn(state::Coordinate position, std::string name) : coordinate(position), name(name), stats(0, 0, 0, 0),
+                                                           resources(0, 0, 0, 0) {
     lifePoints = 0;
     actionPoints = 0;
+    isHuman = false;
 }
 
 void Pawn::move(state::Coordinate coordinate) {
@@ -86,6 +88,7 @@ int Pawn::getRot() {
  */
 bool Pawn::operator==(state::Pawn &rhs) {
     return rhs.coordinate == coordinate &&
+           rhs.isHuman == isHuman &&
            rhs.resources == resources &&
            rhs.lifePoints == lifePoints &&
            rhs.actionPoints == actionPoints &&

@@ -3,10 +3,10 @@
 using namespace engine;
 
 Engine::Engine(state::Board& board) : board(&board){
-    state::Player player1{state::Coordinate{0,6}, "player 1"};
+    state::Player player1{state::Coordinate{0,6}, "player 1", true};
     player1.number_type = 1;
 
-    state::Player player2{state::Coordinate{12,6}, "player 2"};
+    state::Player player2{state::Coordinate{12,6}, "player 2", false};
     player2.number_type = 2;
 
     state::King king{state::Coordinate{6,6}};

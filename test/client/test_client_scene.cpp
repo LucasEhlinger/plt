@@ -10,7 +10,7 @@ BOOST_AUTO_TEST_CASE(TestSceneValues) {
     state::Field fi{};
     state::Board board{};
     board.generate();
-    board.pawns.push_back(state::Player{state::Coordinate{0, 6}, "test1"});
+    board.pawns.push_back(state::Player{state::Coordinate{0, 6}, "test1", false});
 
     render::Scene scene{board};
     auto tiles = scene.draw();
@@ -28,7 +28,7 @@ BOOST_AUTO_TEST_CASE(TestPawnsValue) {
 
     state::King king{state::Coordinate{6, 6}};
     king.number_type = 4;
-    state::Player player1{state::Coordinate{0, 6}, "test1"};
+    state::Player player1{state::Coordinate{0, 6}, "test1", false};
     player1.number_type = 1;
 
     board.pawns.push_back(king);
