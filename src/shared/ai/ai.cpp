@@ -1,4 +1,7 @@
 #include "Ai.h"
+#include <string>
+#include <iostream>
+#include <array>
 #include <cmath>
 
 
