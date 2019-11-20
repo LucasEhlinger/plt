@@ -11,6 +11,7 @@ Pawn::Pawn(state::Coordinate position, std::string name) : coordinate(position),
     lifePoints = 0;
     actionPoints = 0;
     isHuman = false;
+    isPlaying = false;
 }
 
 void Pawn::move(state::Coordinate coordinate) {

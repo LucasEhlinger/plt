@@ -76,8 +76,9 @@ int testRender() {
         if (!pawn_map.load("./../res/pawn/pawnset.png", sf::Vector2u(tile_width, tile_height), table, nb_row, nb_col))
             return -1;
 
+        board.pawns[1].setAP(1);
         Av_TileMap av_tile_map;
-        parse(nb_row, nb_col, scene.matrixAv_Tile(2), table);
+        parse(nb_row, nb_col, engine1.matrixAv_Tile(board.pawns[1]), table);
 
         if (!av_tile_map.load("./../res/hexagon-pack/PNG/av_move.png", sf::Vector2u(tile_width, tile_height), table, nb_row, nb_col))
             return -1;

@@ -1,5 +1,9 @@
 #include "Engine.h"
 #include "state.h"
+
+#define HEIGHT  13
+#define WIDTH   13
+
 using namespace engine;
 
 Engine::Engine(state::Board& board) : board(&board){
@@ -17,9 +21,38 @@ Engine::Engine(state::Board& board) : board(&board){
 
 void Engine::move(state::Pawn &pawn, state::Coordinate to){
     int position = to.getCoordInLine();
-    if ( board->tiles.at(position).exist || (pawn.getAP() + board->tiles.at(position).getMoveCost()) >= 0){
+    if ( board->tiles.at(position).exist && (pawn.getAP() + board->tiles.at(position).getMoveCost()) >= 0){
         pawn.move(to);
         board->tiles.at(position).effect(pawn);
         pawn.notify();
     }
+}
+
+std::array<int, 169> Engine::matrixAv_Tile(state::Pawn &pawn) {
+    std::array<int, 169> table;
+    table.fill(9);
+
+    int x = pawn.getCoordinate().getRow();
+    int y = pawn.getCoordinate().getColumn();
+    int ap = pawn.getAP();
+
+    if (x - 1 >= 0)
+        if (ap + board->tiles.at((x - 1) * HEIGHT + y).getMoveCost() >= 0)
+            table.at((x - 1) * HEIGHT + y) = 0;
+    if (x + 1 < HEIGHT)
+        if (ap + board->tiles.at((x + 1) * HEIGHT + y).getMoveCost() >= 0)
+            table.at((x + 1) * HEIGHT + y) = 0;
+    if (y - 1 >= 0)
+        if (ap + board->tiles.at(x * HEIGHT + (y - 1)).getMoveCost() >= 0)
+            table.at(x * HEIGHT + (y - 1)) = 0;
+    if (y + 1 < WIDTH)
+        if (ap + board->tiles.at(x * HEIGHT + (y + 1)).getMoveCost() >= 0)
+            table.at(x * HEIGHT + (y + 1)) = 0;
+    if (y + 1 < WIDTH && x - 1 >= 0)
+        if (ap + board->tiles.at((x - 1) * HEIGHT + (y + 1)).getMoveCost() >= 0)
+            table.at((x - 1) * HEIGHT + (y + 1)) = 0;
+    if (y - 1 >= 0 && x + 1 < HEIGHT)
+        if (ap + board->tiles.at((x + 1) * HEIGHT + (y - 1)).getMoveCost() >= 0)
+            table.at((x + 1) * HEIGHT + (y - 1)) = 0;
+    return table;
 }
