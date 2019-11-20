@@ -19,10 +19,11 @@ Engine::Engine(state::Board &board) : board(&board) {
 
     state::Guard guard1{state::Coordinate{8, 10}, "guard 1"};
 
-    this->board->pawns.emplace_back(king);
-    this->board->pawns.emplace_back(guard1);
+
     this->board->pawns.emplace_back(player1);
     this->board->pawns.emplace_back(player2);
+    this->board->pawns.emplace_back(king);
+    this->board->pawns.emplace_back(guard1);
 }
 
 void Engine::move(state::Pawn &pawn, state::Coordinate to) {
@@ -34,15 +35,9 @@ void Engine::move(state::Pawn &pawn, state::Coordinate to) {
     }
 }
 
-std::vector<state::Coordinate> Engine::matrixAv_Tile(state::Pawn &pawn) {
-    std::vector<state::Coordinate> av_tiles;
-    bool row_up = false;
-    bool row_down = false;
-    bool col_up = false;
-    bool col_down = false;
-state::Pawn& Engine::playingPawn() {
-    for(int i = 0; i < board->pawns.size(); ++i){
-        if (board->pawns.at(i).isPlaying){
+state::Pawn &Engine::playingPawn() {
+    for (int i = 0; i < board->pawns.size(); ++i) {
+        if (board->pawns.at(i).isPlaying) {
             return board->pawns[i];
         }
     }
@@ -50,20 +45,31 @@ state::Pawn& Engine::playingPawn() {
 }
 
 void Engine::nextTurn() {
-    for(int i = 0; i < board->pawns.size(); ++i){
-        if (board->pawns.at(i).isPlaying){
+    for (int i = 0; i < board->pawns.size(); ++i) {
+        if (board->pawns.at(i).isPlaying) {
             board->pawns[i].isPlaying = false;
-            board->pawns[i + 1].setAP(1);
-            board->pawns[i + 1].isPlaying = true;
+            if (i + 1 >= board->pawns.size()) {
+                board->pawns[0].setAP(1);
+                board->pawns[0].isPlaying = true;
+            } else {
+                board->pawns[i + 1].setAP(1);
+                board->pawns[i + 1].isPlaying = true;
+            }
             break;
         }
     }
 }
 
+std::vector<state::Coordinate> Engine::matrixAv_Tile(state::Pawn &pawn) {
+    std::vector<state::Coordinate> av_tiles;
+    bool row_up = false;
+    bool row_down = false;
+    bool col_up = false;
+    bool col_down = false;
 
-    int x = playingPawn().getCoordinate().getRow();
-    int y = playingPawn().getCoordinate().getColumn();
-    int ap = playingPawn().getAP();
+    int x = pawn.getCoordinate().getRow();
+    int y = pawn.getCoordinate().getColumn();
+    int ap = pawn.getAP();
 
     if (x < 12)
         row_up = true;
