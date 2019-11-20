@@ -23,6 +23,8 @@ sf::Vector3i cube_round(sf::Vector3f cube);
 
 state::Coordinate cube_to_evenr(sf::Vector3i cube);
 
+state::Coordinate AI_rand(std::vector<state::Coordinate> av_moves);
+
 int main(int argc, char *argv[]) {
     //testRender();
     if (argc == 2) {
@@ -48,6 +50,8 @@ int testRender() {
     const int nb_row = 13;
     unsigned int level[nb_col * nb_row];
     unsigned int table[nb_col * nb_row];
+    std::array<int, 169> av_tiles;
+    std::vector<state::Coordinate> av_moves;
 
     // create the window
     sf::RenderWindow window(sf::VideoMode(1536, 860), "just_another_plt_map");
@@ -57,30 +61,45 @@ int testRender() {
     engine::Engine engine1{board};
     render::Scene scene{board};
 
+    window.clear();
 
+    // creates the tilemap from the level definition and draws it
     parse(nb_row, nb_col, scene.matrixTile(), level);
-
-    // create the tilemap from the level definition
     TileMap tile_map;
     if (!tile_map.load("./../res/hexagon-pack/PNG/tileset.png", sf::Vector2u(tile_width, tile_height), level, nb_col,
                        nb_row))
         return -1;
+    window.draw(tile_map);
 
-    int i = 0;
+    // creates the pawnmap from the level defnition and draws it
+    parse(nb_row, nb_col, scene.matrixPawn(), level);
+    PawnMap pawn_map;
+    if (!pawn_map.load("./../res/pawn/pawnset.png", sf::Vector2u(tile_width, tile_height), level, nb_row, nb_col))
+        return -1;
+    window.draw(pawn_map);
+
+    window.display();
+
     // run the main loop
     while (window.isOpen()) {
-        ++i;
-        PawnMap pawn_map;
-        parse(nb_row, nb_col, scene.matrixPawn(), table);
 
-        if (!pawn_map.load("./../res/pawn/pawnset.png", sf::Vector2u(tile_width, tile_height), table, nb_row, nb_col))
-            return -1;
+        board.pawns[1].setAP(1);
 
+        // creates the movemap from the moves available to the currently playing pawn and draws it
+        av_moves = engine1.matrixAv_Tile(board.pawns[1]);
+        av_tiles.fill(9);
+        for (int j = 0; j < av_moves.size(); ++j)
+            av_tiles.at(av_moves.at(j).getCoordInLine()) = 0;
+
+        parse(nb_row, nb_col, av_tiles, table);
         Av_TileMap av_tile_map;
-        parse(nb_row, nb_col, engine1.matrixAv_Tile(), table);
+        parse(nb_row, nb_col, engine1.matrixAv_Tile(board.pawns[1]), table);
 
         if (!av_tile_map.load("./../res/hexagon-pack/PNG/av_move.png", sf::Vector2u(tile_width, tile_height), table, nb_row, nb_col))
             return -1;
+        window.draw(av_tile_map);
+        window.display();
+        //usleep(2000000);
 
         // handle events
         sf::Event event;
@@ -101,14 +120,17 @@ int testRender() {
             }
         }
 
+        engine1.move(board.pawns[1], AI_rand(av_moves));
+        parse(nb_row, nb_col, scene.matrixPawn(), level);
+        PawnMap pawn_map;
+        if (!pawn_map.load("./../res/pawn/pawnset.png", sf::Vector2u(tile_width, tile_height), level, nb_row, nb_col))
+            return -1;
+
         // draw the map
         window.clear();
         window.draw(tile_map);
         window.draw(pawn_map);
-        window.draw(av_tile_map);
         window.display();
-        usleep(500);
-
     }
 
     return 0;
@@ -131,6 +153,7 @@ void parse(int nb_row, int nb_col, std::array<int, 169> raw_table, unsigned int 
     }
 }
 
+// Conversion, click to board. Needs to be fixed
 state::Coordinate pixel_to_hex(sf::Vector2i point) {
     float q = (sqrt(3) / 3 * point.x - 1. / 3 * point.y) / 42;
     float r = (2. / 3 * point.y) / 42;
@@ -160,4 +183,8 @@ sf::Vector3i cube_round(sf::Vector3f cube) {
         rz = -rx - ry;
 
     return sf::Vector3i{rx, ry, rz};
+}
+
+state::Coordinate AI_rand(std::vector<state::Coordinate> av_moves) {
+    return av_moves[rand() % av_moves.size()];
 }

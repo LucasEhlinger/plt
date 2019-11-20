@@ -48,7 +48,7 @@ void Coordinate::setColumn(int column) {
 }
 
 int Coordinate::getCoordInLine() {
-    return (row * 13) + (column % 13);
+    return (row * 13) + column;
 }
 
 
