@@ -76,9 +76,8 @@ int testRender() {
         if (!pawn_map.load("./../res/pawn/pawnset.png", sf::Vector2u(tile_width, tile_height), table, nb_row, nb_col))
             return -1;
 
-        board.pawns[1].setAP(1);
         Av_TileMap av_tile_map;
-        parse(nb_row, nb_col, engine1.matrixAv_Tile(board.pawns[1]), table);
+        parse(nb_row, nb_col, engine1.matrixAv_Tile(), table);
 
         if (!av_tile_map.load("./../res/hexagon-pack/PNG/av_move.png", sf::Vector2u(tile_width, tile_height), table, nb_row, nb_col))
             return -1;
@@ -97,7 +96,8 @@ int testRender() {
                     continue;
                 state::Coordinate pos = pixel_to_hex(coord);
                 //cout << "x " << pos.getRow() << " y " << pos.getColumn() << endl;
-                engine1.move(board.pawns[1], pos);
+                engine1.move(engine1.playingPawn(), pos);
+                engine1.nextTurn();
             }
         }
 
