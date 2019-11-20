@@ -15,13 +15,19 @@ using namespace std;
 using namespace render;
 
 int testEngine();
+
 int testRender();
+
 int testIA();
+
 void parse(int nb_row, int nb_col, std::array<int, 169> raw_table, unsigned int table[]);
 
 state::Coordinate pixel_to_hex(sf::Vector2i point);
+
 sf::Vector3i cube_round(sf::Vector3f cube);
+
 state::Coordinate cube_to_evenr(sf::Vector3i cube);
+
 state::Coordinate AI_rand(std::vector<state::Coordinate> av_moves);
 
 int main(int argc, char *argv[]) {
@@ -186,7 +192,7 @@ int testIA() {
         return -1;
     window.draw(tile_map);
 
-    // creates the pawnmap from the level definition and draws it
+    // creates the pawnmap from the level defnition and draws it
     parse(nb_row, nb_col, scene.matrixPawn(), level);
     PawnMap pawn_map;
     if (!pawn_map.load("./../res/pawn/pawnset.png", sf::Vector2u(tile_width, tile_height), level, nb_row, nb_col))
@@ -212,29 +218,17 @@ int testIA() {
                               nb_row, nb_col))
             return -1;
 
-        window.draw(av_tile_map);
-        window.display();
+        //window.display();
+
 
         // handle events
         sf::Event event;
         while (window.pollEvent(event)) {
             if (event.type == sf::Event::Closed)
                 window.close();
-            if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
-                while (sf::Mouse::isButtonPressed(sf::Mouse::Left));
-
-                //TODO : Handle the exeption here !
-                sf::Vector2i coord = sf::Mouse::getPosition(window);
-                if (coord.x > 972)
-                    continue;
-                state::Coordinate pos = pixel_to_hex(coord);
-                //cout << "x " << pos.getRow() << " y " << pos.getColumn() << endl;
-                engine1.move(engine1.playingPawn(), pos);
-            }
         }
 
-        engine1.move(engine1.playingPawn(), ai::Ai::AI_rand(av_moves));
-        engine1.nextTurn();
+
         parse(nb_row, nb_col, scene.matrixPawn(), level);
         PawnMap pawn_map;
         if (!pawn_map.load("./../res/pawn/pawnset.png", sf::Vector2u(tile_width, tile_height), level, nb_row, nb_col))
@@ -243,9 +237,14 @@ int testIA() {
         // draw the map
         window.clear();
         window.draw(tile_map);
+        window.draw(av_tile_map);
+        usleep(500000);
         window.draw(pawn_map);
         window.display();
-        usleep(2000000);
+
+        engine1.move(engine1.playingPawn(), ai::Ai::AI_rand(av_moves));
+        engine1.nextTurn();
+
     }
 
     return 0;
