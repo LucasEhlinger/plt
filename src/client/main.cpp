@@ -58,7 +58,7 @@ int testRender() {
     render::Scene scene{board};
 
 
-    parse(nb_row, nb_col, scene.draw(), level);
+    parse(nb_row, nb_col, scene.matrixTile(), level);
 
     // create the tilemap from the level definition
     TileMap tile_map;
@@ -76,6 +76,12 @@ int testRender() {
         if (!pawn_map.load("./../res/pawn/pawnset.png", sf::Vector2u(tile_width, tile_height), table, nb_row, nb_col))
             return -1;
 
+        Av_TileMap av_tile_map;
+        parse(nb_row, nb_col, scene.matrixAv_Tile(2), table);
+
+        if (!av_tile_map.load("./../res/hexagon-pack/PNG/av_move.png", sf::Vector2u(tile_width, tile_height), table, nb_row, nb_col))
+            return -1;
+
         // handle events
         sf::Event event;
         while (window.pollEvent(event)) {
@@ -85,7 +91,10 @@ int testRender() {
                 while (sf::Mouse::isButtonPressed(sf::Mouse::Left));
 
                 //TODO : Handle the exeption here !
-                state::Coordinate pos = pixel_to_hex(sf::Mouse::getPosition(window));
+                sf::Vector2i coord =  sf::Mouse::getPosition(window);
+                if (coord.x > 972)
+                    continue;
+                state::Coordinate pos = pixel_to_hex(coord);
                 //cout << "x " << pos.getRow() << " y " << pos.getColumn() << endl;
                 engine1.move(board.pawns[1], pos);
             }
@@ -95,6 +104,7 @@ int testRender() {
         window.clear();
         window.draw(tile_map);
         window.draw(pawn_map);
+        window.draw(av_tile_map);
         window.display();
         usleep(500);
 

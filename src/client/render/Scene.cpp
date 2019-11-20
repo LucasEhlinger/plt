@@ -24,7 +24,7 @@ Scene::Scene(state::Board &board) {
     }
 }
 
-std::array<int, 169> Scene::draw() {
+std::array<int, 169> Scene::matrixTile() {
     std::array<int, 169> level;
     level.fill(9);
     for (int i = 0; i < HEIGHT; ++i) {
@@ -46,5 +46,25 @@ std::array<int, 169> Scene::matrixPawn() {
         //set to the element of the coordinate of this pawn the value of his number_type
         table.at(pawnsView.at(i)->pawn.getCoordinate().getCoordInLine()) = pawnsView.at(i)->pawn.number_type;
     }
+    return table;
+}
+
+std::array<int, 169> Scene::matrixAv_Tile(int playing_pawn) {
+    std::array<int, 169> table;
+    table.fill(9);
+    int x = pawnsView.at(playing_pawn)->pawn.getCoordinate().getRow();
+    int y = pawnsView.at(playing_pawn)->pawn.getCoordinate().getColumn();
+    if (x - 1 >= 0)
+        table.at((x - 1) * HEIGHT + y) = 0;
+    if (x + 1 < 13)
+        table.at((x + 1) * HEIGHT + y) = 0;
+    if (y - 1 >= 0)
+        table.at(x * HEIGHT + (y - 1)) = 0;
+    if (y + 1 < 13)
+        table.at(x * HEIGHT + (y + 1)) = 0;
+    if (y + 1 < 13 && x - 1 >= 0)
+        table.at((x - 1) * HEIGHT + (y + 1)) = 0;
+    if (y - 1 >= 0 && x + 1 < 13)
+        table.at((x + 1) * HEIGHT + (y - 1)) = 0;
     return table;
 }
