@@ -15,7 +15,5 @@ BOOST_AUTO_TEST_CASE(TestMove){
         en.move(bo.pawns.front(), Coordinate{1,7});
 
         BOOST_CHECK(bo.pawns.front().getCoordinate() == en.board->pawns.front().getCoordinate());
-
-
     }
 }

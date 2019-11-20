@@ -88,6 +88,8 @@ endfunction()
 add_subdirectory(shared)
 add_subdirectory(client)
 add_subdirectory(engine)
+add_subdirectory(scene)
+
 #add_subdirectory(server)
 
 

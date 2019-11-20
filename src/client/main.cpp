@@ -4,6 +4,7 @@
 #include "render.h"
 #include <string.h>
 #include "engine.h"
+#include "ai.h"
 
 // Those lines have for sole purpose to check if the SFML is working properly
 #include <SFML/Graphics.hpp>
@@ -232,7 +233,7 @@ int testIA() {
             }
         }
 
-        engine1.move(engine1.playingPawn(), AI_rand(av_moves));
+        engine1.move(engine1.playingPawn(), ai::Ai::AI_rand(av_moves));
         engine1.nextTurn();
         parse(nb_row, nb_col, scene.matrixPawn(), level);
         PawnMap pawn_map;
@@ -297,8 +298,4 @@ sf::Vector3i cube_round(sf::Vector3f cube) {
         rz = -rx - ry;
 
     return sf::Vector3i{rx, ry, rz};
-}
-
-state::Coordinate AI_rand(std::vector<state::Coordinate> av_moves) {
-    return av_moves[rand() % av_moves.size()];
 }
