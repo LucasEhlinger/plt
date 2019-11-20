@@ -13,7 +13,7 @@ BOOST_AUTO_TEST_CASE(TestSceneValues) {
     board.pawns.push_back(state::Player{state::Coordinate{0, 6}, "test1", false});
 
     render::Scene scene{board};
-    auto tiles = scene.draw();
+    auto tiles = scene.matrixTile();
 
     BOOST_CHECK_EQUAL(tiles[6], st.number_type);
     BOOST_CHECK_EQUAL(tiles[7], fi.number_type);
