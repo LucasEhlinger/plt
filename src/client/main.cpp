@@ -245,8 +245,7 @@ int testIA() {
         window.draw(pawn_map);
         window.display();
 
-        //engine1.move(engine1.playingPawn(), ai::Ai::AI_rand(av_moves));
-        engine1.move(engine1.playingPawn(), engine1.pathfinding());
+        engine1.move(engine1.playingPawn(), ai::Ai::AI_rand(av_moves));
         engine1.nextTurn();
 
     }
@@ -310,18 +309,12 @@ int heuristic_ai() {
 
         //window.display();
 
+
         // handle events
         sf::Event event;
         while (window.pollEvent(event)) {
             if (event.type == sf::Event::Closed)
                 window.close();
-            if (sf::Keyboard::isKeyPressed(sf::Keyboard::P))
-                engine1.nextTurn();
-            if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
-                while (sf::Mouse::isButtonPressed(sf::Mouse::Left));
-                state::Coordinate pos = pixel_to_hex(sf::Mouse::getPosition(window));
-                engine1.move(engine1.playingPawn(), pos);
-            }
         }
 
         parse(nb_row, nb_col, scene.matrixPawn(), level);
@@ -333,9 +326,12 @@ int heuristic_ai() {
         window.clear();
         window.draw(tile_map);
         window.draw(av_tile_map);
-        usleep(500);
+        usleep(500000);
         window.draw(pawn_map);
         window.display();
+
+        engine1.move(engine1.playingPawn(), engine1.pathfinding());
+        engine1.nextTurn();
 
     }
 
