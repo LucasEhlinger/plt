@@ -1,10 +1,12 @@
 #include "Engine.h"
 #include "state.h"
+#include "ai.h"
 
 #define HEIGHT  13
 #define WIDTH   13
 
 using namespace engine;
+using namespace ai;
 
 Engine::Engine(state::Board &board) : board(&board) {
     state::Player player1{state::Coordinate{0, 6}, "player 1", true};
@@ -105,4 +107,62 @@ std::vector<state::Coordinate> Engine::matrixAv_Tile(state::Pawn &pawn) {
             ap + board->tiles.at((x + 1) * HEIGHT + (y - 1)).getMoveCost() >= 0)
             av_tiles.emplace_back(state::Coordinate{x + 1, y - 1});
     return av_tiles;
+}
+
+state::Coordinate Engine::pathfinding() {
+    state::Coordinate coord = {8, 6};
+
+    state::Pawn playing = Engine::playingPawn();
+    std::vector<state::Coordinate> av_moves = matrixAv_Tile(playing);
+    int row = playing.getCoordinate().getRow();
+    int col = playing.getCoordinate().getColumn();
+    int vert = -1;
+    int hori = -1;
+
+    if (board->tiles.at(coord.getRow() * HEIGHT + coord.getColumn()).number_type == 7 && board->tiles.at(coord.getRow() * HEIGHT + coord.getColumn()).number_type == 8)
+        return Ai::AI_rand(av_moves);
+    if (playing.getCoordinate().getRow() - coord.getRow() < 0)
+        vert = 1;
+    else if (playing.getCoordinate().getRow() - coord.getRow() == 0)
+        vert = 0;
+    if (playing.getCoordinate().getColumn() - coord.getColumn() < 0)
+        hori = 1;
+    else if (playing.getCoordinate().getColumn() - coord.getColumn() == 0)
+        hori = 0;
+
+    if (vert == 1 && hori == 1)
+        for(int i = 0; i < av_moves.size(); ++i)
+            if(av_moves[i] == state::Coordinate{row, col + 1} || av_moves[i] == state::Coordinate{row + 1, col})
+                return av_moves[i];
+    if (vert == 1 && hori == 0)
+        for(int i = 0; i < av_moves.size(); ++i)
+            if(av_moves[i] == state::Coordinate{row + 1, col - 1} || av_moves[i] == state::Coordinate{row + 1, col})
+                return av_moves[i];
+    if (vert == 1 && hori == -1)
+        for(int i = 0; i < av_moves.size(); ++i)
+            if(av_moves[i] == state::Coordinate{row, col - 1} || av_moves[i] == state::Coordinate{row + 1, col - 1})
+                return av_moves[i];
+    if (vert == 0 && hori == 1)
+        for(int i = 0; i < av_moves.size(); ++i)
+            if(av_moves[i] == state::Coordinate{row, col + 1})
+                return av_moves[i];
+    if (vert == 0 && hori == 0)
+        return Ai::AI_rand(av_moves);
+    if (vert == 0 && hori == -1)
+        for(int i = 0; i < av_moves.size(); ++i)
+            if(av_moves[i] == state::Coordinate{row, col - 1})
+                return av_moves[i];
+    if (vert == -1 && hori == 1)
+        for(int i = 0; i < av_moves.size(); ++i)
+            if(av_moves[i] == state::Coordinate{row, col + 1} || av_moves[i] == state::Coordinate{row - 1, col + 1})
+                return av_moves[i];
+    if (vert == -1 && hori == 0)
+        for(int i = 0; i < av_moves.size(); ++i)
+            if(av_moves[i] == state::Coordinate{row - 1, col + 1} || av_moves[i] == state::Coordinate{row - 1, col})
+                return av_moves[i];
+    if (vert == -1 && hori == -1)
+        for(int i = 0; i < av_moves.size(); ++i)
+            if(av_moves[i] == state::Coordinate{row, col - 1} || av_moves[i] == state::Coordinate{row - 1, col})
+                return av_moves[i];
+    return Ai::AI_rand(av_moves);
 }

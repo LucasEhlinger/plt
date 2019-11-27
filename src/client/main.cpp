@@ -228,7 +228,6 @@ int testIA() {
                 window.close();
         }
 
-
         parse(nb_row, nb_col, scene.matrixPawn(), level);
         PawnMap pawn_map;
         if (!pawn_map.load("./../res/pawn/pawnset.png", sf::Vector2u(tile_width, tile_height), level, nb_row, nb_col))
@@ -242,7 +241,8 @@ int testIA() {
         window.draw(pawn_map);
         window.display();
 
-        engine1.move(engine1.playingPawn(), ai::Ai::AI_rand(av_moves));
+        //engine1.move(engine1.playingPawn(), ai::Ai::AI_rand(av_moves));
+        engine1.move(engine1.playingPawn(), engine1.pathfinding());
         engine1.nextTurn();
 
     }
