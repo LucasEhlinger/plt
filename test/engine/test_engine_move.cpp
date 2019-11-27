@@ -17,3 +17,13 @@ BOOST_AUTO_TEST_CASE(TestMove){
         BOOST_CHECK(bo.pawns.front().getCoordinate() == en.board->pawns.front().getCoordinate());
     }
 }
+
+BOOST_AUTO_TEST_CASE(TestAttack){
+    {
+        Board bo{};
+        bo.generate();
+        bo.pawns.push_back(Player{Coordinate{0,7}, "player2", true});
+        Engine en{bo};
+        en.move(en.board->pawns.at(1), Coordinate{0,7});
+    }
+}
