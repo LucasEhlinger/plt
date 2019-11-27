@@ -28,10 +28,28 @@ Engine::Engine(state::Board &board) : board(&board) {
 
 void Engine::move(state::Pawn &pawn, state::Coordinate to) {
     int position = to.getCoordInLine();
+    int pawnPosition = attack(to);
     if (board->tiles.at(position).exist && (pawn.getAP() + board->tiles.at(position).getMoveCost()) >= 0) {
-        pawn.move(to);
-        board->tiles.at(position).effect(pawn);
-        pawn.notify();
+        if (pawnPosition == -1) {
+            //no attack
+            pawn.move(to);
+            board->tiles.at(position).effect(pawn);
+            pawn.notify();
+        } else {
+            //attack
+            //solving
+            if (pawn.attack(board->pawns.at(pawnPosition))) {
+                //pawn win
+                // attacked step back
+                //attacker move
+                //board->pawns.at(pawnPosition).move();
+                pawn.move(to);
+                board->tiles.at(position).effect(pawn);
+            }
+            //if pawn lose, nothing append (for the moment)
+            pawn.notify();
+            board->pawns.at(pawnPosition).notify();
+        }
     }
 }
 
@@ -105,4 +123,14 @@ std::vector<state::Coordinate> Engine::matrixAv_Tile(state::Pawn &pawn) {
             ap + board->tiles.at((x + 1) * HEIGHT + (y - 1)).getMoveCost() >= 0)
             av_tiles.emplace_back(state::Coordinate{x + 1, y - 1});
     return av_tiles;
+}
+
+int Engine::attack(state::Coordinate to) {
+    for (int i = 0; i < board->pawns.size(); ++i) {
+        if (board->pawns.at(i).getCoordinate() == to) {
+            return i;
+        }
+    }
+    return -1;
+
 }
