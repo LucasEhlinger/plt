@@ -1,3 +1,4 @@
+#include <SFML/System.hpp>
 #include "Engine.h"
 #include "state.h"
 #include "ai.h"
@@ -40,17 +41,21 @@ void Engine::move(state::Pawn &pawn, state::Coordinate to) {
         } else {
             //attack
             //solving
-            if (pawn.attack(board->pawns.at(pawnPosition))) {
+            state::Pawn defender = board->pawns.at(pawnPosition);
+            sf::Vector2i vec = {to.getRow() - pawn.getCoordinate().getRow(),
+                                to.getColumn() - pawn.getCoordinate().getColumn()};
+            if (pawn.attack(defender)) {
                 //pawn win
                 // attacked step back
                 //attacker move
-                //board->pawns.at(pawnPosition).move();
+                defender.move(state::Coordinate{defender.getCoordinate().getRow() + vec.x,
+                                                defender.getCoordinate().getColumn() + vec.y});
                 pawn.move(to);
                 board->tiles.at(position).effect(pawn);
             }
-            //if pawn lose, nothing append (for the moment)
+            //if pawn loses, nothing happens (for the moment)
             pawn.notify();
-            board->pawns.at(pawnPosition).notify();
+            defender.notify();
         }
     }
 }
@@ -137,7 +142,8 @@ state::Coordinate Engine::pathfinding() {
     int vert = -1;
     int hori = -1;
 
-    if (board->tiles.at(coord.getRow() * HEIGHT + coord.getColumn()).number_type == 7 && board->tiles.at(coord.getRow() * HEIGHT + coord.getColumn()).number_type == 8)
+    if (board->tiles.at(coord.getRow() * HEIGHT + coord.getColumn()).number_type == 7 &&
+        board->tiles.at(coord.getRow() * HEIGHT + coord.getColumn()).number_type == 8)
         return Ai::AI_rand(av_moves);
     if (playing.getCoordinate().getRow() - coord.getRow() < 0)
         vert = 1;
@@ -149,38 +155,38 @@ state::Coordinate Engine::pathfinding() {
         hori = 0;
 
     if (vert == 1 && hori == 1)
-        for(int i = 0; i < av_moves.size(); ++i)
-            if(av_moves[i] == state::Coordinate{row, col + 1} || av_moves[i] == state::Coordinate{row + 1, col})
+        for (int i = 0; i < av_moves.size(); ++i)
+            if (av_moves[i] == state::Coordinate{row, col + 1} || av_moves[i] == state::Coordinate{row + 1, col})
                 return av_moves[i];
     if (vert == 1 && hori == 0)
-        for(int i = 0; i < av_moves.size(); ++i)
-            if(av_moves[i] == state::Coordinate{row + 1, col - 1} || av_moves[i] == state::Coordinate{row + 1, col})
+        for (int i = 0; i < av_moves.size(); ++i)
+            if (av_moves[i] == state::Coordinate{row + 1, col - 1} || av_moves[i] == state::Coordinate{row + 1, col})
                 return av_moves[i];
     if (vert == 1 && hori == -1)
-        for(int i = 0; i < av_moves.size(); ++i)
-            if(av_moves[i] == state::Coordinate{row, col - 1} || av_moves[i] == state::Coordinate{row + 1, col - 1})
+        for (int i = 0; i < av_moves.size(); ++i)
+            if (av_moves[i] == state::Coordinate{row, col - 1} || av_moves[i] == state::Coordinate{row + 1, col - 1})
                 return av_moves[i];
     if (vert == 0 && hori == 1)
-        for(int i = 0; i < av_moves.size(); ++i)
-            if(av_moves[i] == state::Coordinate{row, col + 1})
+        for (int i = 0; i < av_moves.size(); ++i)
+            if (av_moves[i] == state::Coordinate{row, col + 1})
                 return av_moves[i];
     if (vert == 0 && hori == 0)
         return Ai::AI_rand(av_moves);
     if (vert == 0 && hori == -1)
-        for(int i = 0; i < av_moves.size(); ++i)
-            if(av_moves[i] == state::Coordinate{row, col - 1})
+        for (int i = 0; i < av_moves.size(); ++i)
+            if (av_moves[i] == state::Coordinate{row, col - 1})
                 return av_moves[i];
     if (vert == -1 && hori == 1)
-        for(int i = 0; i < av_moves.size(); ++i)
-            if(av_moves[i] == state::Coordinate{row, col + 1} || av_moves[i] == state::Coordinate{row - 1, col + 1})
+        for (int i = 0; i < av_moves.size(); ++i)
+            if (av_moves[i] == state::Coordinate{row, col + 1} || av_moves[i] == state::Coordinate{row - 1, col + 1})
                 return av_moves[i];
     if (vert == -1 && hori == 0)
-        for(int i = 0; i < av_moves.size(); ++i)
-            if(av_moves[i] == state::Coordinate{row - 1, col + 1} || av_moves[i] == state::Coordinate{row - 1, col})
+        for (int i = 0; i < av_moves.size(); ++i)
+            if (av_moves[i] == state::Coordinate{row - 1, col + 1} || av_moves[i] == state::Coordinate{row - 1, col})
                 return av_moves[i];
     if (vert == -1 && hori == -1)
-        for(int i = 0; i < av_moves.size(); ++i)
-            if(av_moves[i] == state::Coordinate{row, col - 1} || av_moves[i] == state::Coordinate{row - 1, col})
+        for (int i = 0; i < av_moves.size(); ++i)
+            if (av_moves[i] == state::Coordinate{row, col - 1} || av_moves[i] == state::Coordinate{row - 1, col})
                 return av_moves[i];
     return Ai::AI_rand(av_moves);
 }
