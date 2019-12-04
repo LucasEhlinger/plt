@@ -193,3 +193,7 @@ void Pawn::modifyStats (int com = 0, int vit = 0, int pom = 0, int spi = 0) {
 state::Resources Pawn::getResources() {
     return this->resources;
 }
+
+void Pawn::setResources(const class state::Resources & resources) {
+    this->resources = resources;
+}

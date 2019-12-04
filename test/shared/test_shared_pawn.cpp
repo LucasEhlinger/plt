@@ -54,7 +54,28 @@ BOOST_AUTO_TEST_CASE(TestMove) {
     }
     {
         Player player{Coordinate{12, 11}, "me", false};
-        BOOST_CHECK_THROW(player.move(Coordinate(13, 189)),std::out_of_range);
+        BOOST_CHECK_THROW(player.move(Coordinate(13, 189)), std::out_of_range);
     }
 }
 
+BOOST_AUTO_TEST_CASE(TestAttack) {
+    {
+        Player player1{Coordinate{12, 11}, "test1", false};
+        Player player2{Coordinate{12, 11}, "test2", false};
+        player1.setResources(Resources{0,0,0,6});
+        BOOST_CHECK_EQUAL(player1.getResources().rot, 6);
+        player1.attack(player2, true);
+    }
+    {
+        Player player1{Coordinate{12, 11}, "test1", false};
+        Player player2{Coordinate{12, 11}, "test2", false};
+        player2.setResources(Resources{0,0,0,6});
+        player1.attack(player2, true);
+    }
+    {
+        Player player1{Coordinate{12, 11}, "test1", false};
+        Player player2{Coordinate{12, 11}, "test2", false};
+        player1.setResources(Resources{0,0,0,6});
+        player1.attack(player2, false);
+    }
+}
