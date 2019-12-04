@@ -85,9 +85,87 @@ int Pawn::getRot() {
 }
 
 
-bool Pawn::attack(state::Pawn attacked) {
-    static auto gen = std::bind(std::uniform_int_distribution<>(0,1),std::default_random_engine());
-    return gen();
+bool Pawn::attack(state::Pawn attacked, bool day) {
+    int pawn1Sword = 0;
+    int pawn2Sword = 0;
+
+    int pawn1Shield = 0;
+    int pawn2Shield = 0;
+
+    int pawn1Dice = 3;
+    int pawn2Dice = 3;
+
+    int rolled = 0;
+    static auto gen = std::bind(std::uniform_int_distribution<>(1,6),std::default_random_engine());
+    //Pawn 1
+    while (rolled != pawn1Dice) {
+        ++rolled;
+        switch (gen()) {
+            case 1:
+                ++pawn1Sword;
+                break;
+            case 2:
+                ++pawn1Shield;
+                break;
+            case 3:
+                if (day) ++pawn1Sword;
+                break;
+            case 4:
+                if (!day) ++pawn1Sword;
+                break;
+            case 5:
+                if (this->getRot() >= 5) {
+                    ++pawn1Dice;
+                    ++pawn1Sword;
+                }
+                break;
+            case 6:
+                if (this->getRot() < 5) {
+                    ++pawn1Dice;
+                    ++pawn1Sword;
+                }
+                break;
+        }
+    }
+    rolled = 0;
+
+    //Pawn 2
+    while (rolled != pawn2Dice) {
+        ++rolled;
+        switch (gen()) {
+            case 1:
+                ++pawn2Sword;
+                break;
+            case 2:
+                ++pawn2Shield;
+                break;
+            case 3:
+                if (day) ++pawn2Sword;
+                break;
+            case 4:
+                if (!day) ++pawn2Sword;
+                break;
+            case 5:
+                if (attacked.getRot() >= 5) {
+                    ++pawn2Dice;
+                    ++pawn2Sword;
+                }
+                break;
+            case 6:
+                if (attacked.getRot() < 5) {
+                    ++pawn2Dice;
+                    ++pawn2Sword;
+                }
+                break;
+        }
+    }
+    unsigned int LP1 = pawn2Sword - pawn1Shield;
+    unsigned int LP2 = pawn1Sword - pawn2Shield;
+
+    if (LP1 > LP2){
+        return true;
+    }
+    return false;
 }
 
 /**

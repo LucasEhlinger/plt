@@ -1,5 +1,4 @@
 #include <SFML/System.hpp>
-#include <thread>
 #include "Engine.h"
 #include "state.h"
 #include "ai.h"
@@ -48,7 +47,7 @@ void Engine::move(state::Pawn &pawn, state::Coordinate to) {
             state::Pawn defender = board->pawns.at(pawnPosition);
             sf::Vector2i vec = {to.getRow() - pawn.getCoordinate().getRow(),
                                 to.getColumn() - pawn.getCoordinate().getColumn()};
-            if (pawn.attack(defender)) {
+            if (pawn.attack(defender, this->board->day)) {
                 //pawn win
                 // attacked step back
                 //attacker move
