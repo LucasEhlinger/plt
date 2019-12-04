@@ -84,6 +84,12 @@ int Pawn::getRot() {
     return this->resources.rot;
 }
 
+
+bool Pawn::attack(state::Pawn attacked) {
+    static auto gen = std::bind(std::uniform_int_distribution<>(0,1),std::default_random_engine());
+    return gen();
+}
+
 /**
  * equality operator to test if too players are the same.
  * @param rhs state::Pawn
