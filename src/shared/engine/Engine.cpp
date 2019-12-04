@@ -205,18 +205,19 @@ int Engine::attack(state::Coordinate to) {
     return -1;
 }
 
-state::Coordinate Engine::AI_finale () {
+state::Coordinate Engine::AI_finale() {
     state::Pawn playing = Engine::playingPawn();
     state::Coordinate current_coord = playing.getCoordinate();
 
     bool kill_king, kill_king_q, kill_prestige, kill_prestige_q = false;
 
-    std::thread t1(sim_attack, playing, state::Coordinate{6,6}, kill_king);
-    std::thread t2(sim_attack, playing, state::Coordinate{6,6}, kill_king_q, 1);
+    std::thread t1(sim_attack, playing, state::Coordinate{6, 6}, kill_king);
+    std::thread t2(sim_attack, playing, state::Coordinate{6, 6}, kill_king_q, 1);
     bool prestige_win = false;
-    state::Coordinate goal{0,0};
+    state::Coordinate goal{0, 0};
     for (int i = 0; i < board->pawns.size(); ++i)
-        if (board->pawns.at(i).getResources().prestige - playing.getResources().prestige < 2 && playing.getResources().prestige < board->pawns.at(i).getResources().prestige) {
+        if (board->pawns.at(i).getResources().prestige - playing.getResources().prestige < 2 &&
+            playing.getResources().prestige < board->pawns.at(i).getResources().prestige) {
             prestige_win = true;
             goal = board->pawns.at(i).getCoordinate();
         }
@@ -227,12 +228,12 @@ state::Coordinate Engine::AI_finale () {
     t1.join();
     t2.join();
     if (prestige_win) {
-        t3.join();
-        t4.join();
+        //t3.join();
+        //t4.join();
     }
 
     if (kill_king)
-        return state::Coordinate{6,6};
+        return state::Coordinate{6, 6};
     else if (kill_king_q || kill_prestige_q)
         return Ai::AI_rand(Engine::matrixAv_Tile(playing));
     else if (kill_prestige)
