@@ -1,7 +1,9 @@
 #include <SFML/System.hpp>
+#include <thread>
 #include "Engine.h"
 #include "state.h"
 #include "ai.h"
+
 
 #define HEIGHT  13
 #define WIDTH   13
@@ -28,6 +30,8 @@ Engine::Engine(state::Board &board) : board(&board) {
     this->board->pawns.emplace_back(king);
     this->board->pawns.emplace_back(guard1);
 }
+
+void sim_attack(state::Pawn playing, state::Coordinate goal, bool aim, int modifier);
 
 void Engine::move(state::Pawn &pawn, state::Coordinate to) {
     int position = to.getCoordInLine();
@@ -199,5 +203,52 @@ int Engine::attack(state::Coordinate to) {
         }
     }
     return -1;
+}
 
+state::Coordinate Engine::AI_finale () {
+    state::Pawn playing = Engine::playingPawn();
+    state::Coordinate current_coord = playing.getCoordinate();
+
+    bool kill_king, kill_king_q, kill_prestige, kill_prestige_q = false;
+
+    std::thread t1(sim_attack, playing, state::Coordinate{6,6}, kill_king);
+    std::thread t2(sim_attack, playing, state::Coordinate{6,6}, kill_king_q, 1);
+    bool prestige_win = false;
+    state::Coordinate goal{0,0};
+    for (int i = 0; i < board->pawns.size(); ++i)
+        if (board->pawns.at(i).getResources().prestige - playing.getResources().prestige < 2 && playing.getResources().prestige < board->pawns.at(i).getResources().prestige) {
+            prestige_win = true;
+            goal = board->pawns.at(i).getCoordinate();
+        }
+    if (prestige_win) {
+        std::thread t3(sim_attack, playing, goal, kill_prestige);
+        std::thread t4(sim_attack, playing, goal, kill_prestige_q, 1);
+    }
+    t1.join();
+    t2.join();
+    if (prestige_win) {
+        t3.join();
+        t4.join();
+    }
+
+    if (kill_king)
+        return state::Coordinate{6,6};
+    else if (kill_king_q || kill_prestige_q)
+        return Ai::AI_rand(Engine::matrixAv_Tile(playing));
+    else if (kill_prestige)
+        return goal;
+    else
+        return Ai::AI_rand(Engine::matrixAv_Tile(playing));
+}
+
+void sim_attack(state::Pawn playing, state::Coordinate goal, bool aim, int modifier = 0) {
+    int ratio = 0;
+    playing.modifyStats(modifier, 0, 0, 0);
+    for (int i = 100; --i;) {
+        playing.move(goal);
+        if (playing.getCoordinate() == goal)
+            ++ratio;
+    }
+    if (ratio > 70)
+        aim = true;
 }

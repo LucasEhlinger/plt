@@ -84,12 +84,6 @@ int Pawn::getRot() {
     return this->resources.rot;
 }
 
-
-bool Pawn::attack(state::Pawn attacked) {
-    static auto gen = std::bind(std::uniform_int_distribution<>(0,1),std::default_random_engine());
-    return gen();
-}
-
 /**
  * equality operator to test if too players are the same.
  * @param rhs state::Pawn
@@ -103,4 +97,11 @@ bool Pawn::operator==(state::Pawn &rhs) {
            rhs.actionPoints == actionPoints &&
            rhs.stats == stats &&
            rhs.name == name;
+}
+
+void Pawn::modifyStats (int com = 0, int vit = 0, int pom = 0, int spi = 0) {
+    this->stats.combativeness += com;
+    this->stats.vitality += vit;
+    this->stats.presenceOfMind += pom;
+    this->stats.spirituality += spi;
 }
