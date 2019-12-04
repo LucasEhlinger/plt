@@ -111,3 +111,7 @@ void Pawn::modifyStats (int com = 0, int vit = 0, int pom = 0, int spi = 0) {
     this->stats.presenceOfMind += pom;
     this->stats.spirituality += spi;
 }
+
+state::Resources Pawn::getResources() {
+    return this->resources;
+}
