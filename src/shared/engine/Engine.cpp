@@ -31,7 +31,7 @@ Engine::Engine(state::Board &board) : board(&board) {
     this->board->pawns.emplace_back(guard1);
 }
 
-void sim_attack(state::Pawn playing, state::Coordinate goal, bool aim, int modifier);
+void sim_attack(state::Pawn playing, state::Coordinate goal, bool aim, int modifier = 0);
 
 void Engine::move(state::Pawn &pawn, state::Coordinate to) {
     int position = to.getCoordInLine();
@@ -211,8 +211,8 @@ state::Coordinate Engine::AI_finale() {
 
     bool kill_king, kill_king_q, kill_prestige, kill_prestige_q = false;
 
-    std::thread t1(sim_attack, playing, state::Coordinate{6, 6}, kill_king);
-    std::thread t2(sim_attack, playing, state::Coordinate{6, 6}, kill_king_q, 1);
+    sim_attack(playing, state::Coordinate{6, 6}, kill_king);
+    sim_attack(playing, state::Coordinate{6, 6}, kill_king_q, 1);
     bool prestige_win = false;
     state::Coordinate goal{0, 0};
     for (int i = 0; i < board->pawns.size(); ++i)
@@ -222,14 +222,8 @@ state::Coordinate Engine::AI_finale() {
             goal = board->pawns.at(i).getCoordinate();
         }
     if (prestige_win) {
-        std::thread t3(sim_attack, playing, goal, kill_prestige);
-        std::thread t4(sim_attack, playing, goal, kill_prestige_q, 1);
-    }
-    t1.join();
-    t2.join();
-    if (prestige_win) {
-        //t3.join();
-        //t4.join();
+        sim_attack(playing, goal, kill_prestige);
+        sim_attack(playing, goal, kill_prestige_q, 1);
     }
 
     if (kill_king)
@@ -242,7 +236,7 @@ state::Coordinate Engine::AI_finale() {
         return Ai::AI_rand(Engine::matrixAv_Tile(playing));
 }
 
-void sim_attack(state::Pawn playing, state::Coordinate goal, bool aim, int modifier = 0) {
+void sim_attack(state::Pawn playing, state::Coordinate goal, bool aim, int modifier) {
     int ratio = 0;
     playing.modifyStats(modifier, 0, 0, 0);
     for (int i = 100; --i;) {

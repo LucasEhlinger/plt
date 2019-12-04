@@ -330,7 +330,7 @@ int heuristic_ai() {
         window.draw(pawn_map);
         window.display();
 
-        engine1.move(engine1.playingPawn(), engine1.pathfinding());
+        engine1.move(engine1.playingPawn(), engine1.AI_finale());
         engine1.nextTurn();
 
     }
