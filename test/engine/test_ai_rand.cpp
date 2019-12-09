@@ -11,6 +11,7 @@ BOOST_AUTO_TEST_CASE(TestRandomAi) {
     Board bo{};
     bo.generate();
     Engine en{bo};
+    ai::Random ai;
 
     std::vector<state::Coordinate> av_moves = en.matrixAv_Tile(en.playingPawn());
     std::array<int, 169> av_tiles;
@@ -21,7 +22,7 @@ BOOST_AUTO_TEST_CASE(TestRandomAi) {
         av_tiles.at(av_moves.at(j).getCoordInLine()) = 0;
 
     for(int i= 0; i <200; i++) {
-        BOOST_CHECK_NO_THROW(en.move(en.playingPawn(), ai::Ai::AI_rand(av_moves)));
+        BOOST_CHECK_NO_THROW(en.move(en.playingPawn(), ai.action(av_moves)));
         en.nextTurn();
     }
 

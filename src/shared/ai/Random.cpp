@@ -1,13 +1,11 @@
-#include "Ai.h"
-#include <string>
-#include <iostream>
+#include "Random.h"
 #include <array>
 #include <cmath>
 
 
 using namespace ai;
 
-state::Coordinate Ai::AI_rand(std::vector<state::Coordinate> av_moves) {
+state::Coordinate Random::action(std::vector<state::Coordinate> av_moves) {
     srand(time(NULL));
     return av_moves[rand() % av_moves.size()];
 }

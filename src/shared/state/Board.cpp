@@ -33,6 +33,80 @@ void Board::changeTime() {
     this->day = !this->day;
 }
 
+state::Pawn& Board::playingPawn() {
+    for (int i = 0; i < pawns.size(); ++i) {
+        if (pawns.at(i).isPlaying) {
+            return pawns[i];
+        }
+    }
+    return pawns[0];
+}
+
+std::vector<state::Coordinate> Board::matrixAv_Tile(state::Pawn & pawn) {
+    std::vector<state::Coordinate> av_tiles;
+    bool row_up = false;
+    bool row_down = false;
+    bool col_up = false;
+    bool col_down = false;
+
+    int x = pawn.getCoordinate().getRow();
+    int y = pawn.getCoordinate().getColumn();
+    int ap = pawn.getAP();
+
+    if (x < 12)
+        row_up = true;
+    if (y < 12)
+        col_up = true;
+    if (x > 0)
+        row_down = true;
+    if (y > 0)
+        col_down = true;
+
+    if (row_down)
+        if (tiles.at((x - 1) * HEIGHT + y).exist &&
+            ap + tiles.at((x - 1) * HEIGHT + y).getMoveCost() >= 0)
+            av_tiles.emplace_back(state::Coordinate{x - 1, y});
+    if (row_up)
+        if (tiles.at((x + 1) * HEIGHT + y).exist &&
+            ap + tiles.at((x + 1) * HEIGHT + y).getMoveCost() >= 0)
+            av_tiles.emplace_back(state::Coordinate{x + 1, y});
+    if (col_down)
+        if (tiles.at(x * HEIGHT + (y - 1)).exist &&
+            ap + tiles.at(x * HEIGHT + (y - 1)).getMoveCost() >= 0)
+            av_tiles.emplace_back(state::Coordinate{x, y - 1});
+    if (col_up)
+        if (tiles.at(x * HEIGHT + (y + 1)).exist &&
+            ap + tiles.at(x * HEIGHT + (y + 1)).getMoveCost() >= 0)
+            av_tiles.emplace_back(state::Coordinate{x, y + 1});
+    if (row_down && col_up)
+        if (tiles.at((x - 1) * HEIGHT + (y + 1)).exist &&
+            ap + tiles.at((x - 1) * HEIGHT + (y + 1)).getMoveCost() >= 0)
+            av_tiles.emplace_back(state::Coordinate{x - 1, y + 1});
+    if (row_up && col_down)
+        if (tiles.at((x + 1) * HEIGHT + (y - 1)).exist &&
+            ap + tiles.at((x + 1) * HEIGHT + (y - 1)).getMoveCost() >= 0)
+            av_tiles.emplace_back(state::Coordinate{x + 1, y - 1});
+    return av_tiles;
+}
+
+
+void Board::nextTurn() {
+    for (int i = 0; i < pawns.size(); ++i) {
+        if (pawns.at(i).isPlaying) {
+            pawns[i].isPlaying = false;
+            if (i + 1 >= pawns.size()) {
+                pawns[0].setAP(1);
+                pawns[0].isPlaying = true;
+            } else {
+                pawns[i + 1].setAP(1);
+                pawns[i + 1].isPlaying = true;
+            }
+            break;
+        }
+    }
+}
+
+
 void Board::generate() {
 
     srand(time(NULL));

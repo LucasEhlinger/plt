@@ -181,6 +181,8 @@ int testIA() {
     // create the window
     sf::RenderWindow window(sf::VideoMode(1536, 860), "just_another_plt_map");
 
+    ai::Random ai;
+
     state::Board board{};
     board.generate();
     engine::Engine engine1{board};
@@ -245,7 +247,8 @@ int testIA() {
         window.draw(pawn_map);
         window.display();
 
-        engine1.move(engine1.playingPawn(), ai::Ai::AI_rand(av_moves));
+
+        engine1.move(engine1.playingPawn(), ai.action(av_moves));
         engine1.nextTurn();
 
     }

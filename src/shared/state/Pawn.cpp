@@ -8,7 +8,8 @@
 
 using namespace ::state;
 
-Pawn::Pawn(state::Coordinate position, std::string name) : coordinate(position), name(name), stats(0, 0, 0, 0),
+Pawn::Pawn(state::Coordinate position, std::string name) : coordinate(position), name(name),
+                                                           stats(0, 0, 0, 0),
                                                            resources(0, 0, 0, 0) {
     lifePoints = 0;
     actionPoints = 0;
@@ -96,7 +97,7 @@ bool Pawn::attack(state::Pawn attacked, bool day) {
     int pawn2Dice = 3;
 
     int rolled = 0;
-    static auto gen = std::bind(std::uniform_int_distribution<>(1,6),std::default_random_engine());
+    static auto gen = std::bind(std::uniform_int_distribution<>(1, 6), std::default_random_engine());
     //Pawn 1
     while (rolled != pawn1Dice) {
         ++rolled;
@@ -159,13 +160,8 @@ bool Pawn::attack(state::Pawn attacked, bool day) {
                 break;
         }
     }
-    unsigned int LP1 = pawn2Sword - pawn1Shield;
-    unsigned int LP2 = pawn1Sword - pawn2Shield;
 
-    if (LP1 > LP2){
-        return true;
-    }
-    return false;
+    return (unsigned int) (pawn2Sword - pawn1Shield) > (unsigned int) (pawn1Sword - pawn2Shield);
 }
 
 /**
@@ -183,17 +179,37 @@ bool Pawn::operator==(state::Pawn &rhs) {
            rhs.name == name;
 }
 
-void Pawn::modifyStats (int com = 0, int vit = 0, int pom = 0, int spi = 0) {
-    this->stats.combativeness += com;
-    this->stats.vitality += vit;
-    this->stats.presenceOfMind += pom;
-    this->stats.spirituality += spi;
+void Pawn::modifyStats(int combativeness = 0, int vitality = 0, int presenceOfMind = 0, int spiritualityint = 0) {
+    stats.combativeness += combativeness;
+    stats.vitality += vitality;
+    stats.presenceOfMind += presenceOfMind;
+    stats.spirituality += spiritualityint;
 }
 
 state::Resources Pawn::getResources() {
-    return this->resources;
+    return resources;
 }
 
-void Pawn::setResources(const class state::Resources & resources) {
+void Pawn::setResources(const class state::Resources &resources) {
     this->resources = resources;
+}
+
+void Pawn::setStats(const class state::Stats & stats) {
+    this->stats = stats;
+}
+
+int Pawn::getCombativeness() {
+    return stats.combativeness;
+}
+
+int Pawn::getVitality() {
+    return stats.vitality;
+}
+
+int Pawn::getPresenceOfMind() {
+    return stats.presenceOfMind;
+}
+
+int Pawn::getSpirituality() {
+    return stats.spirituality;
 }

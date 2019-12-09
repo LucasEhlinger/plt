@@ -64,75 +64,15 @@ void Engine::move(state::Pawn &pawn, state::Coordinate to) {
 }
 
 state::Pawn &Engine::playingPawn() {
-    for (int i = 0; i < board->pawns.size(); ++i) {
-        if (board->pawns.at(i).isPlaying) {
-            return board->pawns[i];
-        }
-    }
-    return board->pawns[0];
+    return board->playingPawn();
 }
 
 void Engine::nextTurn() {
-    for (int i = 0; i < board->pawns.size(); ++i) {
-        if (board->pawns.at(i).isPlaying) {
-            board->pawns[i].isPlaying = false;
-            if (i + 1 >= board->pawns.size()) {
-                board->pawns[0].setAP(1);
-                board->pawns[0].isPlaying = true;
-            } else {
-                board->pawns[i + 1].setAP(1);
-                board->pawns[i + 1].isPlaying = true;
-            }
-            break;
-        }
-    }
+    board->nextTurn();
 }
 
 std::vector<state::Coordinate> Engine::matrixAv_Tile(state::Pawn &pawn) {
-    std::vector<state::Coordinate> av_tiles;
-    bool row_up = false;
-    bool row_down = false;
-    bool col_up = false;
-    bool col_down = false;
-
-    int x = pawn.getCoordinate().getRow();
-    int y = pawn.getCoordinate().getColumn();
-    int ap = pawn.getAP();
-
-    if (x < 12)
-        row_up = true;
-    if (y < 12)
-        col_up = true;
-    if (x > 0)
-        row_down = true;
-    if (y > 0)
-        col_down = true;
-
-    if (row_down)
-        if (board->tiles.at((x - 1) * HEIGHT + y).exist &&
-            ap + board->tiles.at((x - 1) * HEIGHT + y).getMoveCost() >= 0)
-            av_tiles.emplace_back(state::Coordinate{x - 1, y});
-    if (row_up)
-        if (board->tiles.at((x + 1) * HEIGHT + y).exist &&
-            ap + board->tiles.at((x + 1) * HEIGHT + y).getMoveCost() >= 0)
-            av_tiles.emplace_back(state::Coordinate{x + 1, y});
-    if (col_down)
-        if (board->tiles.at(x * HEIGHT + (y - 1)).exist &&
-            ap + board->tiles.at(x * HEIGHT + (y - 1)).getMoveCost() >= 0)
-            av_tiles.emplace_back(state::Coordinate{x, y - 1});
-    if (col_up)
-        if (board->tiles.at(x * HEIGHT + (y + 1)).exist &&
-            ap + board->tiles.at(x * HEIGHT + (y + 1)).getMoveCost() >= 0)
-            av_tiles.emplace_back(state::Coordinate{x, y + 1});
-    if (row_down && col_up)
-        if (board->tiles.at((x - 1) * HEIGHT + (y + 1)).exist &&
-            ap + board->tiles.at((x - 1) * HEIGHT + (y + 1)).getMoveCost() >= 0)
-            av_tiles.emplace_back(state::Coordinate{x - 1, y + 1});
-    if (row_up && col_down)
-        if (board->tiles.at((x + 1) * HEIGHT + (y - 1)).exist &&
-            ap + board->tiles.at((x + 1) * HEIGHT + (y - 1)).getMoveCost() >= 0)
-            av_tiles.emplace_back(state::Coordinate{x + 1, y - 1});
-    return av_tiles;
+    return board->matrixAv_Tile(pawn);
 }
 
 state::Coordinate Engine::pathfinding() {
@@ -147,7 +87,7 @@ state::Coordinate Engine::pathfinding() {
 
     if (board->tiles.at(coord.getRow() * HEIGHT + coord.getColumn()).number_type == 7 &&
         board->tiles.at(coord.getRow() * HEIGHT + coord.getColumn()).number_type == 8)
-        return Ai::AI_rand(av_moves);
+        return ai::Random::action(av_moves);
     if (playing.getCoordinate().getRow() - coord.getRow() < 0)
         vert = 1;
     else if (playing.getCoordinate().getRow() - coord.getRow() == 0)
@@ -174,7 +114,7 @@ state::Coordinate Engine::pathfinding() {
             if (av_moves[i] == state::Coordinate{row, col + 1})
                 return av_moves[i];
     if (vert == 0 && hori == 0)
-        return Ai::AI_rand(av_moves);
+        return ai::Random::action(av_moves);
     if (vert == 0 && hori == -1)
         for (int i = 0; i < av_moves.size(); ++i)
             if (av_moves[i] == state::Coordinate{row, col - 1})
@@ -191,7 +131,7 @@ state::Coordinate Engine::pathfinding() {
         for (int i = 0; i < av_moves.size(); ++i)
             if (av_moves[i] == state::Coordinate{row, col - 1} || av_moves[i] == state::Coordinate{row - 1, col})
                 return av_moves[i];
-    return Ai::AI_rand(av_moves);
+    return ai::Random::action(av_moves);
 }
 
 
@@ -228,11 +168,11 @@ state::Coordinate Engine::AI_finale() {
     if (kill_king)
         return state::Coordinate{6, 6};
     else if (kill_king_q || kill_prestige_q)
-        return Ai::AI_rand(Engine::matrixAv_Tile(playing));
+        return ai::Random::action(Engine::matrixAv_Tile(playing));
     else if (kill_prestige)
         return goal;
     else
-        return Ai::AI_rand(Engine::matrixAv_Tile(playing));
+        return  ai::Random::action(Engine::matrixAv_Tile(playing));
 }
 
 void sim_attack(state::Pawn playing, state::Coordinate goal, bool aim, int modifier) {

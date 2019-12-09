@@ -79,3 +79,15 @@ BOOST_AUTO_TEST_CASE(TestAttack) {
         player1.attack(player2, false);
     }
 }
+
+BOOST_AUTO_TEST_CASE(TestModifyStats){
+    {
+        Player player1{Coordinate{12, 11}, "test1", false};
+        player1.setStats(Stats{1,2,3,4});
+        player1.modifyStats(4,-2,3,-1);
+        BOOST_CHECK_EQUAL(player1.getCombativeness(), 5);
+        BOOST_CHECK_EQUAL(player1.getVitality(), 0);
+        BOOST_CHECK_EQUAL(player1.getPresenceOfMind(), 6);
+        BOOST_CHECK_EQUAL(player1.getSpirituality(), 3);
+    }
+}
