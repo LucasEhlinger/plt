@@ -79,15 +79,17 @@ state::Coordinate Engine::pathfinding() {
     state::Coordinate coord = {8, 6};
 
     state::Pawn playing = Engine::playingPawn();
-    std::vector<state::Coordinate> av_moves = matrixAv_Tile(playing);
+    std::vector<state::Coordinate> av_moves = board->matrixAv_Tile(playing);
     int row = playing.getCoordinate().getRow();
     int col = playing.getCoordinate().getColumn();
     int vert = -1;
     int hori = -1;
 
-    if (board->tiles.at(coord.getRow() * HEIGHT + coord.getColumn()).number_type == 7 &&
-        board->tiles.at(coord.getRow() * HEIGHT + coord.getColumn()).number_type == 8)
+    //si coord est un départ (start : 7) ou un chateau (Castle : 8)
+    if (board->tiles.at(coord.getCoordInLine()).number_type == 7 ||
+        board->tiles.at(coord.getCoordInLine()).number_type == 8)
         return ai::Random::action(av_moves);
+
     if (playing.getCoordinate().getRow() - coord.getRow() < 0)
         vert = 1;
     else if (playing.getCoordinate().getRow() - coord.getRow() == 0)
@@ -168,11 +170,11 @@ state::Coordinate Engine::AI_finale() {
     if (kill_king)
         return state::Coordinate{6, 6};
     else if (kill_king_q || kill_prestige_q)
-        return ai::Random::action(Engine::matrixAv_Tile(playing));
+        return ai::Random::action(board->matrixAv_Tile(playing));
     else if (kill_prestige)
         return goal;
     else
-        return  ai::Random::action(Engine::matrixAv_Tile(playing));
+        return  ai::Random::action(board->matrixAv_Tile(playing));
 }
 
 void sim_attack(state::Pawn playing, state::Coordinate goal, bool aim, int modifier) {
