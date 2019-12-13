@@ -30,10 +30,9 @@ sf::Vector3i cube_round(sf::Vector3f cube);
 
 state::Coordinate cube_to_evenr(sf::Vector3i cube);
 
-state::Coordinate AI_rand(std::vector<state::Coordinate> av_moves);
+void shadow_move(engine::Engine engine1, state::Coordinate pro_coord);
 
 int main(int argc, char *argv[]) {
-    //testRender();
     if (argc == 2) {
         if (strcmp(argv[1], "hello") == 0) {
             cout << "Bonjour à tous !" << endl;
@@ -115,6 +114,8 @@ int testEngine() {
     const int nb_row = 13;
     unsigned int level[nb_col * nb_row];
     unsigned int table[nb_col * nb_row];
+    std::array<int, 169> av_tiles;
+    std::vector<state::Coordinate> av_moves;
 
     // create the window
     sf::RenderWindow window(sf::VideoMode(1536, 860), "just_another_plt_map");
@@ -143,12 +144,25 @@ int testEngine() {
         if (!pawn_map.load("./../res/pawn/pawnset.png", sf::Vector2u(tile_width, tile_height), table, nb_row, nb_col))
             return -1;
 
+        // creates the movemap from the moves available to the currently playing pawn and draws it
+        av_moves = engine1.matrixAv_Tile(engine1.playingPawn());
+        av_tiles.fill(9);
+        av_tiles.at(engine1.playingPawn().getCoordinate().getCoordInLine()) = engine1.playingPawn().number_type + 1;
+        for (int j = 0; j < av_moves.size(); ++j)
+            av_tiles.at(av_moves.at(j).getCoordInLine()) = 0;
+
+        parse(nb_row, nb_col, av_tiles, table);
+        Av_TileMap av_tile_map;
+        if (!av_tile_map.load("./../res/hexagon-pack/PNG/av_move.png", sf::Vector2u(tile_width, tile_height), table,
+                              nb_row, nb_col))
+            return -1;
         // handle events
         sf::Event event;
         while (window.pollEvent(event)) {
             if (event.type == sf::Event::Closed)
                 window.close();
-            if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
+            if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left) || sf::Keyboard::isKeyPressed(sf::Keyboard::Right) ||
+                sf::Keyboard::isKeyPressed(sf::Keyboard::Up) || sf::Keyboard::isKeyPressed(sf::Keyboard::Down)) {
                 while (sf::Mouse::isButtonPressed(sf::Mouse::Left));
                 state::Coordinate pos = pixel_to_hex(sf::Mouse::getPosition(window));
                 engine1.move(engine1.playingPawn(), pos);
@@ -159,6 +173,7 @@ int testEngine() {
         // draw the map
         window.clear();
         window.draw(tile_map);
+        window.draw(av_tile_map);
         window.draw(pawn_map);
         window.display();
         usleep(500);
@@ -389,4 +404,11 @@ sf::Vector3i cube_round(sf::Vector3f cube) {
         rz = -rx - ry;
 
     return sf::Vector3i{rx, ry, rz};
+}
+
+void shadow_move(engine::Engine engine1, state::Coordinate pro_coord){
+    while (!(sf::Keyboard::isKeyPressed(sf::Keyboard::Left) || sf::Keyboard::isKeyPressed(sf::Keyboard::Right) ||
+        sf::Keyboard::isKeyPressed(sf::Keyboard::Up) || sf::Keyboard::isKeyPressed(sf::Keyboard::Down))) {
+        
+    }
 }
