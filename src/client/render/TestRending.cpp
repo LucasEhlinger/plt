@@ -10,18 +10,12 @@
 #include <SFML/System.hpp>
 
 using namespace render;
+using namespace sf;
 
-TestRending::TestRending() {
-
+TestRending::TestRending() : window(VideoMode(1536, 860), "just_another_plt_map") {
 }
 
 int TestRending::render() {
-    unsigned int level[nb_col * nb_row];
-    unsigned int table[nb_col * nb_row];
-
-    // create the window
-    sf::RenderWindow window(sf::VideoMode(1536, 860), "just_another_plt_map");
-
     state::Board board{};
     board.generate();
     render::Scene scene{board};
@@ -63,12 +57,6 @@ int TestRending::render() {
 }
 
 int TestRending::engine() {
-    unsigned int level[nb_col * nb_row];
-    unsigned int table[nb_col * nb_row];
-
-    // create the window
-    sf::RenderWindow window(sf::VideoMode(1536, 860), "just_another_plt_map");
-
     state::Board board{};
     board.generate();
     engine::Engine engine1{board};
@@ -119,13 +107,8 @@ int TestRending::engine() {
 }
 
 int TestRending::ia() {
-    unsigned int level[nb_col * nb_row];
-    unsigned int table[nb_col * nb_row];
     std::array<int, 169> av_tiles;
     std::vector<state::Coordinate> av_moves;
-
-    // create the window
-    sf::RenderWindow window(sf::VideoMode(1536, 860), "just_another_plt_map");
 
     ai::Random ai;
 
@@ -170,7 +153,6 @@ int TestRending::ia() {
                               nb_row, nb_col))
             return -1;
 
-        //window.display();
 
 
         // handle events
@@ -203,13 +185,8 @@ int TestRending::ia() {
 }
 
 int TestRending::heuristic_ai() {
-    unsigned int level[nb_col * nb_row];
-    unsigned int table[nb_col * nb_row];
     std::array<int, 169> av_tiles;
     std::vector<state::Coordinate> av_moves;
-
-    // create the window
-    sf::RenderWindow window(sf::VideoMode(1536, 860), "just_another_plt_map");
 
     state::Board board{};
     board.generate();

@@ -8,7 +8,6 @@ using namespace render;
 int main(int argc, char *argv[]) {
 
     TestRending test{};
-    //testRender();
     if (argc == 2) {
         if (strcmp(argv[1], "hello") == 0) {
             cout << "Bonjour à tous !" << endl;
