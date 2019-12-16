@@ -8,8 +8,10 @@
 #include <cmath>
 #include <SFML/Graphics.hpp>
 #include <SFML/System.hpp>
+#include "../render.h"
 
 using namespace render;
+using namespace client;
 using namespace sf;
 
 TestRending::TestRending() : window(VideoMode(1536, 860), "just_another_plt_map") {
@@ -24,7 +26,7 @@ int TestRending::render() {
     parse(nb_row, nb_col, scene.matrixTile(), level);
 
     // create the tilemap from the level definition
-    TileMap tile_map;
+    render::TileMap tile_map;
     if (!tile_map.load("./../res/hexagon-pack/PNG/tileset.png", sf::Vector2u(tile_width, tile_height), level, nb_col,
                        nb_row))
         return -1;

@@ -1,9 +1,9 @@
 #include <iostream>
-#include "render.h"
+#include "client.h"
 #include <string.h>
 
 using namespace std;
-using namespace render;
+using namespace client;
 
 int main(int argc, char *argv[]) {
 
