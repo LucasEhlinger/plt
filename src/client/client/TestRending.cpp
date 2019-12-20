@@ -59,6 +59,14 @@ int TestRending::render() {
 }
 
 int TestRending::engine() {
+    std::array<int, 169> av_tiles;
+    std::vector<state::Coordinate> av_moves;
+    state::Coordinate pro_coord{0,0};
+    bool new_turn = true;
+
+    // create the window
+    sf::RenderWindow window(sf::VideoMode(1536, 860), "just_another_plt_map");
+    window.setKeyRepeatEnabled(false);
     state::Board board{};
     board.generate();
     engine::Engine engine1{board};
@@ -76,33 +84,76 @@ int TestRending::engine() {
     int i = 0;
     // run the main loop
     while (window.isOpen()) {
-        ++i;
+        window.clear();
+        window.draw(tile_map);
+
         PawnMap pawn_map;
         parse(nb_row, nb_col, scene.matrixPawn(), table);
 
         if (!pawn_map.load("./../res/pawn/pawnset.png", sf::Vector2u(tile_width, tile_height), table, nb_row, nb_col))
             return -1;
+        window.draw(pawn_map);
 
-        // handle events
-        sf::Event event;
-        while (window.pollEvent(event)) {
-            if (event.type == sf::Event::Closed)
-                window.close();
-            if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
-                while (sf::Mouse::isButtonPressed(sf::Mouse::Left));
-                state::Coordinate pos = pixel_to_hex(sf::Mouse::getPosition(window));
-                engine1.move(engine1.playingPawn(), pos);
-                engine1.nextTurn();
-            }
+        // creates the movemap from the moves available to the currently playing pawn and draws it
+        if (engine1.playingPawn().isHuman) {
+            if (new_turn)
+                pro_coord = engine1.playingPawn().getCoordinate();
+            av_moves = engine1.matrixAv_Tile(engine1.playingPawn());
+            av_tiles.fill(9);
+            for (int j = 0; j < av_moves.size(); ++j)
+                av_tiles.at(av_moves.at(j).getCoordInLine()) = 0;
+            av_tiles.at(pro_coord.getCoordInLine()) = engine1.playingPawn().number_type + 1;
+
+            parse(nb_row, nb_col, av_tiles, table);
+            Av_TileMap av_tile_map;
+            if (!av_tile_map.load("./../res/hexagon-pack/PNG/av_move.png", sf::Vector2u(tile_width, tile_height), table,
+                                  nb_row, nb_col))
+                return -1;
+            window.draw(av_tile_map);
+            window.display();
+            usleep(16000);
+        }
+        else {
+            engine1.move(engine1.playingPawn(), engine1.AI_finale());
+            engine1.nextTurn();
+            new_turn = true;
+            window.display();
+            usleep(500000);
         }
 
-        // draw the map
-        window.clear();
-        window.draw(tile_map);
-        window.draw(pawn_map);
-        window.display();
-        usleep(500);
-
+        //handle events
+        sf::Event event;
+        while (window.pollEvent(event))
+            switch (event.type) {
+                case sf::Event::Closed:
+                    window.close();
+                case sf::Event::KeyPressed:
+                    switch (event.key.code) {
+                        case sf::Keyboard::Left:
+                            shadow_move(engine1.playingPawn(), pro_coord, av_moves, sf::Vector2i{0, -1}, av_tiles);
+                            new_turn = false;
+                            break;
+                        case sf::Keyboard::Right:
+                            shadow_move(engine1.playingPawn(), pro_coord, av_moves, sf::Vector2i{0, +1}, av_tiles);
+                            new_turn = false;
+                            break;
+                        case sf::Keyboard::Up:
+                            shadow_move(engine1.playingPawn(), pro_coord, av_moves, sf::Vector2i{-1, 0}, av_tiles);
+                            new_turn = false;
+                            break;
+                        case sf::Keyboard::Down:
+                            shadow_move(engine1.playingPawn(), pro_coord, av_moves, sf::Vector2i{+1, 0}, av_tiles);
+                            new_turn = false;
+                            break;
+                        case sf::Keyboard::Space:
+                            engine1.move(engine1.playingPawn(), pro_coord);
+                            engine1.nextTurn();
+                            new_turn = true;
+                            break;
+                        default:
+                            break;
+                    }
+            }
     }
 
     return 0;
@@ -309,4 +360,26 @@ sf::Vector3i TestRending::cube_round(sf::Vector3f cube) {
         rz = -rx - ry;
 
     return sf::Vector3i{rx, ry, rz};
+}
+
+void TestRending::shadow_move(state::Pawn playing, state::Coordinate &pro_coord, std::vector<state::Coordinate> av_moves, sf::Vector2i shift, std::array<int, 169> &av_tiles) {
+    state::Coordinate shadow_coord{pro_coord.getRow() + shift.x, pro_coord.getColumn() + shift.y};
+    if (shadow_coord == playing.getCoordinate())
+        pro_coord = shadow_coord;
+    else
+        for (int i = 0; i < av_moves.size(); ++i)
+            if (shadow_coord == av_moves.at(i)) {
+                av_tiles.at(shadow_coord.getCoordInLine()) = playing.number_type + 1;
+                pro_coord = shadow_coord;
+                break;
+            }
+    if (pro_coord.getCoordInLine() != shadow_coord.getCoordInLine() && shift.x != 0) {
+        shadow_coord.setColumn(pro_coord.getColumn() - shift.x);
+        for (int i = 0; i < av_moves.size(); ++i)
+            if (shadow_coord == av_moves.at(i)) {
+                av_tiles.at(shadow_coord.getCoordInLine()) = playing.number_type + 1;
+                pro_coord = shadow_coord;
+                break;
+            }
+    }
 }
