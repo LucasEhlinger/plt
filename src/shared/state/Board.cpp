@@ -33,7 +33,7 @@ void Board::changeTime() {
     this->day = !this->day;
 }
 
-state::Pawn& Board::playingPawn() {
+state::Pawn &Board::playingPawn() {
     for (int i = 0; i < pawns.size(); ++i) {
         if (pawns.at(i).isPlaying) {
             return pawns[i];
@@ -42,7 +42,7 @@ state::Pawn& Board::playingPawn() {
     return pawns[0];
 }
 
-std::vector<state::Coordinate> Board::matrixAv_Tile(state::Pawn & pawn) {
+std::vector<state::Coordinate> Board::matrixAv_Tile(state::Pawn &pawn) {
     std::vector<state::Coordinate> av_tiles;
     bool row_up = false;
     bool row_down = false;
@@ -151,23 +151,15 @@ void Board::generate() {
             }
         }
     }
-    for (int i = 0; i < HEIGHT; i += MID_HEIGHT) {
+    for (int i = 0; i < HEIGHT; i += MID_HEIGHT)
         for (int j = 0; j < WIDTH; j += MID_WIDTH) {
-            for (int k = 0; k < 2; ++k) {
-                if (i == 0 && k == 1)
-                    tiles[7] = Field();
-                else if (i != 0 || k != 0) {
-                    tiles[(std::max(i - 1, 0) + k) * HEIGHT + j] = Field();
-                    tiles[(std::max(i - 1, 0) + k) * HEIGHT + std::min(j + 1, WIDTH - 1)] = Field();
-                }
-                if (i != HEIGHT - 1 || k != 1) {
-                    tiles[(std::min(i + 1, HEIGHT - 1) - k) * HEIGHT + j] = Field();
-                    tiles[(std::min(i + 1, HEIGHT - 1) - k) * HEIGHT + std::max(j - 1, 0)] = Field();
-                }
-            }
             tiles[i * HEIGHT + j] = Start();
+            for (int k = -1; k <= 1; ++k)
+                for (int l = -1; l <= 1; ++l)
+                    if (i + k >= 0 && i + k < HEIGHT && j + l >= 0 && j + l < WIDTH && k != l &&
+                        tiles[(i + k) * HEIGHT + (j + l)].exist)
+                        tiles[(i + k) * HEIGHT + (j + l)] = Field();
         }
-    }
 
     for (int i = 0; i < 2; ++i) {
         //Castle of the king
