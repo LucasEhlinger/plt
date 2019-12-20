@@ -61,7 +61,7 @@ int TestRending::render() {
 int TestRending::engine() {
     std::array<int, 169> av_tiles;
     std::vector<state::Coordinate> av_moves;
-    state::Coordinate pro_coord{0,0};
+    state::Coordinate pro_coord{0, 0};
     bool new_turn = true;
 
     // create the window
@@ -112,13 +112,16 @@ int TestRending::engine() {
             window.draw(av_tile_map);
             window.display();
             usleep(16000);
-        }
-        else {
+        } else if (engine1.playingPawn().number_type != 4) {
             engine1.move(engine1.playingPawn(), engine1.AI_finale());
-            engine1.nextTurn();
-            new_turn = true;
+            if (engine1.playingPawn().getAP() == 0)
+                engine1.nextTurn();
             window.display();
             usleep(500000);
+        } else {
+            engine1.nextTurn();
+            window.display();
+            usleep(16000);
         }
 
         //handle events
@@ -146,9 +149,14 @@ int TestRending::engine() {
                             new_turn = false;
                             break;
                         case sf::Keyboard::Space:
+                            if (pro_coord == engine1.playingPawn().getCoordinate())
+                                break;
                             engine1.move(engine1.playingPawn(), pro_coord);
-                            engine1.nextTurn();
                             new_turn = true;
+                            break;
+                        case sf::Keyboard::P:
+                            engine1.nextTurn();
+                            new_move = true;
                             break;
                         default:
                             break;
@@ -362,17 +370,18 @@ sf::Vector3i TestRending::cube_round(sf::Vector3f cube) {
     return sf::Vector3i{rx, ry, rz};
 }
 
-void TestRending::shadow_move(state::Pawn playing, state::Coordinate &pro_coord, std::vector<state::Coordinate> av_moves, sf::Vector2i shift, std::array<int, 169> &av_tiles) {
+void
+TestRending::shadow_move(state::Pawn playing, state::Coordinate &pro_coord, std::vector<state::Coordinate> av_moves,
+                         sf::Vector2i shift, std::array<int, 169> &av_tiles) {
     state::Coordinate shadow_coord{pro_coord.getRow() + shift.x, pro_coord.getColumn() + shift.y};
     if (shadow_coord == playing.getCoordinate())
-        pro_coord = shadow_coord;
-    else
-        for (int i = 0; i < av_moves.size(); ++i)
-            if (shadow_coord == av_moves.at(i)) {
-                av_tiles.at(shadow_coord.getCoordInLine()) = playing.number_type + 1;
-                pro_coord = shadow_coord;
-                break;
-            }
+        shadow_coord.setColumn(shadow_coord.getColumn() - shift.x + shift.y);
+    for (int i = 0; i < av_moves.size(); ++i)
+        if (shadow_coord == av_moves.at(i)) {
+            av_tiles.at(shadow_coord.getCoordInLine()) = playing.number_type + 1;
+            pro_coord = shadow_coord;
+            break;
+        }
     if (pro_coord.getCoordInLine() != shadow_coord.getCoordInLine() && shift.x != 0) {
         shadow_coord.setColumn(pro_coord.getColumn() - shift.x);
         for (int i = 0; i < av_moves.size(); ++i)
