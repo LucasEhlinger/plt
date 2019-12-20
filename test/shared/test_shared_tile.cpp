@@ -109,7 +109,7 @@ BOOST_AUTO_TEST_CASE(TestSwamp) {
 BOOST_AUTO_TEST_CASE(TestTileList) {
     {
         Pawn pawn{Coordinate{2, 1}, "pawn"};
-        std::array<Tile&,5> tiles;
+        std::array<Tile,5> tiles;
 
         tiles.at(0) = Swamp();
         tiles.at(1) = Colony();

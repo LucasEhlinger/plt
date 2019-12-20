@@ -11,7 +11,20 @@ Tile::Tile() {
  * @param pawn Pawn affected pawn
  */
 void Tile::effect(state::Pawn &pawn) {
-    pawn.modifyAP(this->moveCost);
+    pawn.modifyAP(moveCost);
+    switch (number_type){
+        case 8: //Castle
+            pawn.setAP(0);
+            break;
+        case 5: //Swamp
+            pawn.modifyLP(-1);
+            break;
+        case 4: //StoneAge
+            pawn.modifyLP(+1);
+            break;
+        case 0: //Ruin
+            break;
+    }
 }
 
 int Tile::getMoveCost() const {
