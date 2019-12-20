@@ -62,7 +62,7 @@ int TestRending::engine() {
     std::array<int, 169> av_tiles;
     std::vector<state::Coordinate> av_moves;
     state::Coordinate pro_coord{0, 0};
-    bool new_turn = true;
+    bool new_move = true;
 
     // create the window
     sf::RenderWindow window(sf::VideoMode(1536, 860), "just_another_plt_map");
@@ -96,7 +96,7 @@ int TestRending::engine() {
 
         // creates the movemap from the moves available to the currently playing pawn and draws it
         if (engine1.playingPawn().isHuman) {
-            if (new_turn)
+            if (new_move)
                 pro_coord = engine1.playingPawn().getCoordinate();
             av_moves = engine1.matrixAv_Tile(engine1.playingPawn());
             av_tiles.fill(9);
@@ -134,25 +134,25 @@ int TestRending::engine() {
                     switch (event.key.code) {
                         case sf::Keyboard::Left:
                             shadow_move(engine1.playingPawn(), pro_coord, av_moves, sf::Vector2i{0, -1}, av_tiles);
-                            new_turn = false;
+                            new_move = false;
                             break;
                         case sf::Keyboard::Right:
                             shadow_move(engine1.playingPawn(), pro_coord, av_moves, sf::Vector2i{0, +1}, av_tiles);
-                            new_turn = false;
+                            new_move = false;
                             break;
                         case sf::Keyboard::Up:
                             shadow_move(engine1.playingPawn(), pro_coord, av_moves, sf::Vector2i{-1, 0}, av_tiles);
-                            new_turn = false;
+                            new_move = false;
                             break;
                         case sf::Keyboard::Down:
                             shadow_move(engine1.playingPawn(), pro_coord, av_moves, sf::Vector2i{+1, 0}, av_tiles);
-                            new_turn = false;
+                            new_move = false;
                             break;
                         case sf::Keyboard::Space:
                             if (pro_coord == engine1.playingPawn().getCoordinate())
                                 break;
                             engine1.move(engine1.playingPawn(), pro_coord);
-                            new_turn = true;
+                            new_move = true;
                             break;
                         case sf::Keyboard::P:
                             engine1.nextTurn();
@@ -337,37 +337,6 @@ void TestRending::parse(int nb_row, int nb_col, std::array<int, 169> raw_table, 
                 table[i * nb_row + j] = raw_table[i * nb_row + j - (blanks + blanks_even) / 2];
         }
     }
-}
-
-state::Coordinate TestRending::pixel_to_hex(sf::Vector2i point) {
-    float q = (sqrt(3) / 3 * point.x - 1. / 3 * point.y) / 42;
-    float r = (2. / 3 * point.y) / 42;
-    return cube_to_evenr(cube_round(sf::Vector3f{q, -q - r, r}));
-}
-
-state::Coordinate TestRending::cube_to_evenr(sf::Vector3i cube) {
-    int col = cube.x + (cube.z + (cube.z & 1)) / 2;
-    int row = cube.z;
-    return state::Coordinate{row, col};
-}
-
-sf::Vector3i TestRending::cube_round(sf::Vector3f cube) {
-    int rx = round(cube.x);
-    int ry = round(cube.y);
-    int rz = round(cube.z);
-
-    float x_diff = abs(rx - cube.x);
-    float y_diff = abs(ry - cube.y);
-    float z_diff = abs(rz - cube.z);
-
-    if (x_diff > y_diff && x_diff > z_diff)
-        rx = -ry - rz;
-    else if (y_diff > z_diff)
-        ry = -rx - rz;
-    else
-        rz = -rx - ry;
-
-    return sf::Vector3i{rx, ry, rz};
 }
 
 void

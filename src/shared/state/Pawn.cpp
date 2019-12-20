@@ -87,12 +87,12 @@ int Pawn::getRot() {
 }
 
 // TODO: adapt dia
-sf::Vector2i Pawn::attack(state::Pawn attacked, bool day) {
+std::array<int, 2> Pawn::attack(state::Pawn attacked, bool day, int mountain) {
     int pawn1Sword = 0;
     int pawn2Sword = 0;
 
     int pawn1Shield = 0;
-    int pawn2Shield = 0;
+    int pawn2Shield = mountain;
 
     int pawn1Dice = this->getCombativeness();
     int pawn2Dice = attacked.getCombativeness();
@@ -173,7 +173,7 @@ sf::Vector2i Pawn::attack(state::Pawn attacked, bool day) {
         }
     }
 
-    return sf::Vector2i{pawn1Sword - pawn2Shield, pawn2Sword - pawn1Shield};
+    return std::array<int, 2>{pawn1Sword - pawn2Shield, pawn2Sword - pawn1Shield};
 }
 
 /**
