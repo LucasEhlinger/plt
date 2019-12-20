@@ -34,7 +34,7 @@ void sim_attack(state::Pawn playing, state::Coordinate goal, bool aim, int modif
 void Engine::move(state::Pawn &pawn, state::Coordinate to) {
     int position = to.getCoordInLine();
     int pawnPosition = attack(to);
-    sf::Vector2i result;
+    std::array<int, 2> result;
     if (board->tiles.at(position).exist && (pawn.getAP() + board->tiles.at(position).getMoveCost()) >= 0) {
         if (pawnPosition == -1) {
             //no attack
@@ -47,23 +47,29 @@ void Engine::move(state::Pawn &pawn, state::Coordinate to) {
             state::Pawn defender = board->pawns.at(pawnPosition);
             sf::Vector2i vec = {to.getRow() - pawn.getCoordinate().getRow(),
                                 to.getColumn() - pawn.getCoordinate().getColumn()};
-            result = pawn.attack(defender, this->board->day);
-            pawn.modifyLP(std::max(result.y, 0) * (-1));
-            defender.modifyLP(std::max(result.x, 0) * (-1));
-            if () {
-                //pawn win
-                // attacked step back
-                //attacker move
+            int mountain = 0;
+            if (board->tiles.at(position).number_type == 3)
+                mountain = 1;
+            result = pawn.attack(defender, this->board->day, mountain);
+            pawn.modifyLP(std::max(result[1], 0) * (-1));
+            defender.modifyLP(std::max(result[0], 0) * (-1));
+
+            // attacker wins, defender steps back and attacker moves (draw is considered win)
+            if (result[0] >= result[1]) {
+                defender.setAP(2);
                 defender.move(state::Coordinate{defender.getCoordinate().getRow() + vec.x,
                                                 defender.getCoordinate().getColumn() + vec.y});
                 pawn.move(to);
                 board->tiles.at(position).effect(pawn);
             }
-            //if pawn loses, nothing happens (for the moment)
+                // attacker loses, attacker still uses AP but no moves are made
+            else
+                pawn.modifyAP(board->tiles.at(to.getCoordInLine()).getMoveCost());
             pawn.notify();
             defender.notify();
         }
     }
+
 }
 
 state::Pawn &Engine::playingPawn() {
@@ -78,8 +84,7 @@ std::vector<state::Coordinate> Engine::matrixAv_Tile(state::Pawn &pawn) {
     return board->matrixAv_Tile(pawn);
 }
 
-state::Coordinate Engine::pathfinding() {
-    state::Coordinate coord = {8, 6};
+state::Coordinate Engine::pathfinding(state::Coordinate coord) {
 
     state::Pawn playing = Engine::playingPawn();
     std::vector<state::Coordinate> av_moves = board->matrixAv_Tile(playing);
@@ -150,5 +155,5 @@ int Engine::attack(state::Coordinate to) {
 }
 
 state::Coordinate Engine::AI_finale() {
-    return ai::Heuristic::action(*board);
+    return pathfinding(ai::Heuristic::action(*board));
 }
