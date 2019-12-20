@@ -64,19 +64,19 @@ BOOST_AUTO_TEST_CASE(TestAttack) {
         Player player2{Coordinate{12, 11}, "test2", false};
         player1.setResources(Resources{0,0,0,6});
         BOOST_CHECK_EQUAL(player1.getResources().rot, 6);
-        player1.attack(player2, true);
+        player1.attack(player2, true, 0);
     }
     {
         Player player1{Coordinate{12, 11}, "test1", false};
         Player player2{Coordinate{12, 11}, "test2", false};
         player2.setResources(Resources{0,0,0,6});
-        player1.attack(player2, true);
+        player1.attack(player2, true, 0);
     }
     {
         Player player1{Coordinate{12, 11}, "test1", false};
         Player player2{Coordinate{12, 11}, "test2", false};
         player1.setResources(Resources{0,0,0,6});
-        player1.attack(player2, false);
+        player1.attack(player2, false, 0);
     }
 }
 

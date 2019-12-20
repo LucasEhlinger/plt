@@ -13,6 +13,8 @@ BOOST_AUTO_TEST_CASE(TestMove) {
         board.generate();
         render::Scene scene{board};
         engine::Engine engine1{board};
+        engine1.board->pawns[0].setAP(3);
+        engine1.board->pawns[0].setLP(3);
         engine1.move(engine1.board->pawns[0], state::Coordinate{0, 7});
         BOOST_CHECK(engine1.board->pawns[0].getCoordinate() == state::Coordinate(0, 7));
     }
@@ -23,6 +25,8 @@ BOOST_AUTO_TEST_CASE(WhoIsPlaying) {
         board.generate();
         render::Scene scene{board};
         engine::Engine engine1{board};
+        engine1.board->pawns[0].setAP(3);
+        engine1.board->pawns[0].setLP(3);
         BOOST_CHECK(engine1.playingPawn() == engine1.board->pawns[0]);
         BOOST_CHECK(engine1.board->pawns[0].isPlaying);
         engine1.nextTurn();

@@ -13,7 +13,9 @@ BOOST_AUTO_TEST_CASE(TestTurns) {
 
     for (int i = 0; i < 20; i++) {
         en.nextTurn();
-        en.pathfinding();
+        en.playingPawn().setAP(3);
+        en.playingPawn().setLP(3);
+        en.pathfinding(Coordinate{9,7});
     }
 
 }

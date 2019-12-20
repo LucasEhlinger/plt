@@ -85,7 +85,6 @@ std::vector<state::Coordinate> Engine::matrixAv_Tile(state::Pawn &pawn) {
 }
 
 state::Coordinate Engine::pathfinding(state::Coordinate coord) {
-
     state::Pawn playing = Engine::playingPawn();
     std::vector<state::Coordinate> av_moves = board->matrixAv_Tile(playing);
     int row = playing.getCoordinate().getRow();

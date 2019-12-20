@@ -124,7 +124,7 @@ BOOST_AUTO_TEST_CASE(TestTileList) {
         tiles.at(0).effect(pawn);
         BOOST_CHECK_EQUAL(pawn.getAP(), 9);
         BOOST_CHECK_EQUAL(pawn.getLP(), 3);
-        
+
         tiles.at(4).effect(pawn);
         BOOST_CHECK_EQUAL(pawn.getLP(), 4);
 
