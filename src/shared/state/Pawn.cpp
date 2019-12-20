@@ -98,6 +98,11 @@ bool Pawn::attack(state::Pawn attacked, bool day) {
 
     int rolled = 0;
     static auto gen = std::bind(std::uniform_int_distribution<>(1, 6), std::default_random_engine());
+
+    if(this->resources.rot >= 5 && attacked.resources.rot < this->resources.rot){
+        pawn1Dice += attacked.resources.rot;
+    }
+
     //Pawn 1
     while (rolled != pawn1Dice) {
         ++rolled;

@@ -105,3 +105,27 @@ BOOST_AUTO_TEST_CASE(TestSwamp) {
         BOOST_CHECK_EQUAL(pawn.getLP(), 3);
     }
 }
+
+BOOST_AUTO_TEST_CASE(TestTileList) {
+    {
+        Pawn pawn{Coordinate{2, 1}, "pawn"};
+        std::array<Tile&,5> tiles;
+
+        tiles.at(0) = Swamp();
+        tiles.at(1) = Colony();
+        tiles.at(2) = Castle();
+        tiles.at(3) = Mountain();
+
+        BOOST_CHECK(!tiles.at(4).exist);
+
+        pawn.setAP(10);
+        pawn.setLP(4);
+        tiles.at(0).effect(pawn);
+        BOOST_CHECK_EQUAL(pawn.getAP(), 9);
+        BOOST_CHECK_EQUAL(pawn.getLP(), 3);
+
+        tiles.at(2).effect(pawn);
+        BOOST_CHECK_EQUAL(pawn.getAP(), 0);
+
+    }
+}
