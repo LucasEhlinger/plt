@@ -13,21 +13,20 @@ using namespace ai;
 Engine::Engine(state::Board &board) : board(&board) {
     state::Player player1{state::Coordinate{0, 6}, "player 1", true};
     player1.number_type = 1;
-    player1.setAP(1);
-    player1.isPlaying = true;
 
     state::Player player2{state::Coordinate{12, 6}, "player 2", false};
     player2.number_type = 2;
 
     state::King king{state::Coordinate{6, 6}};
+    king.setAP(0);
+    king.isPlaying = true;
 
     state::Guard guard1{state::Coordinate{8, 10}, "guard 1"};
 
-
-    this->board->pawns.emplace_back(player1);
-    this->board->pawns.emplace_back(player2);
     this->board->pawns.emplace_back(king);
     this->board->pawns.emplace_back(guard1);
+    this->board->pawns.emplace_back(player1);
+    this->board->pawns.emplace_back(player2);
 }
 
 void sim_attack(state::Pawn playing, state::Coordinate goal, bool aim, int modifier = 0);
@@ -35,6 +34,7 @@ void sim_attack(state::Pawn playing, state::Coordinate goal, bool aim, int modif
 void Engine::move(state::Pawn &pawn, state::Coordinate to) {
     int position = to.getCoordInLine();
     int pawnPosition = attack(to);
+    sf::Vector2i result;
     if (board->tiles.at(position).exist && (pawn.getAP() + board->tiles.at(position).getMoveCost()) >= 0) {
         if (pawnPosition == -1) {
             //no attack
@@ -47,7 +47,10 @@ void Engine::move(state::Pawn &pawn, state::Coordinate to) {
             state::Pawn defender = board->pawns.at(pawnPosition);
             sf::Vector2i vec = {to.getRow() - pawn.getCoordinate().getRow(),
                                 to.getColumn() - pawn.getCoordinate().getColumn()};
-            if (pawn.attack(defender, this->board->day)) {
+            result = pawn.attack(defender, this->board->day);
+            pawn.modifyLP(std::max(result.y, 0) * (-1));
+            defender.modifyLP(std::max(result.x, 0) * (-1));
+            if () {
                 //pawn win
                 // attacked step back
                 //attacker move

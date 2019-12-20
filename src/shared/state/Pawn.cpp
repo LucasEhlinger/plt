@@ -5,6 +5,7 @@
 #include <iterator>
 #include <random>
 #include <functional>
+#include <SFML/System.hpp>
 
 using namespace ::state;
 
@@ -85,16 +86,22 @@ int Pawn::getRot() {
     return this->resources.rot;
 }
 
-
-bool Pawn::attack(state::Pawn attacked, bool day) {
+// TODO: adapt dia
+sf::Vector2i Pawn::attack(state::Pawn attacked, bool day) {
     int pawn1Sword = 0;
     int pawn2Sword = 0;
 
     int pawn1Shield = 0;
     int pawn2Shield = 0;
 
-    int pawn1Dice = 3;
-    int pawn2Dice = 3;
+    int pawn1Dice = this->getCombativeness();
+    int pawn2Dice = attacked.getCombativeness();
+
+    if (this->getRot() >= 5 || attacked.getRot() >= 5)
+        if (this->getRot() > attacked.getRot())
+            pawn1Dice += attacked.getRot();
+        else
+            pawn2Dice += this->getRot();
 
     int rolled = 0;
     static auto gen = std::bind(std::uniform_int_distribution<>(1, 6), std::default_random_engine());
@@ -166,7 +173,7 @@ bool Pawn::attack(state::Pawn attacked, bool day) {
         }
     }
 
-    return (unsigned int) (pawn2Sword - pawn1Shield) > (unsigned int) (pawn1Sword - pawn2Shield);
+    return sf::Vector2i{pawn1Sword - pawn2Shield, pawn2Sword - pawn1Shield};
 }
 
 /**
