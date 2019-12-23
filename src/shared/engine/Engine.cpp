@@ -110,31 +110,33 @@ struct PriorityQueue {
 state::Coordinate Engine::pathfinding(state::Coordinate goal) {
     state::Coordinate start = Engine::playingPawn().getCoordinate();
     int save = Engine::playingPawn().getAP();
-    PriorityQueue<state::Coordinate, int> frontier;
+    PriorityQueue<int, int> frontier;
     std::vector<state::Coordinate> neighbors;
-    std::unordered_map<state::Coordinate, state::Coordinate> came_from;
-    std::unordered_map<state::Coordinate, int> cost_so_far;
+    std::unordered_map<int, int> came_from;
+    std::unordered_map<int, int> cost_so_far;
 
-    frontier.put(start, 0);
-    came_from[start] = start;
-    cost_so_far[start] = 0;
+    frontier.put(start.getCoordInLine(), 0);
+    came_from[start.getCoordInLine()] = start.getCoordInLine();
+    cost_so_far[start.getCoordInLine()] = 0;
 
     while(!frontier.empty()) {
-        state::Coordinate current = frontier.get();
+        int current = frontier.get();
+        state::Coordinate cur_coor{0,0};
+        cur_coor.setCoord(current);
 
-        if (current == goal)
+        if (current == goal.getCoordInLine())
             break;
 
-        Engine::playingPawn().setCoordinate(current);
+        Engine::playingPawn().setCoordinate(cur_coor);
         Engine::playingPawn().setAP(3);
         neighbors = Engine::matrixAv_Tile(Engine::playingPawn());
         for (state::Coordinate next : neighbors) {
             int new_cost = cost_so_far[current] + board->tiles.at(next.getCoordInLine()).getMoveCost();
-            if (cost_so_far.find(next) == cost_so_far.end() || new_cost < cost_so_far[next]) {
-                cost_so_far[next] = new_cost;
-                int priority = new_cost + std::abs(goal.getRow() - current.getRow() + goal.getColumn() - current.getColumn());
-                frontier.put(next, priority);
-                came_from[next] = current;
+            if (cost_so_far.find(next.getCoordInLine()) == cost_so_far.end() || new_cost < cost_so_far[next.getCoordInLine()]) {
+                cost_so_far[next.getCoordInLine()] = new_cost;
+                int priority = new_cost + std::abs(goal.getRow() - cur_coor.getRow() + goal.getColumn() - cur_coor.getColumn());
+                frontier.put(next.getCoordInLine(), priority);
+                came_from[next.getCoordInLine()] = current;
             }
         }
     }
