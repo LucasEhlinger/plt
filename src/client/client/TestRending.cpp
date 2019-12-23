@@ -65,7 +65,7 @@ int TestRending::engine() {
     bool new_move = true;
 
     // create the window
-    sf::RenderWindow window(sf::VideoMode(1536, 860), "just_another_plt_map");
+    //sf::RenderWindow window(sf::VideoMode(1536, 860), "just_another_plt_map");
     window.setKeyRepeatEnabled(false);
     state::Board board{};
     board.generate();

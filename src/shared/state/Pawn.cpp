@@ -36,6 +36,15 @@ void Pawn::modifyAP(int offset) {
  */
 void Pawn::modifyLP(int offset) {
     this->lifePoints += offset;
+    if (this->lifePoints <= 0) {
+        // Le if suivant me fait penser qu'au final le "name" des pawns ne sert strictement à rien, à voir pour le virer
+        if (this->starting_tile.getCoordInLine() != state::Coordinate{0, 0}.getCoordInLine()) { // sera peut-être modifié pour mettre un if sur le number_type à la place
+            this->setCoordinate(this->starting_tile);
+            this->setAP(0);
+        }
+        //TODO le else de ses grands morts
+        // par "ses grands morts", je veux dire qu'il faut pouvoir notifier que le pion qui tombe à 0 LP, n'étant pas un joueur d'après le if ligne 40, doit être viré de la liste de pions
+    }
 }
 
 /**
@@ -60,6 +69,10 @@ void Pawn::setAP(int value) {
  */
 Coordinate Pawn::getCoordinate() {
     return this->coordinate;
+}
+
+void Pawn::setCoordinate(const Coordinate &coordinate) {
+    this->coordinate = coordinate;
 }
 
 /**
@@ -106,7 +119,7 @@ std::array<int, 2> Pawn::attack(state::Pawn attacked, bool day, int mountain) {
     int rolled = 0;
     static auto gen = std::bind(std::uniform_int_distribution<>(1, 6), std::default_random_engine());
 
-    if(this->resources.rot >= 5 && attacked.resources.rot < this->resources.rot){
+    if (this->resources.rot >= 5 && attacked.resources.rot < this->resources.rot) {
         pawn1Dice += attacked.resources.rot;
     }
 
@@ -206,7 +219,7 @@ void Pawn::setResources(const class state::Resources &resources) {
     this->resources = resources;
 }
 
-void Pawn::setStats(const class state::Stats & stats) {
+void Pawn::setStats(const class state::Stats &stats) {
     this->stats = stats;
 }
 
