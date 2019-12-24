@@ -110,7 +110,7 @@ struct PriorityQueue {
     }
 };
 
-state::Coordinate Engine::pathfinding(state::Coordinate goal) {
+std::vector<state::Coordinate> Engine::pathfinding(state::Coordinate goal) {
     state::Coordinate start = Engine::playingPawn().getCoordinate();
     int save = Engine::playingPawn().getAP();
     PriorityQueue<int, int> frontier;
@@ -145,7 +145,13 @@ state::Coordinate Engine::pathfinding(state::Coordinate goal) {
     }
     Engine::playingPawn().setCoordinate(start);
     Engine::playingPawn().setAP(save);
-    return start;
+    std::vector<state::Coordinate> path;
+    state::Coordinate current = goal;
+    while (current.getCoordInLine() != start.getCoordInLine()) {
+        path.push_back(current);
+        current.setCoord(came_from[current.getCoordInLine()]);
+    }
+    return path;
 }
 
 sf::Vector3i evenr_to_cube(state::Coordinate hex) {
@@ -174,6 +180,6 @@ int Engine::attack(state::Coordinate to) {
     return -1;
 }
 
-state::Coordinate Engine::AI_finale() {
+std::vector<state::Coordinate> Engine::AI_finale() {
     return pathfinding(ai::Heuristic::action(*board));
 }
