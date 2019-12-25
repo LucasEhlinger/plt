@@ -61,8 +61,10 @@ int TestRending::render() {
 int TestRending::engine() {
     std::array<int, 169> av_tiles;
     std::vector<state::Coordinate> av_moves;
+    std::vector<state::Coordinate> path;
     state::Coordinate pro_coord{0, 0};
     bool new_move = true;
+    bool new_turn = true;
 
     // create the window
     //sf::RenderWindow window(sf::VideoMode(1536, 860), "just_another_plt_map");
@@ -112,16 +114,49 @@ int TestRending::engine() {
             window.draw(av_tile_map);
             window.display();
             usleep(16000);
-        } else if (engine1.playingPawn().number_type != 4) {
-            engine1.move(engine1.playingPawn(), engine1.AI_finale().back());
-            if (engine1.playingPawn().getAP() == 0)
-                engine1.nextTurn();
-            window.display();
-            usleep(500000);
-        } else {
+        } else if (engine1.playingPawn().number_type == 4) {
             engine1.nextTurn();
             window.display();
             usleep(16000);
+        } else if (engine1.playingPawn().number_type == 5) { // TODO Guard behaviour
+            if (new_turn) {
+                path = engine1.guard_behaviour();
+                new_turn = false;
+            }
+            engine1.move(engine1.playingPawn(), path.back());
+            path.pop_back();
+            if (engine1.playingPawn().getAP() == 0) {
+                engine1.nextTurn();
+                new_turn = true;
+            }
+            window.display();
+            usleep(500000);
+        } else if (engine1.playingPawn().number_type == 6) { // TODO Bane behaviour
+            if (new_turn) {
+                path = engine1.bane_behaviour();
+                new_turn = false;
+            }
+            engine1.move(engine1.playingPawn(), path.back());
+            path.pop_back();
+            if (engine1.playingPawn().getAP() == 0) {
+                engine1.nextTurn();
+                new_turn = true;
+            }
+            window.display();
+            usleep(500000);
+        } else {
+            if (new_turn) {
+                path = engine1.AI_finale();
+                new_turn = false;
+            }
+            engine1.move(engine1.playingPawn(), path.back());
+            path.pop_back();
+            if (engine1.playingPawn().getAP() == 0) {
+                engine1.nextTurn();
+                new_turn = true;
+            }
+            window.display();
+            usleep(500000);
         }
 
         //handle events

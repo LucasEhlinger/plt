@@ -183,3 +183,11 @@ int Engine::attack(state::Coordinate to) {
 std::vector<state::Coordinate> Engine::AI_finale() {
     return pathfinding(ai::Heuristic::action(*board));
 }
+
+std::vector<state::Coordinate> Engine::guard_behaviour() {
+    return pathfinding(state::Coordinate{0,0});
+}
+
+std::vector<state::Coordinate> Engine::bane_behaviour() {
+    return pathfinding(state::Coordinate{0,0});
+}
