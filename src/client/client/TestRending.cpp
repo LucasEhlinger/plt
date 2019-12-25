@@ -113,7 +113,7 @@ int TestRending::engine() {
             window.display();
             usleep(16000);
         } else if (engine1.playingPawn().number_type != 4) {
-            engine1.move(engine1.playingPawn(), engine1.AI_finale());
+            engine1.move(engine1.playingPawn(), engine1.AI_finale().back());
             if (engine1.playingPawn().getAP() == 0)
                 engine1.nextTurn();
             window.display();
@@ -313,7 +313,7 @@ int TestRending::heuristic_ai() {
         window.draw(pawn_map);
         window.display();
 
-        engine1.move(engine1.playingPawn(), engine1.AI_finale());
+        engine1.move(engine1.playingPawn(), engine1.AI_finale().at(0));
         engine1.nextTurn();
 
     }

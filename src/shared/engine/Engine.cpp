@@ -2,6 +2,8 @@
 #include "Engine.h"
 #include "state.h"
 #include "ai.h"
+#include <queue>
+#include <unordered_map>
 
 
 #define HEIGHT  13
@@ -30,6 +32,9 @@ Engine::Engine(state::Board &board) : board(&board) {
 }
 
 void sim_attack(state::Pawn playing, state::Coordinate goal, bool aim, int modifier = 0);
+sf::Vector3i evenr_to_cube(state::Coordinate hex);
+int offset_distance(state::Coordinate hex_a, state::Coordinate hex_b);
+int cube_distance(sf::Vector3i hex_a, sf::Vector3i hex_b);
 
 void Engine::move(state::Pawn &pawn, state::Coordinate to) {
     int position = to.getCoordInLine();
@@ -84,65 +89,87 @@ std::vector<state::Coordinate> Engine::matrixAv_Tile(state::Pawn &pawn) {
     return board->matrixAv_Tile(pawn);
 }
 
-state::Coordinate Engine::pathfinding(state::Coordinate coord) {
-    state::Pawn playing = Engine::playingPawn();
-    std::vector<state::Coordinate> av_moves = board->matrixAv_Tile(playing);
-    int row = playing.getCoordinate().getRow();
-    int col = playing.getCoordinate().getColumn();
-    int vert = -1;
-    int hori = -1;
+template<typename T, typename priority_t>
+struct PriorityQueue {
+    typedef std::pair<priority_t, T> PQElement;
+    std::priority_queue<PQElement, std::vector<PQElement>,
+            std::greater<PQElement>> elements;
 
-    //si coord est un départ (start : 7) ou un chateau (Castle : 8)
-    if (board->tiles.at(coord.getCoordInLine()).number_type == 7 ||
-        board->tiles.at(coord.getCoordInLine()).number_type == 8)
-        return ai::Random::action(av_moves);
+    inline bool empty() const {
+        return elements.empty();
+    }
 
-    if (playing.getCoordinate().getRow() - coord.getRow() < 0)
-        vert = 1;
-    else if (playing.getCoordinate().getRow() - coord.getRow() == 0)
-        vert = 0;
-    if (playing.getCoordinate().getColumn() - coord.getColumn() < 0)
-        hori = 1;
-    else if (playing.getCoordinate().getColumn() - coord.getColumn() == 0)
-        hori = 0;
+    inline void put(T item, priority_t priority) {
+        elements.emplace(priority, item);
+    }
 
-    if (vert == 1 && hori == 1)
-        for (int i = 0; i < av_moves.size(); ++i)
-            if (av_moves[i] == state::Coordinate{row, col + 1} || av_moves[i] == state::Coordinate{row + 1, col})
-                return av_moves[i];
-    if (vert == 1 && hori == 0)
-        for (int i = 0; i < av_moves.size(); ++i)
-            if (av_moves[i] == state::Coordinate{row + 1, col - 1} || av_moves[i] == state::Coordinate{row + 1, col})
-                return av_moves[i];
-    if (vert == 1 && hori == -1)
-        for (int i = 0; i < av_moves.size(); ++i)
-            if (av_moves[i] == state::Coordinate{row, col - 1} || av_moves[i] == state::Coordinate{row + 1, col - 1})
-                return av_moves[i];
-    if (vert == 0 && hori == 1)
-        for (int i = 0; i < av_moves.size(); ++i)
-            if (av_moves[i] == state::Coordinate{row, col + 1})
-                return av_moves[i];
-    if (vert == 0 && hori == 0)
-        return ai::Random::action(av_moves);
-    if (vert == 0 && hori == -1)
-        for (int i = 0; i < av_moves.size(); ++i)
-            if (av_moves[i] == state::Coordinate{row, col - 1})
-                return av_moves[i];
-    if (vert == -1 && hori == 1)
-        for (int i = 0; i < av_moves.size(); ++i)
-            if (av_moves[i] == state::Coordinate{row, col + 1} || av_moves[i] == state::Coordinate{row - 1, col + 1})
-                return av_moves[i];
-    if (vert == -1 && hori == 0)
-        for (int i = 0; i < av_moves.size(); ++i)
-            if (av_moves[i] == state::Coordinate{row - 1, col + 1} || av_moves[i] == state::Coordinate{row - 1, col})
-                return av_moves[i];
-    if (vert == -1 && hori == -1)
-        for (int i = 0; i < av_moves.size(); ++i)
-            if (av_moves[i] == state::Coordinate{row, col - 1} || av_moves[i] == state::Coordinate{row - 1, col})
-                return av_moves[i];
-    return ai::Random::action(av_moves);
+    T get() {
+        T best_item = elements.top().second;
+        elements.pop();
+        return best_item;
+    }
+};
+
+std::vector<state::Coordinate> Engine::pathfinding(state::Coordinate goal) {
+    state::Coordinate start = Engine::playingPawn().getCoordinate();
+    int save = Engine::playingPawn().getAP();
+    PriorityQueue<int, int> frontier;
+    std::vector<state::Coordinate> neighbors;
+    std::unordered_map<int, int> came_from;
+    std::unordered_map<int, int> cost_so_far;
+
+    frontier.put(start.getCoordInLine(), 0);
+    came_from[start.getCoordInLine()] = start.getCoordInLine();
+    cost_so_far[start.getCoordInLine()] = 0;
+
+    while(!frontier.empty()) {
+        int current = frontier.get();
+        state::Coordinate cur_coor{0,0};
+        cur_coor.setCoord(current);
+
+        if (current == goal.getCoordInLine())
+            break;
+
+        Engine::playingPawn().setCoordinate(cur_coor);
+        Engine::playingPawn().setAP(3);
+        neighbors = Engine::matrixAv_Tile(Engine::playingPawn());
+        for (state::Coordinate next : neighbors) {
+            int new_cost = cost_so_far[current] - board->tiles.at(next.getCoordInLine()).getMoveCost();
+            if (cost_so_far.find(next.getCoordInLine()) == cost_so_far.end() || new_cost < cost_so_far[next.getCoordInLine()]) {
+                cost_so_far[next.getCoordInLine()] = new_cost;
+                int priority = new_cost + offset_distance(cur_coor, goal);
+                frontier.put(next.getCoordInLine(), priority);
+                came_from[next.getCoordInLine()] = current;
+            }
+        }
+    }
+    Engine::playingPawn().setCoordinate(start);
+    Engine::playingPawn().setAP(save);
+    std::vector<state::Coordinate> path;
+    state::Coordinate current = goal;
+    while (current.getCoordInLine() != start.getCoordInLine()) {
+        path.push_back(current);
+        current.setCoord(came_from[current.getCoordInLine()]);
+    }
+    return path;
 }
 
+sf::Vector3i evenr_to_cube(state::Coordinate hex) {
+    int x = hex.getColumn() - (hex.getRow() + (hex.getRow() & 1)) / 2;
+    int z = hex.getRow();
+    int y = -x - z;
+    return sf::Vector3i{x, y, z};
+}
+
+int offset_distance(state::Coordinate hex_a, state::Coordinate hex_b) {
+    sf::Vector3i hex_a_c = evenr_to_cube(hex_a);
+    sf::Vector3i hex_b_c = evenr_to_cube(hex_b);
+    return cube_distance(hex_a_c, hex_b_c);
+}
+
+int cube_distance(sf::Vector3i hex_a, sf::Vector3i hex_b) {
+    return std::max(std::max(std::abs(hex_a.x - hex_b.x), std::abs(hex_a.y - hex_b.y)), std::abs(hex_a.z - hex_b.z));
+}
 
 int Engine::attack(state::Coordinate to) {
     for (int i = 0; i < board->pawns.size(); ++i) {
@@ -153,6 +180,6 @@ int Engine::attack(state::Coordinate to) {
     return -1;
 }
 
-state::Coordinate Engine::AI_finale() {
+std::vector<state::Coordinate> Engine::AI_finale() {
     return pathfinding(ai::Heuristic::action(*board));
 }
