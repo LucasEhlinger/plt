@@ -13,13 +13,13 @@ using namespace engine;
 using namespace ai;
 
 Engine::Engine(state::Board &board) : board(&board) {
-    state::Player player1{state::Coordinate{0, 6}, "player 1", true};
+    state::Player player1{state::Coordinate{0, 6}, "player 1", false};
     player1.number_type = 1;
 
     state::Player player2{state::Coordinate{12, 6}, "player 2", false};
     player2.number_type = 2;
 
-    state::Player player3{state::Coordinate{0, 12}, "player 3", true};
+    state::Player player3{state::Coordinate{0, 12}, "player 3", false};
     player3.number_type = 3;
 
     state::Player player4{state::Coordinate{12, 0}, "player 4", false};

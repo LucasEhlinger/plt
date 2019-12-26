@@ -42,6 +42,7 @@ void Pawn::modifyLP(int offset) {
             this->setCoordinate(this->starting_tile);
             this->setAP(0);
         }
+        // En fait ça serait mieux de virer ça d'ici et le gérer avec l'engine plutôt
         //TODO le else de ses grands morts
         // par "ses grands morts", je veux dire qu'il faut pouvoir notifier que le pion qui tombe à 0 LP, n'étant pas un joueur d'après le if ligne 40, doit être viré de la liste de pions
     }

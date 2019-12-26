@@ -117,7 +117,7 @@ int TestRending::engine() {
             engine1.nextTurn();
             window.display();
             usleep(16000);
-        } else if (engine1.playingPawn().number_type == 5) { // TODO Guard behaviour
+        } else if (engine1.playingPawn().number_type == 5) {
             if (new_turn) {
                 path = engine1.guard_behaviour();
                 new_turn = false;
@@ -148,8 +148,12 @@ int TestRending::engine() {
                 path = engine1.AI_finale();
                 new_turn = false;
             }
-            engine1.move(engine1.playingPawn(), path.back());
-            path.pop_back();
+            if (path.size() != 0) {
+                engine1.move(engine1.playingPawn(), path.back());
+                path.pop_back();
+            }
+            else
+                engine1.move(engine1.playingPawn(), ai::Random::action(engine1.matrixAv_Tile(engine1.playingPawn())));
             if (engine1.playingPawn().getAP() == 0) {
                 engine1.nextTurn();
                 new_turn = true;
