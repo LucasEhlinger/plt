@@ -19,16 +19,27 @@ Engine::Engine(state::Board &board) : board(&board) {
     state::Player player2{state::Coordinate{12, 6}, "player 2", false};
     player2.number_type = 2;
 
+    state::Player player3{state::Coordinate{0, 12}, "player 3", true};
+    player3.number_type = 3;
+
+    state::Player player4{state::Coordinate{12, 0}, "player 4", false};
+    player4.number_type = 0;
+
     state::King king{state::Coordinate{6, 6}};
     king.setAP(0);
     king.isPlaying = true;
 
     state::Guard guard1{state::Coordinate{8, 10}, "guard 1", false};
 
+    state::Guard guard2{state::Coordinate{5, 6}, "guard 2", true};
+
     this->board->pawns.emplace_back(king);
     this->board->pawns.emplace_back(guard1);
+    this->board->pawns.emplace_back(guard2);
     this->board->pawns.emplace_back(player1);
     this->board->pawns.emplace_back(player2);
+    this->board->pawns.emplace_back(player3);
+    this->board->pawns.emplace_back(player4);
 }
 
 void sim_attack(state::Pawn playing, state::Coordinate goal, bool aim, int modifier = 0);
@@ -168,9 +179,9 @@ std::vector<state::Coordinate> Engine::AI_finale() {
 }
 
 std::vector<state::Coordinate> Engine::guard_behaviour() {
-    return pathfinding(state::Coordinate{0,0});
+    return pathfinding(ai::AI_Guard::action(*board));
 }
 
 std::vector<state::Coordinate> Engine::bane_behaviour() {
-    return pathfinding(state::Coordinate{0,0});
+    return pathfinding(state::Coordinate{6,6});
 }

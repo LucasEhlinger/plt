@@ -83,7 +83,6 @@ int TestRending::engine() {
                        nb_row))
         return -1;
 
-    int i = 0;
     // run the main loop
     while (window.isOpen()) {
         window.clear();

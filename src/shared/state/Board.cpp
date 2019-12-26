@@ -34,11 +34,10 @@ void Board::changeTime() {
 }
 
 state::Pawn &Board::playingPawn() {
-    for (int i = 0; i < pawns.size(); ++i) {
-        if (pawns.at(i).isPlaying) {
+    for (int i = 0; i < pawns.size(); ++i)
+        if (pawns.at(i).isPlaying)
             return pawns[i];
-        }
-    }
+
     return pawns[0];
 }
 
@@ -64,28 +63,37 @@ std::vector<state::Coordinate> Board::matrixAv_Tile(state::Pawn &pawn) {
 
     if (row_down)
         if (tiles.at((x - 1) * HEIGHT + y).exist &&
-            ap + tiles.at((x - 1) * HEIGHT + y).getMoveCost() >= 0)
+            ap >= tiles.at((x - 1) * HEIGHT + y).getMoveCost())
             av_tiles.emplace_back(state::Coordinate{x - 1, y});
     if (row_up)
         if (tiles.at((x + 1) * HEIGHT + y).exist &&
-            ap + tiles.at((x + 1) * HEIGHT + y).getMoveCost() >= 0)
+            ap >= tiles.at((x + 1) * HEIGHT + y).getMoveCost())
             av_tiles.emplace_back(state::Coordinate{x + 1, y});
     if (col_down)
         if (tiles.at(x * HEIGHT + (y - 1)).exist &&
-            ap + tiles.at(x * HEIGHT + (y - 1)).getMoveCost() >= 0)
+            ap >= tiles.at(x * HEIGHT + (y - 1)).getMoveCost())
             av_tiles.emplace_back(state::Coordinate{x, y - 1});
     if (col_up)
         if (tiles.at(x * HEIGHT + (y + 1)).exist &&
-            ap + tiles.at(x * HEIGHT + (y + 1)).getMoveCost() >= 0)
+            ap >= tiles.at(x * HEIGHT + (y + 1)).getMoveCost())
             av_tiles.emplace_back(state::Coordinate{x, y + 1});
     if (row_down && col_up)
         if (tiles.at((x - 1) * HEIGHT + (y + 1)).exist &&
-            ap + tiles.at((x - 1) * HEIGHT + (y + 1)).getMoveCost() >= 0)
+            ap >= tiles.at((x - 1) * HEIGHT + (y + 1)).getMoveCost())
             av_tiles.emplace_back(state::Coordinate{x - 1, y + 1});
     if (row_up && col_down)
         if (tiles.at((x + 1) * HEIGHT + (y - 1)).exist &&
-            ap + tiles.at((x + 1) * HEIGHT + (y - 1)).getMoveCost() >= 0)
+            ap >= tiles.at((x + 1) * HEIGHT + (y - 1)).getMoveCost())
             av_tiles.emplace_back(state::Coordinate{x + 1, y - 1});
+
+    if (pawn.on_duty) {
+        std::vector<state::Coordinate> duty_tiles;
+        for (state::Coordinate tile : av_tiles)
+            if (tiles.at(tile.getCoordInLine()).number_type == 8 &&
+                tile.getCoordInLine() != state::Coordinate{6, 6}.getCoordInLine())
+                duty_tiles.emplace_back(tile);
+        return duty_tiles;
+    }
     return av_tiles;
 }
 
