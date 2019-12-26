@@ -63,27 +63,27 @@ std::vector<state::Coordinate> Board::matrixAv_Tile(state::Pawn &pawn) {
 
     if (row_down)
         if (tiles.at((x - 1) * HEIGHT + y).exist &&
-            ap >= tiles.at((x - 1) * HEIGHT + y).getMoveCost())
+            ap + tiles.at((x - 1) * HEIGHT + y).getMoveCost() >= 0)
             av_tiles.emplace_back(state::Coordinate{x - 1, y});
     if (row_up)
         if (tiles.at((x + 1) * HEIGHT + y).exist &&
-            ap >= tiles.at((x + 1) * HEIGHT + y).getMoveCost())
+            ap + tiles.at((x + 1) * HEIGHT + y).getMoveCost() >= 0)
             av_tiles.emplace_back(state::Coordinate{x + 1, y});
     if (col_down)
         if (tiles.at(x * HEIGHT + (y - 1)).exist &&
-            ap >= tiles.at(x * HEIGHT + (y - 1)).getMoveCost())
+            ap + tiles.at(x * HEIGHT + (y - 1)).getMoveCost() >= 0)
             av_tiles.emplace_back(state::Coordinate{x, y - 1});
     if (col_up)
         if (tiles.at(x * HEIGHT + (y + 1)).exist &&
-            ap >= tiles.at(x * HEIGHT + (y + 1)).getMoveCost())
+            ap + tiles.at(x * HEIGHT + (y + 1)).getMoveCost() >= 0)
             av_tiles.emplace_back(state::Coordinate{x, y + 1});
     if (row_down && col_up)
         if (tiles.at((x - 1) * HEIGHT + (y + 1)).exist &&
-            ap >= tiles.at((x - 1) * HEIGHT + (y + 1)).getMoveCost())
+            ap + tiles.at((x - 1) * HEIGHT + (y + 1)).getMoveCost() >= 0)
             av_tiles.emplace_back(state::Coordinate{x - 1, y + 1});
     if (row_up && col_down)
         if (tiles.at((x + 1) * HEIGHT + (y - 1)).exist &&
-            ap >= tiles.at((x + 1) * HEIGHT + (y - 1)).getMoveCost())
+            ap + tiles.at((x + 1) * HEIGHT + (y - 1)).getMoveCost() >= 0)
             av_tiles.emplace_back(state::Coordinate{x + 1, y - 1});
 
     if (pawn.on_duty) {
