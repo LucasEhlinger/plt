@@ -51,6 +51,19 @@ int Coordinate::getCoordInLine() {
     return (row * 13) + column;
 }
 
+std::array<int, 3> Coordinate::evenr_to_cube() {
+    int x = this->getColumn() - (this->getRow() + (this->getRow() & 1)) / 2;
+    int z = this->getRow();
+    int y = -x - z;
+    return std::array<int, 3>{x, y, z};
+}
+
+int Coordinate::distance(state::Coordinate goal) {
+    std::array<int, 3> this_c = this->evenr_to_cube();
+    std::array<int, 3> goal_c = goal.evenr_to_cube();
+    return std::max(std::max(std::abs(this_c.at(0) - goal_c.at(0)), std::abs(this_c.at(1) - goal_c.at(1))),
+                    std::abs(this_c.at(2) - goal_c.at(2)));
+}
 
 bool Coordinate::operator==(const Coordinate &rhs) {
     return (this->row == rhs.row) && (this->column == rhs.column);

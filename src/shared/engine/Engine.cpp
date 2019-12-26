@@ -23,7 +23,7 @@ Engine::Engine(state::Board &board) : board(&board) {
     king.setAP(0);
     king.isPlaying = true;
 
-    state::Guard guard1{state::Coordinate{8, 10}, "guard 1"};
+    state::Guard guard1{state::Coordinate{8, 10}, "guard 1", false};
 
     this->board->pawns.emplace_back(king);
     this->board->pawns.emplace_back(guard1);
@@ -137,7 +137,7 @@ std::vector<state::Coordinate> Engine::pathfinding(state::Coordinate goal) {
             int new_cost = cost_so_far[current] - board->tiles.at(next.getCoordInLine()).getMoveCost();
             if (cost_so_far.find(next.getCoordInLine()) == cost_so_far.end() || new_cost < cost_so_far[next.getCoordInLine()]) {
                 cost_so_far[next.getCoordInLine()] = new_cost;
-                int priority = new_cost + offset_distance(cur_coor, goal);
+                int priority = new_cost + cur_coor.distance(goal);
                 frontier.put(next.getCoordInLine(), priority);
                 came_from[next.getCoordInLine()] = current;
             }
@@ -152,23 +152,6 @@ std::vector<state::Coordinate> Engine::pathfinding(state::Coordinate goal) {
         current.setCoord(came_from[current.getCoordInLine()]);
     }
     return path;
-}
-
-sf::Vector3i evenr_to_cube(state::Coordinate hex) {
-    int x = hex.getColumn() - (hex.getRow() + (hex.getRow() & 1)) / 2;
-    int z = hex.getRow();
-    int y = -x - z;
-    return sf::Vector3i{x, y, z};
-}
-
-int offset_distance(state::Coordinate hex_a, state::Coordinate hex_b) {
-    sf::Vector3i hex_a_c = evenr_to_cube(hex_a);
-    sf::Vector3i hex_b_c = evenr_to_cube(hex_b);
-    return cube_distance(hex_a_c, hex_b_c);
-}
-
-int cube_distance(sf::Vector3i hex_a, sf::Vector3i hex_b) {
-    return std::max(std::max(std::abs(hex_a.x - hex_b.x), std::abs(hex_a.y - hex_b.y)), std::abs(hex_a.z - hex_b.z));
 }
 
 int Engine::attack(state::Coordinate to) {
