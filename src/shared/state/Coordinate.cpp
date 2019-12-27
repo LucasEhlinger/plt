@@ -4,19 +4,13 @@
 using namespace ::state;
 
 Coordinate::Coordinate(int row, int column) : row(row), column(column) {
-    if (row >= 13 || column >= 13) {
+    if (row >= 13 || column >= 13)
         throw std::out_of_range("inLinePos<X>::at() : index is out of range");
-    }
 }
 
-void Coordinate::setCoord(int row, int column) {
-    if (row < 13 || column < 13) {
-        setRow(row);
-        setColumn(column);
-    } else {
+Coordinate::Coordinate(int inLinePos) : row(inLinePos / 13), column(inLinePos % 13) {
+    if (inLinePos >= 13 * 13)
         throw std::out_of_range("inLinePos<X>::at() : index is out of range");
-
-    }
 }
 
 void Coordinate::setCoord(int inLinePos) {

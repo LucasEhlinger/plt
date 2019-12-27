@@ -97,8 +97,10 @@ int TestRending::engine() {
 
         // creates the movemap from the moves available to the currently playing pawn and draws it
         if (engine1.playingPawn().isHuman) {
-            if (new_move)
+            if (new_move || new_turn) {
                 pro_coord = engine1.playingPawn().getCoordinate();
+                new_turn = false;
+            }
             av_moves = engine1.matrixAv_Tile(engine1.playingPawn());
             av_tiles.fill(9);
             for (int j = 0; j < av_moves.size(); ++j)
@@ -115,6 +117,7 @@ int TestRending::engine() {
             usleep(16000);
         } else if (engine1.playingPawn().number_type == 4) {
             engine1.nextTurn();
+            new_turn = true;
             window.display();
             usleep(16000);
         } else if (engine1.playingPawn().number_type == 5) {
@@ -130,7 +133,7 @@ int TestRending::engine() {
             }
             window.display();
             usleep(500000);
-        } else if (engine1.playingPawn().number_type == 6) { // TODO Bane behaviour
+        } else if (engine1.playingPawn().number_type == 6) {
             if (new_turn) {
                 path = engine1.bane_behaviour();
                 new_turn = false;
@@ -151,8 +154,7 @@ int TestRending::engine() {
             if (path.size() != 0) {
                 engine1.move(engine1.playingPawn(), path.back());
                 path.pop_back();
-            }
-            else
+            } else
                 engine1.move(engine1.playingPawn(), ai::Random::action(engine1.matrixAv_Tile(engine1.playingPawn())));
             if (engine1.playingPawn().getAP() == 0) {
                 engine1.nextTurn();
@@ -171,30 +173,43 @@ int TestRending::engine() {
                 case sf::Event::KeyPressed:
                     switch (event.key.code) {
                         case sf::Keyboard::Left:
-                            shadow_move(engine1.playingPawn(), pro_coord, av_moves, sf::Vector2i{0, -1}, av_tiles);
-                            new_move = false;
+                            if (engine1.playingPawn().isHuman) {
+                                shadow_move(engine1.playingPawn(), pro_coord, av_moves, sf::Vector2i{0, -1}, av_tiles);
+                                new_move = false;
+                            }
                             break;
                         case sf::Keyboard::Right:
-                            shadow_move(engine1.playingPawn(), pro_coord, av_moves, sf::Vector2i{0, +1}, av_tiles);
-                            new_move = false;
+                            if (engine1.playingPawn().isHuman) {
+                                shadow_move(engine1.playingPawn(), pro_coord, av_moves, sf::Vector2i{0, +1}, av_tiles);
+                                new_move = false;
+                            }
                             break;
                         case sf::Keyboard::Up:
-                            shadow_move(engine1.playingPawn(), pro_coord, av_moves, sf::Vector2i{-1, 0}, av_tiles);
-                            new_move = false;
+                            if (engine1.playingPawn().isHuman) {
+                                shadow_move(engine1.playingPawn(), pro_coord, av_moves, sf::Vector2i{-1, 0}, av_tiles);
+                                new_move = false;
+                            }
                             break;
                         case sf::Keyboard::Down:
-                            shadow_move(engine1.playingPawn(), pro_coord, av_moves, sf::Vector2i{+1, 0}, av_tiles);
-                            new_move = false;
+                            if (engine1.playingPawn().isHuman) {
+                                shadow_move(engine1.playingPawn(), pro_coord, av_moves, sf::Vector2i{+1, 0}, av_tiles);
+                                new_move = false;
+                            }
                             break;
                         case sf::Keyboard::Space:
-                            if (pro_coord == engine1.playingPawn().getCoordinate())
-                                break;
-                            engine1.move(engine1.playingPawn(), pro_coord);
-                            new_move = true;
+                            if (engine1.playingPawn().isHuman) {
+                                if (pro_coord == engine1.playingPawn().getCoordinate())
+                                    break;
+                                engine1.move(engine1.playingPawn(), pro_coord);
+                                new_move = true;
+                            }
                             break;
                         case sf::Keyboard::P:
-                            engine1.nextTurn();
-                            new_move = true;
+                            if (engine1.playingPawn().isHuman) {
+                                engine1.nextTurn();
+                                new_move = true;
+                                new_turn = true;
+                            }
                             break;
                         default:
                             break;

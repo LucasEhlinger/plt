@@ -4,6 +4,9 @@
 using namespace ai;
 
 state::Coordinate AI_Guard::action(state::Board& board) {
+    if (board.playingPawn().on_duty)
+        return ai::Random::action(board.matrixAv_Tile(board.playingPawn()));
+
     std::vector<state::Coordinate> banes_coord;
     for (state::Pawn pawns : board.pawns)
         if (pawns.number_type == 6)
