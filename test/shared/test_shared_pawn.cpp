@@ -20,9 +20,9 @@ BOOST_AUTO_TEST_CASE(TestKing) {
 
         BOOST_CHECK_EQUAL(king.name, "King");
 
-        BOOST_CHECK_EQUAL(king.getRot(), 0);
+        BOOST_CHECK_EQUAL(king.getRot(), 1);
         king.modifyRot();
-        BOOST_CHECK_EQUAL(king.getRot(), -1);
+        BOOST_CHECK_EQUAL(king.getRot(), 0);
     }
 }
 
@@ -41,7 +41,7 @@ BOOST_AUTO_TEST_CASE(TestPlayer) {
 
 BOOST_AUTO_TEST_CASE(TestGuard) {
     {
-        Guard guard{Coordinate{12, 11}, "guard"};
+        Guard guard{Coordinate{12, 11}, "guard", false};
         BOOST_CHECK_EQUAL(guard.name, "guard");
     }
 }
