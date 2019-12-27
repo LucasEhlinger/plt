@@ -54,6 +54,8 @@ void Engine::move(state::Pawn &pawn, state::Coordinate to) {
             //no attack
             pawn.move(to);
             board->tiles.at(position).effect(pawn);
+            if (pawn.getLP() <= 0)
+                death(pawn);
             pawn.notify();
         } else {
             //attack
@@ -79,11 +81,14 @@ void Engine::move(state::Pawn &pawn, state::Coordinate to) {
                 // attacker loses, attacker still uses AP but no moves are made
             else
                 pawn.modifyAP(board->tiles.at(to.getCoordInLine()).getMoveCost());
+            if (pawn.getLP() <= 0)
+                death(pawn);
+            if (defender.getLP() <= 0)
+                death(defender);
             pawn.notify();
             defender.notify();
         }
     }
-
 }
 
 state::Pawn &Engine::playingPawn() {
@@ -182,4 +187,15 @@ std::vector<state::Coordinate> Engine::guard_behaviour() {
 
 std::vector<state::Coordinate> Engine::bane_behaviour() {
     return pathfinding(ai::AI_Bane::action(*board));
+}
+
+void Engine::death(state::Pawn& pawn) {
+    if (playingPawn() == pawn)
+        nextTurn();
+    if (pawn.number_type == 5 || pawn.number_type == 6)
+        for (int i = 0; i < board->pawns.size(); ++i)
+            if (board->pawns.at(i) == pawn) {
+                board->pawns.erase(board->pawns.begin()+i);
+                break;
+            }
 }

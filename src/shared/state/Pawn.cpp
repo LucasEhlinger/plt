@@ -36,16 +36,6 @@ void Pawn::modifyAP(int offset) {
  */
 void Pawn::modifyLP(int offset) {
     this->lifePoints += offset;
-    if (this->lifePoints <= 0) {
-        // Le if suivant me fait penser qu'au final le "name" des pawns ne sert strictement à rien, à voir pour le virer
-        if (this->starting_tile.getCoordInLine() != state::Coordinate{0, 0}.getCoordInLine()) { // sera peut-être modifié pour mettre un if sur le number_type à la place
-            this->setCoordinate(this->starting_tile);
-            this->setAP(0);
-        }
-        // En fait ça serait mieux de virer ça d'ici et le gérer avec l'engine plutôt
-        //TODO le else de ses grands morts
-        // par "ses grands morts", je veux dire qu'il faut pouvoir notifier que le pion qui tombe à 0 LP, n'étant pas un joueur d'après le if ligne 40, doit être viré de la liste de pions
-    }
 }
 
 /**

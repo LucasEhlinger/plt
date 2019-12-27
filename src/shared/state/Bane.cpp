@@ -8,4 +8,6 @@ Bane::Bane(state::Coordinate position, std::string name) : Pawn(position, name) 
 
     resources = Resources(0, 0, 0, 5);
     stats = Stats(5, 4, 0, 0);
+
+    lifePoints = stats.getVitality();
 }

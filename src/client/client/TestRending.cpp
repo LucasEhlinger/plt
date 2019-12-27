@@ -125,11 +125,12 @@ int TestRending::engine() {
                 path = engine1.guard_behaviour();
                 new_turn = false;
             }
-            engine1.move(engine1.playingPawn(), path.back());
-            path.pop_back();
-            if (engine1.playingPawn().getAP() == 0) {
+            if (engine1.playingPawn().getAP() == 0 || path.empty()) {
                 engine1.nextTurn();
                 new_turn = true;
+            } else {
+                engine1.move(engine1.playingPawn(), path.back());
+                path.pop_back();
             }
             window.display();
             usleep(500000);
@@ -138,11 +139,12 @@ int TestRending::engine() {
                 path = engine1.bane_behaviour();
                 new_turn = false;
             }
-            engine1.move(engine1.playingPawn(), path.back());
-            path.pop_back();
-            if (engine1.playingPawn().getAP() == 0) {
+            if (engine1.playingPawn().getAP() == 0 || path.empty()) {
                 engine1.nextTurn();
                 new_turn = true;
+            } else {
+                engine1.move(engine1.playingPawn(), path.back());
+                path.pop_back();
             }
             window.display();
             usleep(500000);
