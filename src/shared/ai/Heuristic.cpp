@@ -5,13 +5,12 @@ using namespace ai;
 
 state::Coordinate Heuristic::action(state::Board &board) {
     state::Pawn playing = board.playingPawn();
-    state::Coordinate current_coord = playing.getCoordinate();
     bool kill_king, kill_king_q, kill_prestige, kill_prestige_q = false;
+    bool prestige_win = false;
 
     kill_king = sim_attack(playing, state::Coordinate{6, 6}, 0);
     kill_king_q = sim_attack(playing, state::Coordinate{6, 6}, 0);
 
-    bool prestige_win = false;
     state::Coordinate goal{0, 0};
     for (int i = 0; i < board.pawns.size(); ++i)
         if (board.pawns.at(i).getResources().prestige - playing.getResources().prestige < 2 &&

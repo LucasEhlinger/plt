@@ -91,3 +91,12 @@ BOOST_AUTO_TEST_CASE(TestModifyStats){
         BOOST_CHECK_EQUAL(player1.getSpirituality(), 3);
     }
 }
+
+BOOST_AUTO_TEST_CASE(TestSetCoordinates) {
+    {
+        Player player1{Coordinate{12, 11}, "test1", false};
+        BOOST_CHECK(player1.getCoordinate() == Coordinate(12, 11));
+        player1.setCoordinate(Coordinate{2,4});
+        BOOST_CHECK(player1.getCoordinate() == Coordinate(2, 4));
+    }
+}
