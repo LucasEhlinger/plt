@@ -19,22 +19,31 @@ Engine::Engine(state::Board &board) : board(&board) {
     state::Player player2{state::Coordinate{12, 6}, "player 2", false};
     player2.number_type = 2;
 
+    state::Player player3{state::Coordinate{0, 12}, "player 3", true};
+    player3.number_type = 3;
+
+    state::Player player4{state::Coordinate{12, 0}, "player 4", false};
+    player4.number_type = 0;
+
     state::King king{state::Coordinate{6, 6}};
-    king.setAP(0);
+    king.setAP(king.AP_max);
     king.isPlaying = true;
 
-    state::Guard guard1{state::Coordinate{8, 10}, "guard 1"};
+    state::Guard guard1{state::Coordinate{8, 10}, "guard 1", false};
+
+    state::Guard guard2{state::Coordinate{5, 6}, "guard 2", true};
+
+    state::Bane bane1{state::Coordinate{8, 7}, "bane 1"};
 
     this->board->pawns.emplace_back(king);
     this->board->pawns.emplace_back(guard1);
+    this->board->pawns.emplace_back(guard2);
+    this->board->pawns.emplace_back(bane1);
     this->board->pawns.emplace_back(player1);
     this->board->pawns.emplace_back(player2);
+    this->board->pawns.emplace_back(player3);
+    this->board->pawns.emplace_back(player4);
 }
-
-void sim_attack(state::Pawn playing, state::Coordinate goal, bool aim, int modifier = 0);
-sf::Vector3i evenr_to_cube(state::Coordinate hex);
-int offset_distance(state::Coordinate hex_a, state::Coordinate hex_b);
-int cube_distance(sf::Vector3i hex_a, sf::Vector3i hex_b);
 
 void Engine::move(state::Pawn &pawn, state::Coordinate to) {
     int position = to.getCoordInLine();
@@ -45,6 +54,8 @@ void Engine::move(state::Pawn &pawn, state::Coordinate to) {
             //no attack
             pawn.move(to);
             board->tiles.at(position).effect(pawn);
+            if (pawn.getLP() <= 0)
+                death(pawn);
             pawn.notify();
         } else {
             //attack
@@ -70,11 +81,14 @@ void Engine::move(state::Pawn &pawn, state::Coordinate to) {
                 // attacker loses, attacker still uses AP but no moves are made
             else
                 pawn.modifyAP(board->tiles.at(to.getCoordInLine()).getMoveCost());
+            if (pawn.getLP() <= 0)
+                death(pawn);
+            if (defender.getLP() <= 0)
+                death(defender);
             pawn.notify();
             defender.notify();
         }
     }
-
 }
 
 state::Pawn &Engine::playingPawn() {
@@ -137,7 +151,7 @@ std::vector<state::Coordinate> Engine::pathfinding(state::Coordinate goal) {
             int new_cost = cost_so_far[current] - board->tiles.at(next.getCoordInLine()).getMoveCost();
             if (cost_so_far.find(next.getCoordInLine()) == cost_so_far.end() || new_cost < cost_so_far[next.getCoordInLine()]) {
                 cost_so_far[next.getCoordInLine()] = new_cost;
-                int priority = new_cost + offset_distance(cur_coor, goal);
+                int priority = new_cost + cur_coor.distance(goal);
                 frontier.put(next.getCoordInLine(), priority);
                 came_from[next.getCoordInLine()] = current;
             }
@@ -154,23 +168,6 @@ std::vector<state::Coordinate> Engine::pathfinding(state::Coordinate goal) {
     return path;
 }
 
-sf::Vector3i evenr_to_cube(state::Coordinate hex) {
-    int x = hex.getColumn() - (hex.getRow() + (hex.getRow() & 1)) / 2;
-    int z = hex.getRow();
-    int y = -x - z;
-    return sf::Vector3i{x, y, z};
-}
-
-int offset_distance(state::Coordinate hex_a, state::Coordinate hex_b) {
-    sf::Vector3i hex_a_c = evenr_to_cube(hex_a);
-    sf::Vector3i hex_b_c = evenr_to_cube(hex_b);
-    return cube_distance(hex_a_c, hex_b_c);
-}
-
-int cube_distance(sf::Vector3i hex_a, sf::Vector3i hex_b) {
-    return std::max(std::max(std::abs(hex_a.x - hex_b.x), std::abs(hex_a.y - hex_b.y)), std::abs(hex_a.z - hex_b.z));
-}
-
 int Engine::attack(state::Coordinate to) {
     for (int i = 0; i < board->pawns.size(); ++i) {
         if (board->pawns.at(i).getCoordinate() == to) {
@@ -182,4 +179,23 @@ int Engine::attack(state::Coordinate to) {
 
 std::vector<state::Coordinate> Engine::AI_finale() {
     return pathfinding(ai::Heuristic::action(*board));
+}
+
+std::vector<state::Coordinate> Engine::guard_behaviour() {
+    return pathfinding(ai::AI_Guard::action(*board));
+}
+
+std::vector<state::Coordinate> Engine::bane_behaviour() {
+    return pathfinding(ai::AI_Bane::action(*board));
+}
+
+void Engine::death(state::Pawn& pawn) {
+    if (playingPawn() == pawn)
+        nextTurn();
+    if (pawn.number_type == 5 || pawn.number_type == 6)
+        for (int i = 0; i < board->pawns.size(); ++i)
+            if (board->pawns.at(i) == pawn) {
+                board->pawns.erase(board->pawns.begin()+i);
+                break;
+            }
 }

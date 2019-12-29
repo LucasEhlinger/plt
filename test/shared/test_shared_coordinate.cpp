@@ -24,6 +24,10 @@ BOOST_AUTO_TEST_CASE(TestSetup) {
         BOOST_CHECK_EQUAL(coo.getColumn(), 8);
 
     }
+    {
+        Coordinate coo{120};
+        BOOST_CHECK(coo == Coordinate(9,3));
+    }
 }
 
 BOOST_AUTO_TEST_CASE(TestConversion) {
@@ -80,6 +84,19 @@ BOOST_AUTO_TEST_CASE(testAnormalValue) {
     }
     {
         BOOST_CHECK_THROW(Coordinate(13, 13), std::out_of_range);
+    }
+    {
+        BOOST_CHECK_THROW(Coordinate(169), std::out_of_range);
+    }
+}
+
+BOOST_AUTO_TEST_CASE(testCubicTransformation) {
+    {
+        Coordinate coo{4, 7};
+        auto x = coo.evenr_to_cube();
+        BOOST_CHECK_EQUAL(x[0],5);
+        BOOST_CHECK_EQUAL(x[1],-9);
+        BOOST_CHECK_EQUAL(x[2],4);
     }
 
 }
