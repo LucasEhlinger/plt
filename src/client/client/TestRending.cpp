@@ -65,6 +65,7 @@ int TestRending::engine() {
     state::Coordinate pro_coord{0, 0};
     bool new_move = true;
     bool new_turn = true;
+    std::vector<int> deaths;
 
     // create the window
     //sf::RenderWindow window(sf::VideoMode(1536, 860), "just_another_plt_map");
@@ -129,7 +130,10 @@ int TestRending::engine() {
                 engine1.nextTurn();
                 new_turn = true;
             } else {
-                engine1.move(engine1.playingPawn(), path.back());
+                deaths = engine1.move(path.back());
+                if (deaths.size() != 0)
+                    for (int index : deaths)
+                        scene.removing_pawn(board, index);
                 path.pop_back();
             }
             window.display();
@@ -143,7 +147,10 @@ int TestRending::engine() {
                 engine1.nextTurn();
                 new_turn = true;
             } else {
-                engine1.move(engine1.playingPawn(), path.back());
+                deaths = engine1.move(path.back());
+                if (deaths.size() != 0)
+                    for (int index : deaths)
+                        scene.removing_pawn(board, index);
                 path.pop_back();
             }
             window.display();
@@ -154,10 +161,13 @@ int TestRending::engine() {
                 new_turn = false;
             }
             if (path.size() != 0) {
-                engine1.move(engine1.playingPawn(), path.back());
+                deaths = engine1.move(path.back());
+                if (deaths.size() != 0)
+                    for (int index : deaths)
+                        scene.removing_pawn(board, index);
                 path.pop_back();
             } else
-                engine1.move(engine1.playingPawn(), ai::Random::action(engine1.matrixAv_Tile(engine1.playingPawn())));
+                engine1.move(ai::Random::action(engine1.matrixAv_Tile(engine1.playingPawn())));
             if (engine1.playingPawn().getAP() == 0) {
                 engine1.nextTurn();
                 new_turn = true;
@@ -202,7 +212,10 @@ int TestRending::engine() {
                             if (engine1.playingPawn().isHuman) {
                                 if (pro_coord == engine1.playingPawn().getCoordinate())
                                     break;
-                                engine1.move(engine1.playingPawn(), pro_coord);
+                                deaths = engine1.move(path.back());
+                                if (deaths.size() != 0)
+                                    for (int index : deaths)
+                                        scene.removing_pawn(board, index);
                                 new_move = true;
                             }
                             break;
@@ -292,7 +305,7 @@ int TestRending::ia() {
         window.display();
 
 
-        engine1.move(engine1.playingPawn(), ai.action(av_moves));
+        //engine1.move(engine1.playingPawn(), ai.action(av_moves));
         engine1.nextTurn();
 
     }
@@ -368,7 +381,7 @@ int TestRending::heuristic_ai() {
         window.draw(pawn_map);
         window.display();
 
-        engine1.move(engine1.playingPawn(), engine1.AI_finale().at(0));
+       // engine1.move(engine1.playingPawn(), engine1.AI_finale().at(0));
         engine1.nextTurn();
 
     }
