@@ -20,9 +20,9 @@ BOOST_AUTO_TEST_CASE(TestKing) {
 
         BOOST_CHECK_EQUAL(king.name, "King");
 
-        BOOST_CHECK_EQUAL(king.getRot(), 0);
+        BOOST_CHECK_EQUAL(king.getRot(), 1);
         king.modifyRot();
-        BOOST_CHECK_EQUAL(king.getRot(), -1);
+        BOOST_CHECK_EQUAL(king.getRot(), 0);
     }
 }
 
@@ -41,7 +41,7 @@ BOOST_AUTO_TEST_CASE(TestPlayer) {
 
 BOOST_AUTO_TEST_CASE(TestGuard) {
     {
-        Guard guard{Coordinate{12, 11}, "guard"};
+        Guard guard{Coordinate{12, 11}, "guard", false};
         BOOST_CHECK_EQUAL(guard.name, "guard");
     }
 }
@@ -89,5 +89,14 @@ BOOST_AUTO_TEST_CASE(TestModifyStats){
         BOOST_CHECK_EQUAL(player1.getVitality(), 0);
         BOOST_CHECK_EQUAL(player1.getPresenceOfMind(), 6);
         BOOST_CHECK_EQUAL(player1.getSpirituality(), 3);
+    }
+}
+
+BOOST_AUTO_TEST_CASE(TestSetCoordinates) {
+    {
+        Player player1{Coordinate{12, 11}, "test1", false};
+        BOOST_CHECK(player1.getCoordinate() == Coordinate(12, 11));
+        player1.setCoordinate(Coordinate{2,4});
+        BOOST_CHECK(player1.getCoordinate() == Coordinate(2, 4));
     }
 }
