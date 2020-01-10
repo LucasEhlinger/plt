@@ -23,7 +23,7 @@ BOOST_AUTO_TEST_CASE(TestRandomAi) {
         en.playingPawn().setLP(3);
 
         //BOOST_CHECK_THROW(en.move(en.playingPawn(), ai.action(av_moves)), EXC_ARITHMETIC);
-        BOOST_CHECK_NO_THROW(en.move(en.playingPawn(), ai.action(av_moves)));
+        BOOST_CHECK_NO_THROW(en.move(ai.action(av_moves)));
     }
 
 }
