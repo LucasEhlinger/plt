@@ -13,7 +13,7 @@ BOOST_AUTO_TEST_CASE(TestHeuristicAi) {
     Engine en{bo};
     ai::Heuristic ai;
 
-    BOOST_CHECK_NO_THROW(en.move(en.playingPawn(), ai.action(bo)));
+    BOOST_CHECK_NO_THROW(en.move(ai.action(bo)));
     en.nextTurn();
-    BOOST_CHECK_NO_THROW(en.move(en.playingPawn(), ai.action(bo)));
+    BOOST_CHECK_NO_THROW(en.move(ai.action(bo)));
 }

@@ -45,50 +45,89 @@ Engine::Engine(state::Board &board) : board(&board) {
     this->board->pawns.emplace_back(player4);
 }
 
-void Engine::move(state::Pawn &pawn, state::Coordinate to) {
+std::vector<int> Engine::move(state::Coordinate to) {
+    std::vector<int> deaths;
+    bool att_d = false;
+    bool def_d = false;
     int position = to.getCoordInLine();
     int pawnPosition = attack(to);
     std::array<int, 2> result;
-    if (board->tiles.at(position).exist && (pawn.getAP() + board->tiles.at(position).getMoveCost()) >= 0) {
+
+    if (board->tiles.at(position).exist &&
+        (this->playingPawn().getAP() + board->tiles.at(position).getMoveCost()) >= 0) {
         if (pawnPosition == -1) {
             //no attack
-            pawn.move(to);
-            board->tiles.at(position).effect(pawn);
-            if (pawn.getLP() <= 0)
-                death(pawn);
-            pawn.notify();
+            this->playingPawn().move(to);
+            board->tiles.at(position).effect(this->playingPawn());
+            if (this->playingPawn().getLP() <= 0)
+                death(this->playingPawn());
+            this->playingPawn().notify();
         } else {
-            //attack
-            //solving
-            state::Pawn defender = board->pawns.at(pawnPosition);
-            sf::Vector2i vec = {to.getRow() - pawn.getCoordinate().getRow(),
-                                to.getColumn() - pawn.getCoordinate().getColumn()};
+            // attack solving
+            sf::Vector2i vec{to.getRow() - this->playingPawn().getCoordinate().getRow(),
+                             to.getColumn() - this->playingPawn().getCoordinate().getColumn()};
             int mountain = 0;
             if (board->tiles.at(position).number_type == 3)
                 mountain = 1;
-            result = pawn.attack(defender, this->board->day, mountain);
-            pawn.modifyLP(std::max(result[1], 0) * (-1));
-            defender.modifyLP(std::max(result[0], 0) * (-1));
+            result = this->playingPawn().attack(board->pawns.at(pawnPosition), this->board->day, mountain);
+            this->playingPawn().modifyLP(std::max(result[1], 0) * (-1));
+            board->pawns.at(pawnPosition).modifyLP(std::max(result[0], 0) * (-1));
 
-            // attacker wins, defender steps back and attacker moves (draw is considered win)
-            if (result[0] >= result[1]) {
-                defender.setAP(2);
-                defender.move(state::Coordinate{defender.getCoordinate().getRow() + vec.x,
-                                                defender.getCoordinate().getColumn() + vec.y});
-                pawn.move(to);
-                board->tiles.at(position).effect(pawn);
+            // check if someone died during the conflict
+            if (this->playingPawn().getLP() <= 0) {
+                death(this->playingPawn());
+                for (int i = 0; i < board->pawns.size(); ++i)
+                    if (board->pawns.at(i).isPlaying) {
+                        deaths.emplace_back(i);
+                        break;
+                    }
+                att_d = true;
             }
-                // attacker loses, attacker still uses AP but no moves are made
+            else {
+                // attacker wins and is still alive, board->pawns.at(pawnPosition) steps back (gets affected by the tile effect) and attacker moves (draw is considered win)
+                if (result[0] >= result[1]) {
+                    this->playingPawn().move(to);
+                    board->tiles.at(position).effect(this->playingPawn());
+                }
+                else
+                    this->playingPawn().modifyAP(board->tiles.at(position).getMoveCost());
+            }
+            if (board->pawns.at(pawnPosition).getLP() <= 0) {
+                death(board->pawns.at(pawnPosition));
+                deaths.emplace_back(pawnPosition);
+                def_d = true;
+            }
             else
-                pawn.modifyAP(board->tiles.at(to.getCoordInLine()).getMoveCost());
-            if (pawn.getLP() <= 0)
-                death(pawn);
-            if (defender.getLP() <= 0)
-                death(defender);
-            pawn.notify();
-            defender.notify();
+                // attacker wins and is still alive, board->pawns.at(pawnPosition) steps back (gets affected by the tile effect) and attacker moves (draw is considered win)
+                if (result[0] >= result[1] && !att_d) {
+                    // this needs to be better handled, they can't always step back (edges or castle)
+                    board->pawns.at(pawnPosition).move(
+                            state::Coordinate{board->pawns.at(pawnPosition).getCoordinate().getRow() + vec.x,
+                                              board->pawns.at(pawnPosition).getCoordinate().getColumn() + vec.y});
+                    board->tiles.at(state::Coordinate{board->pawns.at(pawnPosition).getCoordinate().getRow() + vec.x,
+                                                      board->pawns.at(pawnPosition).getCoordinate().getColumn() +
+                                                      vec.y}.getCoordInLine());
+                }
+
+            // check if someone died after the movement
+            if (this->playingPawn().getLP() <= 0 && !att_d) {
+                death(this->playingPawn());
+                for (int i = 0; i < board->pawns.size(); ++i)
+                    if (board->pawns.at(i).isPlaying) {
+                        deaths.emplace_back(i);
+                        break;
+                    }
+            }
+            if (board->pawns.at(pawnPosition).getLP() <= 0 && !def_d) {
+                death(board->pawns.at(pawnPosition));
+                deaths.emplace_back(pawnPosition);
+            }
+
+            this->playingPawn().notify();
+            board->pawns.at(pawnPosition).notify();
         }
     }
+    return deaths;
 }
 
 state::Pawn &Engine::playingPawn() {
@@ -127,18 +166,23 @@ struct PriorityQueue {
 std::vector<state::Coordinate> Engine::pathfinding(state::Coordinate goal) {
     state::Coordinate start = Engine::playingPawn().getCoordinate();
     int save = Engine::playingPawn().getAP();
-    PriorityQueue<int, int> frontier;
+    PriorityQueue<int, int> frontier;           // PriorityQueue<Coordinate, int> first member goes through comparisons
     std::vector<state::Coordinate> neighbors;
-    std::unordered_map<int, int> came_from;
-    std::unordered_map<int, int> cost_so_far;
+    std::unordered_map<int, int> came_from;     // unordered_map<Coordinate, Coordinate>
+    std::unordered_map<int, int> cost_so_far;   // unordered_map<Coordinate, int>
+    /*
+     * unordered_map needs a Hash function,
+     * we would have to make our own for the Coordinate class when there's an existing one for the int type.
+     * Since we already have all the functions to swiftly go from Coordinate to int and back, I'd rather use int here.
+     */
 
     frontier.put(start.getCoordInLine(), 0);
     came_from[start.getCoordInLine()] = start.getCoordInLine();
     cost_so_far[start.getCoordInLine()] = 0;
 
-    while(!frontier.empty()) {
+    while (!frontier.empty()) {
         int current = frontier.get();
-        state::Coordinate cur_coor{0,0};
+        state::Coordinate cur_coor{0, 0};
         cur_coor.setCoord(current);
 
         if (current == goal.getCoordInLine())
@@ -149,7 +193,8 @@ std::vector<state::Coordinate> Engine::pathfinding(state::Coordinate goal) {
         neighbors = Engine::matrixAv_Tile(Engine::playingPawn());
         for (state::Coordinate next : neighbors) {
             int new_cost = cost_so_far[current] - board->tiles.at(next.getCoordInLine()).getMoveCost();
-            if (cost_so_far.find(next.getCoordInLine()) == cost_so_far.end() || new_cost < cost_so_far[next.getCoordInLine()]) {
+            if (cost_so_far.find(next.getCoordInLine()) == cost_so_far.end() ||
+                new_cost < cost_so_far[next.getCoordInLine()]) {
                 cost_so_far[next.getCoordInLine()] = new_cost;
                 int priority = new_cost + cur_coor.distance(goal);
                 frontier.put(next.getCoordInLine(), priority);
@@ -189,13 +234,14 @@ std::vector<state::Coordinate> Engine::bane_behaviour() {
     return pathfinding(ai::AI_Bane::action(*board));
 }
 
-void Engine::death(state::Pawn& pawn) {
+void Engine::death(state::Pawn &pawn) {
     if (playingPawn() == pawn)
         nextTurn();
     if (pawn.number_type == 5 || pawn.number_type == 6)
         for (int i = 0; i < board->pawns.size(); ++i)
             if (board->pawns.at(i) == pawn) {
-                board->pawns.erase(board->pawns.begin()+i);
+                board->pawns.erase(board->pawns.begin() + i);
                 break;
             }
+    pawn.notify();
 }

@@ -38,8 +38,16 @@ std::array<int, 169> Scene::matrixPawn() {
 
     //for all pawns displayed
     for (long unsigned int i = 0; i < pawnsView.size(); ++i)
-        //set to the element of the coordinate of this pawn the value of his number_type
+        //set to the element of the coordinate of this pawn the value of its number_type
         table.at(pawnsView.at(i)->pawn.getCoordinate().getCoordInLine()) = pawnsView.at(i)->pawn.number_type;
     return table;
 }
 
+void Scene::adding_pawn (state::Board& board, int index) {
+    this->pawnsView.emplace(this->pawnsView.begin() + index, new PawnView(boardView->board.pawns[index]));
+    board.pawns[index].addObserver(pawnsView[index]);
+}
+void Scene::removing_pawn (state::Board& board, int index){
+    board.pawns[index].removeObserver(pawnsView[index]);
+    this->pawnsView.erase(this->pawnsView.begin() + index);
+}
