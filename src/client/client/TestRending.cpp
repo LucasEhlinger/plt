@@ -132,8 +132,10 @@ int TestRending::engine() {
             } else {
                 deaths = engine1.move(path.back());
                 if (deaths.size() != 0)
-                    for (int index : deaths)
+                    for (int index : deaths) {
                         scene.removing_pawn(board, index);
+                        new_turn = true;
+                    }
                 path.pop_back();
             }
             window.display();
@@ -149,8 +151,10 @@ int TestRending::engine() {
             } else {
                 deaths = engine1.move(path.back());
                 if (deaths.size() != 0)
-                    for (int index : deaths)
+                    for (int index : deaths) {
                         scene.removing_pawn(board, index);
+                        new_turn = true;
+                    }
                 path.pop_back();
             }
             window.display();
@@ -212,7 +216,7 @@ int TestRending::engine() {
                             if (engine1.playingPawn().isHuman) {
                                 if (pro_coord == engine1.playingPawn().getCoordinate())
                                     break;
-                                deaths = engine1.move(path.back());
+                                deaths = engine1.move(pro_coord);
                                 if (deaths.size() != 0)
                                     for (int index : deaths)
                                         scene.removing_pawn(board, index);
