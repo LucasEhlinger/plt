@@ -66,15 +66,19 @@ int TestRending::engine() {
     bool new_move = true;
     bool new_turn = true;
     std::vector<int> deaths;
+    int ind_death_max;
+    int ind_in_deaths;
 
-    // create the window
-    //sf::RenderWindow window(sf::VideoMode(1536, 860), "just_another_plt_map");
+    // sets up the window
     window.setKeyRepeatEnabled(false);
     state::Board board{};
     board.generate();
     engine::Engine engine1{board};
     render::Scene scene{board};
 
+    sf::Font font;
+    if (!font.loadFromFile("./../res/fonts/KingthingsPetrock.ttf"))
+        return -1;
 
     parse(nb_row, nb_col, scene.matrixTile(), level);
 
@@ -86,6 +90,7 @@ int TestRending::engine() {
 
     // run the main loop
     while (window.isOpen()) {
+        ind_death_max = 0;
         window.clear();
         window.draw(tile_map);
 
@@ -131,11 +136,16 @@ int TestRending::engine() {
                 new_turn = true;
             } else {
                 deaths = engine1.move(path.back());
-                if (deaths.size() != 0)
-                    for (int index : deaths) {
-                        scene.removing_pawn(board, index);
-                        new_turn = true;
-                    }
+                while (deaths.size() != 0) {
+                    for (int i = 0; i < deaths.size(); ++i)
+                        if (deaths.at(i) >= ind_death_max) {
+                            ind_death_max = deaths.at(i);
+                            ind_in_deaths = i;
+                        }
+                    scene.removing_pawn(board, ind_death_max);
+                    deaths.erase(deaths.begin() + ind_in_deaths);
+                    new_turn = true;
+                }
                 path.pop_back();
             }
             window.display();
@@ -150,11 +160,16 @@ int TestRending::engine() {
                 new_turn = true;
             } else {
                 deaths = engine1.move(path.back());
-                if (deaths.size() != 0)
-                    for (int index : deaths) {
-                        scene.removing_pawn(board, index);
-                        new_turn = true;
-                    }
+                while (deaths.size() != 0) {
+                    for (int i = 0; i < deaths.size(); ++i)
+                        if (deaths.at(i) >= ind_death_max) {
+                            ind_death_max = deaths.at(i);
+                            ind_in_deaths = i;
+                        }
+                    scene.removing_pawn(board, ind_death_max);
+                    deaths.erase(deaths.begin() + ind_in_deaths);
+                    new_turn = true;
+                }
                 path.pop_back();
             }
             window.display();
@@ -217,9 +232,16 @@ int TestRending::engine() {
                                 if (pro_coord == engine1.playingPawn().getCoordinate())
                                     break;
                                 deaths = engine1.move(pro_coord);
-                                if (deaths.size() != 0)
-                                    for (int index : deaths)
-                                        scene.removing_pawn(board, index);
+                                while (deaths.size() != 0) {
+                                    for (int i = 0; i < deaths.size(); ++i)
+                                        if (deaths.at(i) >= ind_death_max) {
+                                            ind_death_max = deaths.at(i);
+                                            ind_in_deaths = i;
+                                        }
+                                    scene.removing_pawn(board, ind_death_max);
+                                    deaths.erase(deaths.begin() + ind_in_deaths);
+                                    new_turn = true;
+                                }
                                 new_move = true;
                             }
                             break;

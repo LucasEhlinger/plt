@@ -20,7 +20,12 @@ void Tile::effect(state::Pawn &pawn) {
             pawn.modifyLP(-1);
             break;
         case 4: //StoneAge
-            pawn.modifyLP(+1);
+            if (pawn.getRot() < 5)
+                pawn.modifyLP(+1);
+            else if (pawn.number_type == 6)
+                pawn.setLP(0);
+            else
+                pawn.modifyLP(-1);
             break;
         case 0: //Ruin
             break;

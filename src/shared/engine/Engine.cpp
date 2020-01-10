@@ -75,6 +75,9 @@ std::vector<int> Engine::move(state::Coordinate to) {
 
             // check if someone died during the conflict
             if (this->playingPawn().getLP() <= 0) {
+                if (board->pawns.at(pawnPosition).getLP() <= 0)
+                    if (this->playingPawn().number_type - 4 >= 0)
+                        this->playingPawn().modifyResources(0, 0, 1, 0);
                 death(this->playingPawn());
                 for (int i = 0; i < board->pawns.size(); ++i)
                     if (board->pawns.at(i).isPlaying) {
@@ -82,9 +85,11 @@ std::vector<int> Engine::move(state::Coordinate to) {
                         break;
                     }
                 att_d = true;
+                if (board->pawns.at(pawnPosition).number_type - 4 >= 0)
+                    board->pawns.at(pawnPosition).modifyResources(0, 0, 1, 0);
             }
             else {
-                // attacker wins and is still alive, board->pawns.at(pawnPosition) steps back (gets affected by the tile effect) and attacker moves (draw is considered win)
+                // attacker is still alive and wins, attacker moves (draw is considered win)
                 if (result[0] >= result[1]) {
                     this->playingPawn().move(to);
                     board->tiles.at(position).effect(this->playingPawn());
@@ -96,6 +101,8 @@ std::vector<int> Engine::move(state::Coordinate to) {
                 death(board->pawns.at(pawnPosition));
                 deaths.emplace_back(pawnPosition);
                 def_d = true;
+                if (board->pawns.at(pawnPosition).number_type - 4 >= 0)
+                    board->pawns.at(pawnPosition).modifyResources(0, 0, 1, 0);
             }
             else
                 // attacker wins and is still alive, board->pawns.at(pawnPosition) steps back (gets affected by the tile effect) and attacker moves (draw is considered win)
@@ -113,7 +120,7 @@ std::vector<int> Engine::move(state::Coordinate to) {
             if (this->playingPawn().getLP() <= 0 && !att_d) {
                 death(this->playingPawn());
                 for (int i = 0; i < board->pawns.size(); ++i)
-                    if (board->pawns.at(i).isPlaying) {
+                    if (board->pawns.at(i).isPlaying && (board->pawns.at(i).number_type == 5 || board->pawns.at(i).number_type == 6)) {
                         deaths.emplace_back(i);
                         break;
                     }
@@ -243,5 +250,9 @@ void Engine::death(state::Pawn &pawn) {
                 board->pawns.erase(board->pawns.begin() + i);
                 break;
             }
+    else if (pawn.number_type != 4) {
+        pawn.modifyResources(0, 0, -1, 0);
+        pawn.to_the_pit();
+    }
     pawn.notify();
 }

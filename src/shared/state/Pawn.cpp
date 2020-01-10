@@ -210,6 +210,13 @@ void Pawn::setResources(const class state::Resources &resources) {
     this->resources = resources;
 }
 
+void Pawn::modifyResources(int gold, int mana, int prestige, int rot) {
+    resources.modifyGold(gold);
+    resources.modifyMana(mana);
+    resources.modifyPrestige(prestige);
+    resources.modifyRot(rot);
+}
+
 void Pawn::setStats(const class state::Stats &stats) {
     this->stats = stats;
 }
@@ -228,4 +235,7 @@ int Pawn::getPresenceOfMind() {
 
 int Pawn::getSpirituality() {
     return stats.spirituality;
+}
+void Pawn::to_the_pit() {
+    this->coordinate = starting_tile;
 }
