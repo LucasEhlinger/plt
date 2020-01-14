@@ -10,6 +10,7 @@
 #include <SFML/System.hpp>
 #include "../render.h"
 
+
 using namespace render;
 using namespace client;
 using namespace sf;
@@ -213,25 +214,25 @@ int TestRending::engine() {
                     switch (event.key.code) {
                         case sf::Keyboard::Left:
                             if (engine1.playingPawn().isHuman) {
-                                shadow_move(engine1.playingPawn(), pro_coord, av_moves, sf::Vector2i{0, -1}, av_tiles);
+                                shadowMove(engine1.playingPawn(), pro_coord, av_moves, sf::Vector2i{0, -1}, av_tiles);
                                 new_move = false;
                             }
                             break;
                         case sf::Keyboard::Right:
                             if (engine1.playingPawn().isHuman) {
-                                shadow_move(engine1.playingPawn(), pro_coord, av_moves, sf::Vector2i{0, +1}, av_tiles);
+                                shadowMove(engine1.playingPawn(), pro_coord, av_moves, sf::Vector2i{0, +1}, av_tiles);
                                 new_move = false;
                             }
                             break;
                         case sf::Keyboard::Up:
                             if (engine1.playingPawn().isHuman) {
-                                shadow_move(engine1.playingPawn(), pro_coord, av_moves, sf::Vector2i{-1, 0}, av_tiles);
+                                shadowMove(engine1.playingPawn(), pro_coord, av_moves, sf::Vector2i{-1, 0}, av_tiles);
                                 new_move = false;
                             }
                             break;
                         case sf::Keyboard::Down:
                             if (engine1.playingPawn().isHuman) {
-                                shadow_move(engine1.playingPawn(), pro_coord, av_moves, sf::Vector2i{+1, 0}, av_tiles);
+                                shadowMove(engine1.playingPawn(), pro_coord, av_moves, sf::Vector2i{+1, 0}, av_tiles);
                                 new_move = false;
                             }
                             break;
@@ -272,9 +273,7 @@ int TestRending::engine() {
 int TestRending::ia() {
     std::array<int, 169> av_tiles;
     std::vector<state::Coordinate> av_moves;
-
-    ai::Random ai;
-
+    //ai::Random ai;
     state::Board board{};
     board.generate();
     engine::Engine engine1{board};
@@ -441,8 +440,104 @@ void TestRending::parse(int nb_row, int nb_col, std::array<int, 169> raw_table, 
     }
 }
 
+int TestRending::thread() {
+    // create the window
+    window.setKeyRepeatEnabled(false);
+    state::Board board{};
+    board.generate();
+
+    //start engine
+    engine::Engine engine1{board};
+    sf::Thread thread(&engine::Engine::gameloop, &engine1);
+    thread.launch();
+
+    render::Scene scene{board};
+
+    parse(nb_row, nb_col, scene.matrixTile(), level);
+
+    // create the tilemap from the level definition
+    TileMap tile_map;
+    if (!tile_map.load("./../res/hexagon-pack/PNG/tileset.png", sf::Vector2u(tile_width, tile_height), level, nb_col,
+                       nb_row))
+        return -1;
+
+    // run the main loop
+    while (window.isOpen()) {
+        window.clear();
+        window.draw(tile_map);
+        PawnMap pawn_map;
+        parse(nb_row, nb_col, scene.matrixPawn(), table);
+
+        if (!pawn_map.load("./../res/pawn/pawnset.png", sf::Vector2u(tile_width, tile_height), table, nb_row, nb_col))
+            return -1;
+
+        // creates the movemap from the moves available to the currently playing pawn and draws it
+        if (engine1.playingPawn().isHuman) {
+            parse(nb_row, nb_col, engine1.av_tiles, table);
+            Av_TileMap av_tile_map;
+            if (!av_tile_map.load("./../res/hexagon-pack/PNG/av_move.png", sf::Vector2u(tile_width, tile_height), table,
+                                  nb_row, nb_col))
+                return -1;
+            window.draw(av_tile_map);
+        }
+
+        //handle events
+        sf::Event event;
+        while (window.pollEvent(event)) {
+            switch (event.type) {
+                case sf::Event::Closed:
+                    window.close();
+                    thread.terminate();
+                case sf::Event::KeyPressed:
+                    if (engine1.playingPawn().isHuman) {
+                        switch (event.key.code) {
+                            case sf::Keyboard::Left:
+                                //engine1.shadowMove(sf::Vector2i{0, -1});
+                                shadowMove(engine1,sf::Vector2i{0, -1});
+                                engine1.new_move = false;
+                                break;
+                            case sf::Keyboard::Right:
+                                //engine1.shadowMove(sf::Vector2i{0, +1});
+                                shadowMove(engine1,sf::Vector2i{0, +1});
+                                engine1.new_move = false;
+                                break;
+                            case sf::Keyboard::Up:
+                                //engine1.shadowMove(sf::Vector2i{-1, 0});
+                                shadowMove(engine1,sf::Vector2i{-1, 0});
+                                engine1.new_move = false;
+                                break;
+                            case sf::Keyboard::Down:
+                                //engine1.shadowMove(sf::Vector2i{+1, 0});
+                                shadowMove(engine1, sf::Vector2i{+1, 0});
+                                engine1.new_move = false;
+                                break;
+                            case sf::Keyboard::Space:
+                                if (engine1.temporary_coordinates == engine1.playingPawn().getCoordinate())
+                                    break;
+                                engine1.move(engine1.temporary_coordinates);
+                                engine1.new_move = false;
+                                break;
+                            case sf::Keyboard::P:
+                                engine1.nextTurn();
+                                engine1.new_move = true;
+                                engine1.new_turn = true;
+                                break;
+                            default:
+                                break;
+                        }
+                    }
+            }
+        }
+
+        window.draw(pawn_map);
+        window.display();
+        usleep(16000);
+    }
+    return 0;
+}
+
 void
-TestRending::shadow_move(state::Pawn playing, state::Coordinate &pro_coord, std::vector<state::Coordinate> av_moves,
+TestRending::shadowMove(state::Pawn playing, state::Coordinate &pro_coord, std::vector<state::Coordinate> av_moves,
                          sf::Vector2i shift, std::array<int, 169> &av_tiles) {
     state::Coordinate shadow_coord{pro_coord.getRow() + shift.x, pro_coord.getColumn() + shift.y};
     if (shadow_coord == playing.getCoordinate())
@@ -462,4 +557,8 @@ TestRending::shadow_move(state::Pawn playing, state::Coordinate &pro_coord, std:
                 break;
             }
     }
+}
+
+void TestRending::shadowMove(engine::Engine &engine, sf::Vector2i shift) {
+    shadowMove(engine.playingPawn(), engine.temporary_coordinates, engine.av_moves, shift, engine.av_tiles);
 }

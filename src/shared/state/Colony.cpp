@@ -14,9 +14,9 @@ Colony::Colony() : Tile() {
  */
 void Colony::effect(Pawn &pawn) {
     pawn.modifyAP(moveCost);
-    if (this->property->number_type = 6)
-        pawn.modifyResources(0,0,1,0);
     this->property = &pawn;
+    if (property->number_type == 6)
+        pawn.modifyResources(0,0,1,0);
 }
 
 Colony::~Colony() {
