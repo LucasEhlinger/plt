@@ -85,12 +85,16 @@ std::vector<state::Coordinate> Board::matrixAv_Tile(state::Pawn &pawn) {
             av_tiles.emplace_back(state::Coordinate{x + 1, y - 1});
 
     if (pawn.on_duty) {
-        std::vector<state::Coordinate> duty_tiles;
-        for (state::Coordinate tile : av_tiles)
-            if (tiles.at(tile.getCoordInLine()).number_type == 8 &&
-                tile.getCoordInLine() != state::Coordinate{6, 6}.getCoordInLine())
-                duty_tiles.emplace_back(tile);
-        return duty_tiles;
+        for (int i = 0; i < av_tiles.size(); ++i) {
+            bool again = true;
+            while (again && i < av_tiles.size()) {
+                if (tiles.at(av_tiles.at(i).getCoordInLine()).number_type != 8 ||
+                    av_tiles.at(i).getCoordInLine() == state::Coordinate{6, 6}.getCoordInLine())
+                    av_tiles.erase(av_tiles.begin() + i);
+                else
+                    again = false;
+            }
+        }
     }
     return av_tiles;
 }
