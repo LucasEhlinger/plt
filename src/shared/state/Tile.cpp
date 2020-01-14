@@ -12,9 +12,12 @@ Tile::Tile() {
  */
 void Tile::effect(state::Pawn &pawn) {
     pawn.modifyAP(moveCost);
+    pawn.trespassing = false;
     switch (number_type){
         case 8: //Castle
             pawn.setAP(0);
+            if (pawn.number_type != 4 && pawn.number_type != 5)
+                pawn.trespassing = true;
             break;
         case 5: //Swamp
             pawn.modifyLP(-1);

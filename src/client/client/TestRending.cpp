@@ -136,7 +136,7 @@ int TestRending::engine() {
                 new_turn = true;
             } else {
                 deaths = engine1.move(path.back());
-                while (deaths.size() != 0) {
+                /*while (deaths.size() != 0) {
                     for (int i = 0; i < deaths.size(); ++i)
                         if (deaths.at(i) >= ind_death_max) {
                             ind_death_max = deaths.at(i);
@@ -144,9 +144,12 @@ int TestRending::engine() {
                         }
                     scene.removing_pawn(board, ind_death_max);
                     deaths.erase(deaths.begin() + ind_in_deaths);
+                }*/
+                path.pop_back();
+                if (board.tiles.at(engine1.playingPawn().getCoordinate().getCoordInLine()).number_type == 8) {
+                    engine1.nextTurn();
                     new_turn = true;
                 }
-                path.pop_back();
             }
             window.display();
             usleep(500000);
@@ -160,7 +163,7 @@ int TestRending::engine() {
                 new_turn = true;
             } else {
                 deaths = engine1.move(path.back());
-                while (deaths.size() != 0) {
+                /*while (deaths.size() != 0) {
                     for (int i = 0; i < deaths.size(); ++i)
                         if (deaths.at(i) >= ind_death_max) {
                             ind_death_max = deaths.at(i);
@@ -168,8 +171,7 @@ int TestRending::engine() {
                         }
                     scene.removing_pawn(board, ind_death_max);
                     deaths.erase(deaths.begin() + ind_in_deaths);
-                    new_turn = true;
-                }
+                }*/
                 path.pop_back();
             }
             window.display();
@@ -181,9 +183,15 @@ int TestRending::engine() {
             }
             if (path.size() != 0) {
                 deaths = engine1.move(path.back());
-                if (deaths.size() != 0)
-                    for (int index : deaths)
-                        scene.removing_pawn(board, index);
+                /*while (deaths.size() != 0) {
+                    for (int i = 0; i < deaths.size(); ++i)
+                        if (deaths.at(i) >= ind_death_max) {
+                            ind_death_max = deaths.at(i);
+                            ind_in_deaths = i;
+                        }
+                    scene.removing_pawn(board, ind_death_max);
+                    deaths.erase(deaths.begin() + ind_in_deaths);
+                }*/
                 path.pop_back();
             } else
                 engine1.move(ai::Random::action(engine1.matrixAv_Tile(engine1.playingPawn())));
@@ -407,7 +415,7 @@ int TestRending::heuristic_ai() {
         window.draw(pawn_map);
         window.display();
 
-       // engine1.move(engine1.playingPawn(), engine1.AI_finale().at(0));
+        // engine1.move(engine1.playingPawn(), engine1.AI_finale().at(0));
         engine1.nextTurn();
 
     }

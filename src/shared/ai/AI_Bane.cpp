@@ -3,9 +3,9 @@
 using namespace ai;
 
 state::Coordinate AI_Bane::action(state::Board &board) {
-    for (state::Pawn pawns : board.pawns)
-        if (board.playingPawn().getCoordinate().distance(pawns.getCoordinate()) == 1)
-            return pawns.getCoordinate();
+    for (state::Pawn pawn : board.pawns)
+        if (board.playingPawn().getCoordinate().distance(pawn.getCoordinate()) == 1 && !pawn.on_duty)
+            return pawn.getCoordinate();
 
     std::vector<state::Coordinate> colonies;
     for (int i = 0; i < board.tiles.size(); ++i)

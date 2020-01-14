@@ -33,7 +33,7 @@ Engine::Engine(state::Board &board) : board(&board) {
 
     state::Guard guard2{state::Coordinate{5, 6}, "guard 2", true};
 
-    state::Bane bane1{state::Coordinate{8, 7}, "bane 1"};
+    state::Bane bane1{state::Coordinate{4, 7}, "bane 1"};
 
     this->board->pawns.emplace_back(king);
     this->board->pawns.emplace_back(guard1);
@@ -51,7 +51,7 @@ std::vector<int> Engine::move(state::Coordinate to) {
     bool def_d = false;
     int position = to.getCoordInLine();
     int pawnPosition = attack(to);
-    std::array<int, 2> result;
+    std::array<int, 2> result{0, 0};
 
     if (board->tiles.at(position).exist &&
         (this->playingPawn().getAP() + board->tiles.at(position).getMoveCost()) >= 0) {
@@ -87,14 +87,12 @@ std::vector<int> Engine::move(state::Coordinate to) {
                 att_d = true;
                 if (board->pawns.at(pawnPosition).number_type - 4 >= 0)
                     board->pawns.at(pawnPosition).modifyResources(0, 0, 1, 0);
-            }
-            else {
+            } else {
                 // attacker is still alive and wins, attacker moves (draw is considered win)
                 if (result[0] >= result[1]) {
                     this->playingPawn().move(to);
                     board->tiles.at(position).effect(this->playingPawn());
-                }
-                else
+                } else
                     this->playingPawn().modifyAP(board->tiles.at(position).getMoveCost());
             }
             if (board->pawns.at(pawnPosition).getLP() <= 0) {
@@ -103,24 +101,24 @@ std::vector<int> Engine::move(state::Coordinate to) {
                 def_d = true;
                 if (board->pawns.at(pawnPosition).number_type - 4 >= 0)
                     board->pawns.at(pawnPosition).modifyResources(0, 0, 1, 0);
-            }
-            else
+            } else
                 // attacker wins and is still alive, board->pawns.at(pawnPosition) steps back (gets affected by the tile effect) and attacker moves (draw is considered win)
-                if (result[0] >= result[1] && !att_d) {
-                    // this needs to be better handled, they can't always step back (edges or castle)
-                    board->pawns.at(pawnPosition).move(
-                            state::Coordinate{board->pawns.at(pawnPosition).getCoordinate().getRow() + vec.x,
-                                              board->pawns.at(pawnPosition).getCoordinate().getColumn() + vec.y});
-                    board->tiles.at(state::Coordinate{board->pawns.at(pawnPosition).getCoordinate().getRow() + vec.x,
-                                                      board->pawns.at(pawnPosition).getCoordinate().getColumn() +
-                                                      vec.y}.getCoordInLine());
-                }
+            if (result[0] >= result[1] && !att_d) {
+                // this needs to be better handled, they can't always step back (edges or castle)
+                board->pawns.at(pawnPosition).move(
+                        state::Coordinate{board->pawns.at(pawnPosition).getCoordinate().getRow() + vec.x,
+                                          board->pawns.at(pawnPosition).getCoordinate().getColumn() + vec.y});
+                board->tiles.at(state::Coordinate{board->pawns.at(pawnPosition).getCoordinate().getRow() + vec.x,
+                                                  board->pawns.at(pawnPosition).getCoordinate().getColumn() +
+                                                  vec.y}.getCoordInLine());
+            }
 
             // check if someone died after the movement
             if (this->playingPawn().getLP() <= 0 && !att_d) {
                 death(this->playingPawn());
                 for (int i = 0; i < board->pawns.size(); ++i)
-                    if (board->pawns.at(i).isPlaying && (board->pawns.at(i).number_type == 5 || board->pawns.at(i).number_type == 6)) {
+                    if (board->pawns.at(i).isPlaying &&
+                        (board->pawns.at(i).number_type == 5 || board->pawns.at(i).number_type == 6)) {
                         deaths.emplace_back(i);
                         break;
                     }
@@ -134,6 +132,7 @@ std::vector<int> Engine::move(state::Coordinate to) {
             board->pawns.at(pawnPosition).notify();
         }
     }
+    this->board->notify();
     return deaths;
 }
 
@@ -143,6 +142,7 @@ state::Pawn &Engine::playingPawn() {
 
 void Engine::nextTurn() {
     board->nextTurn();
+    board->notify();
 }
 
 std::vector<state::Coordinate> Engine::matrixAv_Tile(state::Pawn &pawn) {
@@ -198,6 +198,40 @@ std::vector<state::Coordinate> Engine::pathfinding(state::Coordinate goal) {
         Engine::playingPawn().setCoordinate(cur_coor);
         Engine::playingPawn().setAP(3);
         neighbors = Engine::matrixAv_Tile(Engine::playingPawn());
+        for (int i = 0; i < neighbors.size(); ++i) {
+            bool rerun = true;
+            while (rerun) {
+                if (i < neighbors.size() &&
+                    ((Engine::playingPawn().getLP() == 1 &&
+                      (board->tiles.at(neighbors.at(i).getCoordInLine()).number_type == 5 ||
+                       (Engine::playingPawn().getRot() >= 5 &&
+                        board->tiles.at(neighbors.at(i).getCoordInLine()).number_type == 4))) ||
+                     (Engine::playingPawn().number_type == 6 &&
+                      (board->tiles.at(neighbors.at(i).getCoordInLine()).number_type == 8 ||
+                       board->tiles.at(neighbors.at(i).getCoordInLine()).number_type == 4))))
+                    neighbors.erase(neighbors.begin() + i);
+                else
+                    rerun = false;
+            }
+        }
+        if (Engine::playingPawn().number_type == 5)
+            for (int i = 0; i < neighbors.size(); ++i) {
+                bool rerun = true;
+                while (rerun) {
+                    if (i < neighbors.size())
+                        for (state::Pawn pawn : board->pawns) {
+                            if (pawn.getCoordinate() == neighbors.at(i) && pawn.number_type != 6) {
+                                neighbors.erase(neighbors.begin() + i);
+                                rerun = true;
+                                break;
+                            } else
+                                rerun = false;
+                        }
+                    else
+                        rerun = false;
+                }
+            }
+
         for (state::Coordinate next : neighbors) {
             int new_cost = cost_so_far[current] - board->tiles.at(next.getCoordInLine()).getMoveCost();
             if (cost_so_far.find(next.getCoordInLine()) == cost_so_far.end() ||
@@ -242,17 +276,21 @@ std::vector<state::Coordinate> Engine::bane_behaviour() {
 }
 
 void Engine::death(state::Pawn &pawn) {
-    if (playingPawn() == pawn)
+    if (this->playingPawn() == pawn)
         nextTurn();
     if (pawn.number_type == 5 || pawn.number_type == 6)
         for (int i = 0; i < board->pawns.size(); ++i)
             if (board->pawns.at(i) == pawn) {
                 board->pawns.erase(board->pawns.begin() + i);
                 break;
+            } else if (pawn.number_type != 4) {
+                pawn.modifyResources(0, 0, -1, 0);
+                pawn.to_the_pit();
             }
     else if (pawn.number_type != 4) {
-        pawn.modifyResources(0, 0, -1, 0);
-        pawn.to_the_pit();
-    }
+                pawn.setLP(pawn.getVitality());
+                pawn.setCoordinate(pawn.starting_tile);
+                pawn.modifyResources(0,0,-1,0);
+            }
     pawn.notify();
 }
