@@ -20,10 +20,12 @@ int main(int argc, char *argv[]) {
             test.ia();
         } else if (strcmp(argv[1], "heuristic_ai") == 0) {
             test.heuristic_ai();
+        } else if (strcmp(argv[1], "thread") == 0) {
+            test.thread();
         }
     } else {
         cout << "Je n'ai pas compris, entrez une de ces commandes :" << endl;
-        cout << "hello, render, engine, random_ai & heuristic_ai" << endl;
+        cout << "hello, render, engine, random_ai, heuristic_ai & thread" << endl;
     }
     return 0;
 }

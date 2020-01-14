@@ -12,7 +12,7 @@
 using namespace engine;
 using namespace ai;
 
-Engine::Engine(state::Board &board) : board(&board) {
+Engine::Engine(state::Board &board) : board(&board), temporary_coordinates{0, 0} {
     state::Player player1{state::Coordinate{0, 6}, "player 1", true};
     player1.number_type = 1;
 
@@ -82,32 +82,29 @@ std::vector<int> Engine::move(state::Coordinate to) {
                         break;
                     }
                 att_d = true;
-            }
-            else {
+            } else {
                 // attacker wins and is still alive, board->pawns.at(pawnPosition) steps back (gets affected by the tile effect) and attacker moves (draw is considered win)
                 if (result[0] >= result[1]) {
                     this->playingPawn().move(to);
                     board->tiles.at(position).effect(this->playingPawn());
-                }
-                else
+                } else
                     this->playingPawn().modifyAP(board->tiles.at(position).getMoveCost());
             }
             if (board->pawns.at(pawnPosition).getLP() <= 0) {
                 death(board->pawns.at(pawnPosition));
                 deaths.emplace_back(pawnPosition);
                 def_d = true;
-            }
-            else
+            } else
                 // attacker wins and is still alive, board->pawns.at(pawnPosition) steps back (gets affected by the tile effect) and attacker moves (draw is considered win)
-                if (result[0] >= result[1] && !att_d) {
-                    // this needs to be better handled, they can't always step back (edges or castle)
-                    board->pawns.at(pawnPosition).move(
-                            state::Coordinate{board->pawns.at(pawnPosition).getCoordinate().getRow() + vec.x,
-                                              board->pawns.at(pawnPosition).getCoordinate().getColumn() + vec.y});
-                    board->tiles.at(state::Coordinate{board->pawns.at(pawnPosition).getCoordinate().getRow() + vec.x,
-                                                      board->pawns.at(pawnPosition).getCoordinate().getColumn() +
-                                                      vec.y}.getCoordInLine());
-                }
+            if (result[0] >= result[1] && !att_d) {
+                // this needs to be better handled, they can't always step back (edges or castle)
+                board->pawns.at(pawnPosition).move(
+                        state::Coordinate{board->pawns.at(pawnPosition).getCoordinate().getRow() + vec.x,
+                                          board->pawns.at(pawnPosition).getCoordinate().getColumn() + vec.y});
+                board->tiles.at(state::Coordinate{board->pawns.at(pawnPosition).getCoordinate().getRow() + vec.x,
+                                                  board->pawns.at(pawnPosition).getCoordinate().getColumn() +
+                                                  vec.y}.getCoordInLine());
+            }
 
             // check if someone died after the movement
             if (this->playingPawn().getLP() <= 0 && !att_d) {
@@ -244,4 +241,66 @@ void Engine::death(state::Pawn &pawn) {
                 break;
             }
     pawn.notify();
+}
+
+void Engine::gameloop() {
+
+    while (1) {
+        // creates the movemap from the moves available to the currently playing pawn and draws it
+        if (playingPawn().isHuman) {
+            if (new_move || new_turn) {
+                temporary_coordinates = playingPawn().getCoordinate();
+                new_turn = false;
+            }
+            av_moves = matrixAv_Tile(playingPawn());
+            av_tiles.fill(9);
+            for (int j = 0; j < av_moves.size(); ++j)
+                av_tiles.at(av_moves.at(j).getCoordInLine()) = 0;
+            av_tiles.at(temporary_coordinates.getCoordInLine()) = playingPawn().number_type + 1;
+        } else if (playingPawn().number_type == 4) {
+            nextTurn();
+            new_turn = true;
+        } else if (playingPawn().number_type == 5) {
+            if (new_turn) {
+                path = guard_behaviour();
+                new_turn = false;
+            }
+            if (playingPawn().getAP() == 0 || path.empty()) {
+                nextTurn();
+                new_turn = true;
+            } else {
+                move(path.back());
+                path.pop_back();
+            }
+        } else if (playingPawn().number_type == 6) {
+            if (new_turn) {
+                path = bane_behaviour();
+                new_turn = false;
+            }
+            if (playingPawn().getAP() == 0 || path.empty()) {
+                nextTurn();
+                new_turn = true;
+            } else {
+                move(path.back());
+                path.pop_back();
+            }
+        } else {
+            if (new_turn) {
+                path = AI_finale();
+                new_turn = false;
+            }
+            if (path.size() != 0) {
+                move(path.back());
+                path.pop_back();
+            } else {
+                move(ai::Random::action(matrixAv_Tile(playingPawn())));
+            }
+            //engine1.move(ai::Random::action(engine1.matrixAv_Tile(engine1.playingPawn())));
+            if (playingPawn().getAP() == 0) {
+                //engine1.nextTurn();
+                nextTurn();
+                new_turn = true;
+            }
+        }
+    }
 }

@@ -18,10 +18,8 @@ Board::Board(const state::Board &board) {
     this->day = board.day;
 
     if (board.tiles.size() != 0) {
-        for (int i = 0; i < board.tiles.size(); i++) {
+        for (int i = 0; i < board.tiles.size(); i++)
             tiles.at(i) = board.tiles[i];
-        }
-        //this->tiles(new std::array<std::unique_ptr<Tile>,13*13> (board.tiles))
         this->pawns = board.pawns;
     }
 }
