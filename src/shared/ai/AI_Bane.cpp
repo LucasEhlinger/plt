@@ -4,7 +4,9 @@ using namespace ai;
 
 state::Coordinate AI_Bane::action(state::Board &board) {
     for (state::Pawn pawn : board.pawns)
-        if (board.playingPawn().getCoordinate().distance(pawn.getCoordinate()) == 1 && !pawn.on_duty)
+        if (board.playingPawn().getCoordinate().distance(pawn.getCoordinate()) == 1 &&
+            board.tiles.at(pawn.getCoordinate().getCoordInLine()).number_type != 8 &&
+            board.tiles.at(pawn.getCoordinate().getCoordInLine()).number_type != 4)
             return pawn.getCoordinate();
 
     std::vector<state::Coordinate> colonies;

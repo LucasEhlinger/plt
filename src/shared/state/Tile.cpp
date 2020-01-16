@@ -4,6 +4,7 @@ using namespace ::state;
 
 Tile::Tile() {
     number_type = 9;
+    occupied = nullptr;
 }
 
 /**
@@ -42,4 +43,8 @@ int Tile::getMoveCost() const {
 bool Tile::operator==(state::Tile &rhs) {
     return rhs.moveCost == moveCost &&
            rhs.observers.size() == observers.size();
+}
+
+void Tile::free() {
+    this->occupied = nullptr;
 }
