@@ -105,19 +105,15 @@ void Board::nextTurn() {
         if (pawns.at(i).isPlaying) {
             pawns[i].isPlaying = false;
             if (i + 1 >= pawns.size()) {
-                pawns[0].setAP(0);
                 pawns[0].isPlaying = true;
                 this->changeTime();
             } else {
-                if (pawns[i + 1].number_type == 5 || pawns[i + 1].number_type == 6)
-                    pawns[i + 1].setAP(2);
-                else
-                    pawns[i + 1].setAP(3);
                 pawns[i + 1].isPlaying = true;
             }
             break;
         }
     }
+    playingPawn().setAP(playingPawn().AP_max);
 }
 
 

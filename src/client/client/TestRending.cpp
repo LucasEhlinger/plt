@@ -261,6 +261,14 @@ int TestRending::engine() {
                                 new_turn = true;
                             }
                             break;
+                        case sf::Keyboard::S:
+                            std::cout << "Playing: " << board.playingPawn().name << std::endl;
+                            std::cout << "Day: " << board.day << std::endl;
+                            for (state::Pawn pawn : board.pawns) {
+                                std::cout << pawn.name << "\tLP: " << pawn.getLP() << "\n\t" << "Stats:\n\t" << "Comb "
+                                          << pawn.getCombativeness() << "\tVit " << pawn.getVitality() << std::endl;
+                            }
+                            break;
                         default:
                             break;
                     }
@@ -493,17 +501,17 @@ int TestRending::thread() {
                         switch (event.key.code) {
                             case sf::Keyboard::Left:
                                 //engine1.shadowMove(sf::Vector2i{0, -1});
-                                shadowMove(engine1,sf::Vector2i{0, -1});
+                                shadowMove(engine1, sf::Vector2i{0, -1});
                                 engine1.new_move = false;
                                 break;
                             case sf::Keyboard::Right:
                                 //engine1.shadowMove(sf::Vector2i{0, +1});
-                                shadowMove(engine1,sf::Vector2i{0, +1});
+                                shadowMove(engine1, sf::Vector2i{0, +1});
                                 engine1.new_move = false;
                                 break;
                             case sf::Keyboard::Up:
                                 //engine1.shadowMove(sf::Vector2i{-1, 0});
-                                shadowMove(engine1,sf::Vector2i{-1, 0});
+                                shadowMove(engine1, sf::Vector2i{-1, 0});
                                 engine1.new_move = false;
                                 break;
                             case sf::Keyboard::Down:
@@ -538,7 +546,7 @@ int TestRending::thread() {
 
 void
 TestRending::shadowMove(state::Pawn playing, state::Coordinate &pro_coord, std::vector<state::Coordinate> av_moves,
-                         sf::Vector2i shift, std::array<int, 169> &av_tiles) {
+                        sf::Vector2i shift, std::array<int, 169> &av_tiles) {
     state::Coordinate shadow_coord{pro_coord.getRow() + shift.x, pro_coord.getColumn() + shift.y};
     if (shadow_coord == playing.getCoordinate())
         shadow_coord.setColumn(shadow_coord.getColumn() - shift.x + shift.y);
