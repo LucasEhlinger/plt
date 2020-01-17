@@ -108,7 +108,8 @@ std::array<int, 2> Pawn::attack(state::Pawn attacked, bool day, int mountain) {
             pawn2Dice += this->getRot();
 
     int rolled = 0;
-    static auto gen = std::bind(std::uniform_int_distribution<>(1, 6), std::default_random_engine());
+    srand(time(NULL));
+    //static auto gen = std::bind(std::uniform_int_distribution<>(1, 6), std::default_random_engine());
 
     if (this->resources.rot >= 5 && attacked.resources.rot < this->resources.rot) {
         pawn1Dice += attacked.resources.rot;
@@ -117,7 +118,7 @@ std::array<int, 2> Pawn::attack(state::Pawn attacked, bool day, int mountain) {
     //Pawn 1
     while (rolled != pawn1Dice) {
         ++rolled;
-        switch (gen()) {
+        switch (rand() % 6 + 1) {
             case 1:
                 ++pawn1Sword;
                 break;
@@ -149,7 +150,7 @@ std::array<int, 2> Pawn::attack(state::Pawn attacked, bool day, int mountain) {
     //Pawn 2
     while (rolled != pawn2Dice) {
         ++rolled;
-        switch (gen()) {
+        switch (rand() % 6 +1) {
             case 1:
                 ++pawn2Sword;
                 break;
