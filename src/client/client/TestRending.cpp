@@ -68,7 +68,7 @@ int TestRending::engine() {
     bool new_turn = true;
     std::vector<int> deaths;
     int ind_death_max;
-    int ind_in_deaths;
+    int ind_in_deaths = -1;
 
     // sets up the window
     window.setKeyRepeatEnabled(false);
@@ -117,7 +117,7 @@ int TestRending::engine() {
             parse(nb_row, nb_col, av_tiles, table);
             Av_TileMap av_tile_map;
             if (!av_tile_map.load("./../res/hexagon-pack/PNG/av_move.png", sf::Vector2u(tile_width, tile_height), table,
-                                  nb_row, nb_col))
+                                  nb_col, nb_row))
                 return -1;
             window.draw(av_tile_map);
             window.display();
@@ -137,7 +137,7 @@ int TestRending::engine() {
                 new_turn = true;
             } else {
                 deaths = engine1.move(path.back());
-                /*while (deaths.size() != 0) {
+                while (deaths.size() != 0) {
                     for (int i = 0; i < deaths.size(); ++i)
                         if (deaths.at(i) >= ind_death_max) {
                             ind_death_max = deaths.at(i);
@@ -145,7 +145,7 @@ int TestRending::engine() {
                         }
                     scene.removing_pawn(board, ind_death_max);
                     deaths.erase(deaths.begin() + ind_in_deaths);
-                }*/
+                }
                 path.pop_back();
                 if (board.tiles.at(engine1.playingPawn().getCoordinate().getCoordInLine()).number_type == 8) {
                     engine1.nextTurn();
@@ -164,7 +164,7 @@ int TestRending::engine() {
                 new_turn = true;
             } else {
                 deaths = engine1.move(path.back());
-                /*while (deaths.size() != 0) {
+                while (deaths.size() != 0) {
                     for (int i = 0; i < deaths.size(); ++i)
                         if (deaths.at(i) >= ind_death_max) {
                             ind_death_max = deaths.at(i);
@@ -172,7 +172,7 @@ int TestRending::engine() {
                         }
                     scene.removing_pawn(board, ind_death_max);
                     deaths.erase(deaths.begin() + ind_in_deaths);
-                }*/
+                }
                 path.pop_back();
             }
             window.display();
@@ -184,7 +184,7 @@ int TestRending::engine() {
             }
             if (path.size() != 0) {
                 deaths = engine1.move(path.back());
-                /*while (deaths.size() != 0) {
+                while (deaths.size() != 0) {
                     for (int i = 0; i < deaths.size(); ++i)
                         if (deaths.at(i) >= ind_death_max) {
                             ind_death_max = deaths.at(i);
@@ -192,7 +192,7 @@ int TestRending::engine() {
                         }
                     scene.removing_pawn(board, ind_death_max);
                     deaths.erase(deaths.begin() + ind_in_deaths);
-                }*/
+                }
                 path.pop_back();
             } else
                 engine1.move(ai::Random::action(engine1.matrixAv_Tile(engine1.playingPawn())));
@@ -259,6 +259,14 @@ int TestRending::engine() {
                                 engine1.nextTurn();
                                 new_move = true;
                                 new_turn = true;
+                            }
+                            break;
+                        case sf::Keyboard::S:
+                            std::cout << "Playing: " << board.playingPawn().name << std::endl;
+                            std::cout << "Day: " << board.day << std::endl;
+                            for (state::Pawn pawn : board.pawns) {
+                                std::cout << pawn.name << "\tLP: " << pawn.getLP() << "\n\t" << "Stats:\n\t" << "Comb "
+                                          << pawn.getCombativeness() << "\tVit " << pawn.getVitality() << std::endl;
                             }
                             break;
                         default:
@@ -441,6 +449,7 @@ void TestRending::parse(int nb_row, int nb_col, std::array<int, 169> raw_table, 
 }
 
 int TestRending::thread() {
+
     // create the window
     window.setKeyRepeatEnabled(false);
     state::Board board{};
@@ -493,17 +502,17 @@ int TestRending::thread() {
                         switch (event.key.code) {
                             case sf::Keyboard::Left:
                                 //engine1.shadowMove(sf::Vector2i{0, -1});
-                                shadowMove(engine1,sf::Vector2i{0, -1});
+                                shadowMove(engine1, sf::Vector2i{0, -1});
                                 engine1.new_move = false;
                                 break;
                             case sf::Keyboard::Right:
                                 //engine1.shadowMove(sf::Vector2i{0, +1});
-                                shadowMove(engine1,sf::Vector2i{0, +1});
+                                shadowMove(engine1, sf::Vector2i{0, +1});
                                 engine1.new_move = false;
                                 break;
                             case sf::Keyboard::Up:
                                 //engine1.shadowMove(sf::Vector2i{-1, 0});
-                                shadowMove(engine1,sf::Vector2i{-1, 0});
+                                shadowMove(engine1, sf::Vector2i{-1, 0});
                                 engine1.new_move = false;
                                 break;
                             case sf::Keyboard::Down:
@@ -538,7 +547,7 @@ int TestRending::thread() {
 
 void
 TestRending::shadowMove(state::Pawn playing, state::Coordinate &pro_coord, std::vector<state::Coordinate> av_moves,
-                         sf::Vector2i shift, std::array<int, 169> &av_tiles) {
+                        sf::Vector2i shift, std::array<int, 169> &av_tiles) {
     state::Coordinate shadow_coord{pro_coord.getRow() + shift.x, pro_coord.getColumn() + shift.y};
     if (shadow_coord == playing.getCoordinate())
         shadow_coord.setColumn(shadow_coord.getColumn() - shift.x + shift.y);

@@ -5,8 +5,6 @@
 using namespace std;
 using namespace client;
 
-void parse(int nb_row, int nb_col, std::array<int, 169> raw_table, unsigned int table[]);
-
 int main(int argc, char *argv[]) {
     TestRending test{};
     if (argc == 2) {

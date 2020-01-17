@@ -6,9 +6,9 @@ Player::Player(state::Coordinate position, std::string name, bool isHuman) : Paw
     this->starting_tile = position;
     AP_max = 3;
 
+    stats = Stats(4, 1, 0, 0);
 
-    lifePoints = 1;
-    //lifePoints = stats.getVitality();
+    lifePoints = stats.getVitality();
 }
 
 void Player::set_number_type (int nb_type) {

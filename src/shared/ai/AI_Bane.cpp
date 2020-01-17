@@ -3,9 +3,14 @@
 using namespace ai;
 
 state::Coordinate AI_Bane::action(state::Board &board) {
-    for (state::Pawn pawn : board.pawns)
-        if (board.playingPawn().getCoordinate().distance(pawn.getCoordinate()) == 1 && !pawn.on_duty)
-            return pawn.getCoordinate();
+    std::vector<state::Coordinate> neighbors = board.matrixAv_Tile(board.playingPawn());
+    for (state::Coordinate coord : neighbors)
+        if (board.tiles.at(coord.getCoordInLine()).occupied == nullptr ||
+            board.tiles.at(coord.getCoordInLine()).number_type == 8 ||
+            board.tiles.at(coord.getCoordInLine()).number_type == 4)
+            continue;
+        else if (board.tiles.at(coord.getCoordInLine()).occupied->getRot() < 5)
+            return coord;
 
     std::vector<state::Coordinate> colonies;
     for (int i = 0; i < board.tiles.size(); ++i)
