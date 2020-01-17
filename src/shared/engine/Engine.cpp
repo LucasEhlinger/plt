@@ -5,6 +5,8 @@
 #include <queue>
 #include <unordered_map>
 
+#include <unistd.h>
+
 
 #define HEIGHT  13
 #define WIDTH   13
@@ -308,8 +310,12 @@ void Engine::death(state::Pawn &pawn) {
 }
 
 void Engine::gameloop() {
+    std::vector<int> deaths;
+    int ind_death_max;
+    int ind_in_deaths;
 
     while (1) {
+        ind_death_max = 0;
         // creates the movemap from the moves available to the currently playing pawn and draws it
         if (playingPawn().isHuman) {
             if (new_move || new_turn) {
@@ -321,9 +327,11 @@ void Engine::gameloop() {
             for (int j = 0; j < av_moves.size(); ++j)
                 av_tiles.at(av_moves.at(j).getCoordInLine()) = 0;
             av_tiles.at(temporary_coordinates.getCoordInLine()) = playingPawn().number_type + 1;
+            usleep(16000);
         } else if (playingPawn().number_type == 4) {
             nextTurn();
             new_turn = true;
+            usleep(16000);
         } else if (playingPawn().number_type == 5) {
             if (new_turn) {
                 path = guard_behaviour();
@@ -333,9 +341,25 @@ void Engine::gameloop() {
                 nextTurn();
                 new_turn = true;
             } else {
-                move(path.back());
+                //move(path.back());
+                //path.pop_back();
+                deaths = move(path.back());
+                while (deaths.size() != 0) {
+                    for (int i = 0; i < deaths.size(); ++i)
+                        if (deaths.at(i) >= ind_death_max) {
+                            ind_death_max = deaths.at(i);
+                            ind_in_deaths = i;
+                        }
+                    //removing_pawn(board, ind_death_max);
+                    deaths.erase(deaths.begin() + ind_in_deaths);
+                }
                 path.pop_back();
+                if (board->tiles.at(playingPawn().getCoordinate().getCoordInLine()).number_type == 8) {
+                    nextTurn();
+                    new_turn = true;
+                }
             }
+            usleep(500000);
         } else if (playingPawn().number_type == 6) {
             if (new_turn) {
                 path = bane_behaviour();
@@ -345,16 +369,36 @@ void Engine::gameloop() {
                 nextTurn();
                 new_turn = true;
             } else {
-                move(path.back());
+                deaths = move(path.back());
+                while (deaths.size() != 0) {
+                    for (int i = 0; i < deaths.size(); ++i)
+                        if (deaths.at(i) >= ind_death_max) {
+                            ind_death_max = deaths.at(i);
+                            ind_in_deaths = i;
+                        }
+                    //scene.removing_pawn(board, ind_death_max);
+                    deaths.erase(deaths.begin() + ind_in_deaths);
+                }
                 path.pop_back();
             }
+            usleep(500000);
+
         } else {
             if (new_turn) {
                 path = AI_finale();
                 new_turn = false;
             }
             if (path.size() != 0) {
-                move(path.back());
+                deaths = move(path.back());
+                while (deaths.size() != 0) {
+                    for (int i = 0; i < deaths.size(); ++i)
+                        if (deaths.at(i) >= ind_death_max) {
+                            ind_death_max = deaths.at(i);
+                            ind_in_deaths = i;
+                        }
+                    //scene.removing_pawn(board, ind_death_max);
+                    deaths.erase(deaths.begin() + ind_in_deaths);
+                }
                 path.pop_back();
             } else {
                 move(ai::Random::action(matrixAv_Tile(playingPawn())));
