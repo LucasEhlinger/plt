@@ -266,7 +266,8 @@ int TestRending::engine() {
                             std::cout << "Day: " << board.day << std::endl;
                             for (state::Pawn pawn : board.pawns) {
                                 std::cout << pawn.name << "\tLP: " << pawn.getLP() << "\n\t" << "Stats:\n\t" << "Comb "
-                                          << pawn.getCombativeness() << "\tVit " << pawn.getVitality() << std::endl;
+                                          << pawn.getCombativeness() << "\tVit " << pawn.getVitality() << "\nPrestige: "
+                                          << pawn.getResources().prestige << std::endl;
                             }
                             break;
                         default:
