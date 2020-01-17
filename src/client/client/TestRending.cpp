@@ -68,7 +68,7 @@ int TestRending::engine() {
     bool new_turn = true;
     std::vector<int> deaths;
     int ind_death_max;
-    int ind_in_deaths;
+    int ind_in_deaths = -1;
 
     // sets up the window
     window.setKeyRepeatEnabled(false);
@@ -117,7 +117,7 @@ int TestRending::engine() {
             parse(nb_row, nb_col, av_tiles, table);
             Av_TileMap av_tile_map;
             if (!av_tile_map.load("./../res/hexagon-pack/PNG/av_move.png", sf::Vector2u(tile_width, tile_height), table,
-                                  nb_row, nb_col))
+                                  nb_col, nb_row))
                 return -1;
             window.draw(av_tile_map);
             window.display();
@@ -449,6 +449,7 @@ void TestRending::parse(int nb_row, int nb_col, std::array<int, 169> raw_table, 
 }
 
 int TestRending::thread() {
+
     // create the window
     window.setKeyRepeatEnabled(false);
     state::Board board{};
