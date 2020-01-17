@@ -6,7 +6,7 @@ Player::Player(state::Coordinate position, std::string name, bool isHuman) : Paw
     this->starting_tile = position;
     AP_max = 3;
 
-    stats = Stats(4, 1, 0, 0);
+    stats = Stats(4, 5, 0, 0);
 
     lifePoints = stats.getVitality();
 }
